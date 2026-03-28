@@ -1,0 +1,102 @@
+---
+// Sidebar.astro - Versión corregida para Resend
+---
+
+<aside class="fixed top-0 left-0 h-full w-72 bg-slate-900/80 backdrop-blur-xl border-r border-white/10 p-6 z-50 hidden lg:flex flex-col">
+    <h2 class="text-2xl font-bold mb-8 text-red-600 tracking-tighter uppercase">Recomendar</h2>
+    
+    <form id="recommend-form" class="flex flex-col gap-4">
+        <div class="flex flex-col gap-1">
+            <label class="text-[10px] uppercase text-slate-400 font-bold tracking-widest">Tu Email</label>
+            <input 
+                type="email" 
+                name="email" 
+                id="email"
+                required 
+                class="w-full bg-slate-800/50 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-red-500 outline-none transition-all placeholder:text-slate-600"
+                placeholder="tu@correo.com"
+            />
+        </div>
+        
+        <div class="flex flex-col gap-1">
+            <label class="text-[10px] uppercase text-slate-400 font-bold tracking-widest">Mensaje</label>
+            <textarea 
+                name="message" 
+                id="message"
+                rows="4" 
+                required
+                class="w-full bg-slate-800/50 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-red-500 outline-none transition-all placeholder:text-slate-600 resize-none"
+                placeholder="¡Dime qué serie debo ver!"
+            ></textarea>
+        </div>
+
+        <button 
+            type="submit" 
+            id="submit-btn" 
+            class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-red-600/20 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+            Enviar a Aroca
+        </button>
+
+        <p id="form-status" class="hidden text-sm text-center mt-2 font-medium"></p>
+    </form>
+
+    <div class="mt-auto pt-6 border-t border-white/5">
+        <p class="text-[10px] text-slate-500 text-center uppercase tracking-widest">
+            © 2024 Proyecto Astro
+        </p>
+    </div>
+</aside>
+
+<script>
+  const form = document.getElementById('recommend-form') as HTMLFormElement;
+  const status = document.getElementById('form-status');
+  const btn = document.getElementById('submit-btn') as HTMLButtonElement;
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // Capturamos los datos del formulario de forma segura
+    const emailInput = (document.getElementById('email') as HTMLInputElement).value;
+    const messageInput = (document.getElementById('message') as HTMLTextAreaElement).value;
+
+    const data = {
+      email: emailInput,
+      message: messageInput
+    };
+
+    btn.disabled = true;
+    btn.innerText = "Enviando...";
+
+    try {
+      const response = await fetch("/api/send-email", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json', // OBLIGATORIO para que la API no falle
+        },
+        body: JSON.stringify(data) // Convertimos el objeto a texto JSON
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        if (status) {
+          status.innerText = "¡Enviado con éxito!";
+          status.className = "text-green-500 text-sm text-center mt-2 block";
+        }
+        form.reset();
+      } else {
+        throw new Error(result.error || "Fallo en el servidor");
+      }
+    } catch (error) {
+      if (status) {
+        status.innerText = "Error al enviar. Prueba de nuevo.";
+        status.className = "text-red-500 text-sm text-center mt-2 block";
+      }
+    } finally {
+      btn.disabled = false;
+      btn.innerText = "Enviar a Aroca";
+      setTimeout(() => { if (status) status.classList.add('hidden'); }, 5000);
+    }
+  });
+</script>

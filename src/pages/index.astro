@@ -1,11 +1,36 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Sidebar from '../components/Sidebar.astro';
+import Whatsapp from '../components/Whatsapp.astro';
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Mi Serie Favorita">
+  <Sidebar />
+  
+  <main class="lg:ml-72 min-h-screen p-6 bg-slate-950">
+    
+    <section class="relative h-[400px] rounded-3xl overflow-hidden mb-10 shadow-2xl" data-aos="zoom-in">
+      <img src="/tu-banner.jpg" class="w-full h-full object-cover opacity-60" alt="Banner" />
+      <div class="absolute inset-0 flex flex-col justify-center items-center text-center p-4">
+        <h1 class="text-5xl font-black text-white mb-2 uppercase tracking-tighter">Vikingos</h1>
+        <p class="text-red-500 font-bold tracking-widest uppercase">Mi Serie Favorita</p>
+      </div>
+    </section>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-slate-900 p-6 rounded-2xl border border-white/5" data-aos="fade-up">
+        <h2 class="text-2xl font-bold text-white mb-4">¿De qué trata?</h2>
+        <p class="text-slate-400">Aquí pega el texto de tu antiguo HTML...</p>
+      </div>
+
+      <div class="bg-slate-900 p-6 rounded-2xl border border-white/5" data-aos="fade-up" data-aos-delay="200">
+        <h2 class="text-2xl font-bold text-white mb-4">Personaje Principal</h2>
+        <img src="/ragnar.jpg" class="w-full h-48 object-cover rounded-xl mb-4" />
+        <p class="text-slate-400">Ragnar Lothbrok...</p>
+      </div>
+    </div>
+
+  </main>
+
+  <Whatsapp />
 </Layout>
