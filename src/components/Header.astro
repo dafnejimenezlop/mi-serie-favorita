@@ -1,7 +1,7 @@
 ---
 // src/components/Header.astro
 const navLinks = [
-  { href: '/#inicio', label: 'Ciclo' }, // Corregido el enlace para que funcione desde otras páginas
+  { href: '/#inicio', label: 'Ciclo' },
   { href: '/#sinopsis', label: 'Sinopsis' },
   { href: '/#ciclos', label: 'Viajes' },
   { href: '/#personajes', label: 'Familias' },
@@ -9,90 +9,139 @@ const navLinks = [
 ];
 ---
 
-<header
-  class="fixed top-0 left-0 w-full z-50 bg-stone-50/90 dark:bg-black/80 backdrop-blur-sm border-b border-stone-200 dark:border-stone-800 transition-colors duration-300"
->
-  <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
-    <a
-      href="/#inicio"
-      class="text-2xl font-cinzel text-amber-950 dark:text-amber-500 font-bold tracking-widest hover:opacity-80 transition"
-    >
-      DARK
-    </a>
+<header class="fixed top-0 left-0 w-full z-50 transition-colors duration-300">
+  <div
+    class="bg-stone-50/90 dark:bg-black/80 backdrop-blur-md border-b border-stone-200 dark:border-stone-900"
+  >
+    <div class="container mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="/" class="flex-shrink-0">
+        <img
+          src="/prueba.png"
+          alt="Dark Logo"
+          class="h-10 md:h-12 w-auto object-contain drop-shadow-lg"
+        />
+      </a>
 
-    <ul class="hidden md:flex items-center space-x-6">
+      <div class="flex items-center space-x-4 md:space-x-6">
+        <a
+          href="#"
+          class="hidden md:inline-block text-xs font-cinzel font-bold px-6 py-2 rounded border border-amber-900 dark:border-amber-500 text-amber-900 dark:text-amber-500 hover:bg-amber-900 hover:text-stone-50 dark:hover:bg-amber-500 dark:hover:text-black transition duration-300 uppercase tracking-[0.15em]"
+        >
+          Contacto
+        </a>
+
+        <button
+          id="themeToggle"
+          aria-label="Cambiar tema"
+          class="p-2 rounded-full border border-stone-300 dark:border-stone-800 hover:bg-stone-200 dark:hover:bg-stone-900 transition text-amber-600 dark:text-amber-500"
+        >
+          <svg
+            id="sunIcon"
+            class="w-5 h-5 hidden dark:block"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            ><path
+              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 17.95a1 1 0 01-1.414 0l-.707-.707a1 1 0 011.414-1.414l.707.707a1 1 0 010 1.414zm-.706-10.607a1 1 0 01-1.414 0l-.707-.707a1 1 0 011.414-1.414l.707.707a1 1 0 010 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z"
+            ></path></svg
+          >
+          <svg
+            id="moonIcon"
+            class="w-5 h-5 block dark:hidden"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            ><path
+              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+            ></path></svg
+          >
+        </button>
+
+        <button
+          id="mobileMenuButton"
+          class="md:hidden p-2 rounded hover:bg-stone-200 dark:hover:bg-stone-900 transition text-amber-600 dark:text-amber-500"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            ><path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"></path></svg
+          >
+        </button>
+      </div>
+    </div>
+
+    <nav
+      class="hidden md:block border-t border-stone-200 dark:border-stone-800"
+    >
+      <ul class="container mx-auto px-6 py-3 flex justify-center space-x-12">
+        {
+          navLinks.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class="text-xs uppercase tracking-[0.25em] font-cinzel font-bold text-stone-700 dark:text-stone-300 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+
+  <div
+    id="mobileMenu"
+    class="hidden md:hidden bg-stone-50 dark:bg-black border-b border-stone-200 dark:border-stone-800 shadow-2xl"
+  >
+    <ul class="flex flex-col px-6 py-6 space-y-6 text-center">
       {
         navLinks.map((link) => (
           <li>
             <a
               href={link.href}
-              class="text-sm font-semibold tracking-wide text-stone-900 dark:text-stone-100 hover:text-amber-800 dark:hover:text-amber-400 transition"
+              class="block text-sm uppercase tracking-[0.2em] font-cinzel font-bold text-stone-700 dark:text-stone-300 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
             >
               {link.label}
             </a>
           </li>
         ))
       }
+      <li class="pt-6 border-t border-stone-200 dark:border-stone-800">
+        <a
+          href="#"
+          class="inline-block w-full text-xs font-cinzel font-bold px-6 py-4 rounded border border-amber-900 dark:border-amber-500 text-amber-900 dark:text-amber-500 hover:bg-amber-900 hover:text-stone-50 dark:hover:bg-amber-500 dark:hover:text-black transition duration-300 uppercase tracking-[0.2em]"
+        >
+          Contacto
+        </a>
+      </li>
     </ul>
-
-    <div class="flex items-center space-x-4">
-      <button
-        id="themeToggle"
-        class="p-2 rounded-full border border-stone-300 dark:border-stone-700 hover:bg-stone-200 dark:hover:bg-stone-800 transition"
-      >
-        <svg
-          id="sunIcon"
-          class="w-5 h-5 hidden dark:block text-yellow-500"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-        >
-          <path
-            d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 17.95a1 1 0 01-1.414 0l-.707-.707a1 1 0 011.414-1.414l.707.707a1 1 0 010 1.414zm-.706-10.607a1 1 0 01-1.414 0l-.707-.707a1 1 0 011.414-1.414l.707.707a1 1 0 010 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z"
-          ></path>
-        </svg>
-        <svg
-          id="moonIcon"
-          class="w-5 h-5 block dark:hidden text-stone-700"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-        >
-          <path
-            d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
-          ></path>
-        </svg>
-      </button>
-
-      <button
-        id="mobileMenuButton"
-        class="md:hidden p-2 rounded hover:bg-stone-200 dark:hover:bg-stone-800 transition"
-      >
-        <svg
-          class="w-6 h-6 text-stone-900 dark:text-stone-100"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
-      </button>
-    </div>
-  </nav>
-
-  <script is:inline>
-    const handleToggleClick = () => {
-      const element = document.documentElement;
-      element.classList.toggle('dark');
-      const isDark = element.classList.contains('dark');
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    };
-
-    const toggleButton = document.getElementById('themeToggle');
-    if (toggleButton) {
-      toggleButton.addEventListener('click', handleToggleClick);
-    }
-  </script>
+  </div>
 </header>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Control de Tema
+    const themeToggleBtn = document.getElementById('themeToggle');
+    if (themeToggleBtn) {
+      themeToggleBtn.addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark');
+        const isDark = document.documentElement.classList.contains('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      });
+    }
+
+    // Control Menú Móvil
+    const mobileBtn = document.getElementById('mobileMenuButton');
+    const mobileMenu = document.getElementById('mobileMenu');
+    if (mobileBtn && mobileMenu) {
+      mobileBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+    }
+  });
+</script>
