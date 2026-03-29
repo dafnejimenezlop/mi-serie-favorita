@@ -1,36 +1,206 @@
 ---
+// src/pages/index.astro
 import Layout from '../layouts/Layout.astro';
-import Sidebar from '../components/Sidebar.astro';
-import Whatsapp from '../components/Whatsapp.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Carousel from '../components/Carousel.astro';
 ---
 
-<Layout title="Mi Serie Favorita">
-  <Sidebar />
-  
-  <main class="lg:ml-72 min-h-screen p-6 bg-slate-950">
-    
-    <section class="relative h-[400px] rounded-3xl overflow-hidden mb-10 shadow-2xl" data-aos="zoom-in">
-      <img src="/tu-banner.jpg" class="w-full h-full object-cover opacity-60" alt="Banner" />
-      <div class="absolute inset-0 flex flex-col justify-center items-center text-center p-4">
-        <h1 class="text-5xl font-black text-white mb-2 uppercase tracking-tighter">Vikingos</h1>
-        <p class="text-red-500 font-bold tracking-widest uppercase">Mi Serie Favorita</p>
-      </div>
-    </section>
+<Layout title="Página Principal - Dark">
+    <Header />
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="bg-slate-900 p-6 rounded-2xl border border-white/5" data-aos="fade-up">
-        <h2 class="text-2xl font-bold text-white mb-4">¿De qué trata?</h2>
-        <p class="text-slate-400">Aquí pega el texto de tu antiguo HTML...</p>
-      </div>
+    <div class="contenido">
+        <div class="container-fluid">
+            <Carousel />
+        </div>
+        
+        <div class="container">
+            <main class="col-xs-12 col-md-10 col-lg-11 order-2 mx-auto">
+                <div class="container-fluid">
+                    
+                    <div class="row justify-content-between mb-5" data-aos="fade-up">
+                        <h1 class="mb-5 mt-2 servi text-center">Dark</h1>
+                        
+                        <aside class="col-lg-6 mt-2 order-1 ms-lg-auto order-lg-2" data-aos="fade-left" data-aos-delay="200">
+                            <div class="ms-lg-auto text-center">
+                                <img src="/public/img/hola.jpg" class="img-fluid" style="width:68%">
+                            </div>
+                            </aside>   
 
-      <div class="bg-slate-900 p-6 rounded-2xl border border-white/5" data-aos="fade-up" data-aos-delay="200">
-        <h2 class="text-2xl font-bold text-white mb-4">Personaje Principal</h2>
-        <img src="/ragnar.jpg" class="w-full h-48 object-cover rounded-xl mb-4" />
-        <p class="text-slate-400">Ragnar Lothbrok...</p>
-      </div>
+                        <main class="col-lg-6 mt-2 order-2 mx-auto order-lg-1" data-aos="fade-right" data-aos-delay="200">
+                            <p class="mx-auto" style="font-size:1em">
+                                <span class="fw-bold fst-italic">Dark</span> es una serie de suspense, drama y ciencia ficción...
+                            </p>
+                            <img src="/public/img/maquina.jpg" class="img-fluid mt-3">
+                        </main>
+                    </div>
+
+                    <div class="row justify-content-between mb-5">
+                        <h1 class="mb-4 servi text-center" data-aos="zoom-in">Sinopsis de la serie Dark</h1>
+                        <aside class="col-lg-7 mt-3" data-aos="fade-right">
+                            <img src="/public/img/familia.jpg" class="img-fluid">
+                        </aside>
+                        <main class="col-lg-5 mt-3 align-self-center" data-aos="fade-left">
+                            <p>En Winden (2019), un pequeño pueblo ficticio situado en Alemania...</p>
+                            </main>
+                    </div>
+
+                    <div class="row mb-3">
+                                <h1 class="mb-4 servi text-center">Reseñas de algunos usuarios</h1>
+                                <div class="col-12 col-sm-12 col-lg-6 caja mx-auto p-3 mb-2">
+                                    <div class="caja-top">
+                                        <div class="perfil">
+                                            <div class="perfil-img">
+                                                <img src="img/avatar2.png" alt="usuario2">
+                                            </div>
+                                            <div class="name-user">
+                                                <strong>Victor23432</strong>
+                                                <small>Publicada el 12 diciembre de 2022</small>
+                                            </div>
+                                        </div>
+                                        <div class="reseñas">
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                        </div>
+                                    </div>
+                        
+                                    <div class="comentarios_clientes">
+                                        Una serie que te atrapa desde el primer momento. Ambientación espectacular. Una trama muy original y única.
+                                    </div>
+                                </div>
+                    
+                                <div class="col-12 col-sm-12 col-lg-6 caja mx-auto p-3 mb-2 ">
+                                    <div class="caja-top">
+                                        <div class="perfil">
+                                            <div class="perfil-img">
+                                                <img src="img/user-5.jpg" alt="usuario2">
+                                            </div>
+                                            <div class="name-user">
+                                                <strong>Vanira23</strong>
+                                                <small>Publicada el 13 febrero de 2022</small>
+                                            </div>
+                                        </div>
+                                        <div class="reseñas">
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star"></span>
+                                        </div>
+                                    </div>
+                        
+                                    <div class="comentarios_clientes">
+                                        Una de las mejores series del momento. Deseando ver la siguiente temporada. Tiene todo lo que me gusta: intriga, historia, ciencia... Pese a ser ciencia ficción, llegas a replantearte muchas cosas. La recomiendo
+                                    </div>
+                                </div>
+                    
+                                <div class="col-12 col-sm-12 col-lg-6 caja mx-auto p-3 mb-2">
+                                    <div class="caja-top">
+                                        <div class="perfil">
+                                            <div class="perfil-img">
+                                                <img src="img/avatar3.png" alt="usuario2">
+                                            </div>
+                                            <div class="name-user">
+                                                <strong>Un visitante</strong>
+                                                <small>Publicada el 7 mayo de 2022</small>
+                                            </div>
+                                        </div>
+                                        <div class="reseñas">
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                        </div>
+                                    </div>
+                        
+                                    <div class="comentarios_clientes">
+                                        La temporada 1 es genial. La temporada 2 está muy bien. Pero la 3.ª temporada es muy lenta, no avanza, repite mucho el contenido y no sorprende. Una pena que una serie que estaba tan arriba baje tan rápido...
+                                    </div>
+                                </div>
+                    
+                                <div class="col-12 col-sm-12 col-lg-6 caja mx-auto p-3 mb-2">
+                                    <div class="caja-top">
+                                        <div class="perfil">
+                                            <div class="perfil-img">
+                                                <img src="img/avatar5.png" alt="usuario2">
+                                            </div>
+                                            <div class="name-user">
+                                                <strong>Anónimo</strong>
+                                                <small>Publicada el 25 junio de 2022</small>
+                                            </div>
+                                        </div>
+                                        <div class="reseñas">
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                        </div>
+                                    </div>
+                        
+                                    <div class="comentarios_clientes">
+                                        De las mejores series del momento! Las dos temporadas se me hicieron cortas en general, aunque más de un capítulo se me hizo también difícil de digerir. Esperando ansiosamente la tercera entrega.
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-sm-12 col-lg-6 caja mx-auto p-3 mb-2">
+                                    <div class="caja-top">
+                                        <div class="perfil">
+                                            <div class="perfil-img">
+                                                <img src="img/avatar4.png" alt="usuario2">
+                                            </div>
+                                            <div class="name-user">
+                                                <strong>Renzo</strong>
+                                                <small>Publicada el 2 enero de 2023</small>
+                                            </div>
+                                        </div>
+                                        <div class="reseñas">
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                        </div>
+                                    </div>
+                        
+                                    <div class="comentarios_clientes">
+                                        Una Excelente Obra maestra del drama irónico. Excelente fotografía, Casting de los mejores que he visto en mi corta vida, Ben Frost ha coronado su carrera con la música en esta serie. Muy recomendada, para ver varias veces si no la entendiste. 
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-sm-12 col-lg-6 caja mx-auto p-3 mb-2">
+                                    <div class="caja-top">
+                                        <div class="perfil">
+                                            <div class="perfil-img">
+                                                <img src="img/avatar6.png" alt="usuario2">
+                                            </div>
+                                            <div class="name-user">
+                                                <strong>Anonimus</strong>
+                                                <small>Publicada el 8 marzo de 2022</small>
+                                            </div>
+                                        </div>
+                                        <div class="reseñas">
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star"></span>
+                                        </div>
+                                    </div>
+                        
+                                    <div class="comentarios_clientes">
+                                        Buena serie, te mantiene enganchado en cada capitulo! Esperamos mas temporadas! Imprescindible de ver! 
+                                    </div>
+                                </div>
+
+                            </div>
+            </main>
+        </div>
     </div>
 
-  </main>
-
-  <Whatsapp />
+    <Footer />
 </Layout>

@@ -1,0 +1,61 @@
+---
+// src/components/Header.astro
+---
+<header>
+    <div class="container-fluid">
+        <div class="row foot2">
+            <ul class="nav">
+                <li class="nav-item me-auto ms-2 d-none d-xl-block"><a class="nav-link" href="#"><img src="/public/img/prueba.png" alt="Vega Media" style="width:125px" class="rounded-2"></a></li>
+                <li class="nav-item me-auto ms-2 d-none d-lg-block d-xl-none"><a class="nav-link" href="#"><img src="/public/img/prueba.png" alt="Vega Media" style="width:80px" class="rounded-2"></a></li>
+                <li class="nav-item text-center pt-2 text-white">
+                    <img src="/public/img/fondo.jpg" style="width:75%" class="d-none d-md-block d-lg-none text-center mx-auto">
+                    <img src="/public/img/fondo.jpg" style="width:85%" class="d-block d-md-none d-lg-block text-center mx-auto">
+                </li>
+                <div class="w-100 d-block d-md-none"></div>
+                <li class="nav-item ms-auto d-none d-xl-block">
+                    <a class="nav-link" href="#"><img src="/public/img/prueba.png" style="width:125px"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top navegar mt-2">
+        <div class="container-fluid">
+            <button class="navbar-toggler ms-auto text-end" type="button" data-bs-toggle="collapse" data-bs-target="#navbar_plegable">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-center" id="navbar_plegable">
+                <ul class="navbar-nav menuNav">
+                    <li class="navbar-item pe-1 me-1">
+                        <a href="/" class="nav-link text-light fw-bold me-3 ms-3"><i class="bi bi-house-fill text-warning"></i>&nbsp; Inicio</a>
+                    </li>
+                    <li class="nav-item pe-1 me-1">
+                        <a class="nav-link text-light fw-bold me-3 ms-3" href="/resumenTemporada"><i class="bi bi-mortarboard-fill text-warning"></i>&nbsp; Resumen</a>
+                    </li>
+                    <li class="navbar-item dropdown pe-1 me-1">
+                        <a href="#" class="nav-link text-light fw-bold pe-3 ps-3 dropdown-toggle dropbtn" data-bs-toggle="dropdown" id="navbardrop"><i class="bi bi-puzzle-fill text-warning"></i>&nbsp; Aclaraciones</a>
+                        <div class="dropdown-content aclara">
+                            <a href="/explicacion">Explicación</a>
+                            <a href="/final">Final</a>
+                            <a href="/simbologia">Simbología</a>
+                        </div>
+                    </li>  
+                    <li class="navbar-item pe-1 me-1">
+                        <a href="/personajes" class="nav-link text-light fw-bold me-3 ms-3"><i class="bi bi-people-fill text-warning"></i>&nbsp; Personajes</a>
+                    </li>
+                    <li class="navbar-item dropdown pe-1 me-1">
+                        <a href="#" class="nav-link text-light fw-bold pe-3 ps-3 dropdown-toggle dropbtn" data-bs-toggle="dropdown" id="navbardrop"><i class="bi bi-images text-warning"></i>&nbsp; Galería</a>
+                        <div class="dropdown-content galer">
+                            <a href="/galeria">Imágenes</a>
+                            <a href="/videos">Vídeos</a>
+                        </div>
+                    </li>  
+                    <li class="navbar-item pe-1 me-1">
+                        <a href="/recomendacion" class="nav-link text-light fw-bold me-3 ms-3"><i class="bi bi-pencil-fill text-warning"></i>&nbsp; Recomendaciones</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
