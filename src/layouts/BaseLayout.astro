@@ -2,7 +2,7 @@
 // src/layouts/BaseLayout.astro
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import '../styles/global.css'; // Importa tus estilos globales
+import '../styles/global.css'; // Asegúrate de tener este archivo creado
 
 interface Props {
   title: string;
@@ -16,7 +16,7 @@ const { title } = Astro.props;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <link rel="shortcut icon" href="public/prueba2.ico" />
+    <link rel="icon" type="image/x-icon" href="/prueba2.ico" />
     <title>{title}</title>
 
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
