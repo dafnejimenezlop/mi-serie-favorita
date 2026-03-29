@@ -11,7 +11,7 @@ const navLinks = [
 
 <header class="fixed top-0 left-0 w-full z-50 transition-colors duration-300">
   <div
-    class="bg-stone-50/90 dark:bg-black/80 backdrop-blur-md border-b border-stone-200 dark:border-stone-900"
+    class="bg-stone-50/90 dark:bg-black/80 backdrop-blur-md border-b border-stone-200 dark:border-stone-900 relative z-10"
   >
     <div class="container mx-auto px-6 py-4 flex items-center justify-between">
       <a href="/" class="flex-shrink-0">
@@ -96,9 +96,9 @@ const navLinks = [
 
   <div
     id="mobileMenu"
-    class="hidden md:hidden bg-stone-50 dark:bg-black border-b border-stone-200 dark:border-stone-800 shadow-2xl"
+    class="hidden absolute top-full left-0 w-full bg-stone-50/95 dark:bg-black/95 backdrop-blur-xl border-b border-stone-200 dark:border-stone-800 shadow-2xl z-0"
   >
-    <ul class="flex flex-col px-6 py-6 space-y-6 text-center">
+    <ul class="flex flex-col px-6 py-8 space-y-6 text-center">
       {
         navLinks.map((link) => (
           <li>
@@ -125,7 +125,6 @@ const navLinks = [
 
 <script is:inline>
   document.addEventListener('DOMContentLoaded', () => {
-    // Control de Tema
     const themeToggleBtn = document.getElementById('themeToggle');
     if (themeToggleBtn) {
       themeToggleBtn.addEventListener('click', () => {
@@ -135,12 +134,19 @@ const navLinks = [
       });
     }
 
-    // Control Menú Móvil
     const mobileBtn = document.getElementById('mobileMenuButton');
     const mobileMenu = document.getElementById('mobileMenu');
     if (mobileBtn && mobileMenu) {
       mobileBtn.addEventListener('click', () => {
         mobileMenu.classList.toggle('hidden');
+      });
+
+      // Cerrar menú al hacer clic en un enlace (Mejora de usabilidad)
+      const menuLinks = mobileMenu.querySelectorAll('a');
+      menuLinks.forEach((link) => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.add('hidden');
+        });
       });
     }
   });

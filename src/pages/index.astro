@@ -3,7 +3,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="DARK">
+<BaseLayout title="DARK - Sic Mundus Creatus Est">
   <section
     id="inicio"
     class="relative h-screen flex items-center justify-center bg-black transition-colors duration-300 overflow-hidden"
@@ -14,16 +14,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div id="youtube-bg-player" class="w-full h-full"></div>
     </div>
 
-    <div class="relative z-10 text-center space-y-6 px-6 pt-24">
+    <div
+      class="relative z-10 text-center space-y-4 md:space-y-6 px-4 pt-20 md:pt-24"
+    >
       <h1
-        class="text-6xl md:text-9xl font-cinzel text-amber-500 font-bold tracking-widest drop-shadow-2xl"
+        class="text-5xl sm:text-7xl md:text-9xl font-cinzel text-amber-500 font-bold tracking-widest drop-shadow-2xl"
         data-aos="zoom-in"
         data-aos-duration="1500"
       >
         DARK
       </h1>
       <p
-        class="text-lg md:text-3xl font-light text-stone-100 tracking-[0.15em] font-cinzel max-w-3xl mx-auto drop-shadow-lg"
+        class="text-base sm:text-xl md:text-3xl font-light text-stone-100 tracking-[0.1em] md:tracking-[0.15em] font-cinzel max-w-3xl mx-auto drop-shadow-lg"
         data-aos="fade-up"
         data-aos-delay="500"
       >
@@ -32,11 +34,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div
         data-aos="fade-up"
         data-aos-delay="1000"
-        class="pt-8 pointer-events-auto"
+        class="pt-6 md:pt-8 pointer-events-auto"
       >
         <a
           href="#sinopsis"
-          class="inline-block px-8 md:px-12 py-3 md:py-4 rounded border border-amber-500 text-amber-500 font-cinzel font-bold tracking-[0.1em] md:tracking-[0.2em] uppercase hover:bg-amber-500 hover:text-black hover:-translate-y-1 transition duration-500 backdrop-blur-sm bg-black/30"
+          class="inline-block px-6 md:px-12 py-3 md:py-4 rounded border border-amber-500 text-amber-500 font-cinzel font-bold tracking-[0.1em] md:tracking-[0.2em] uppercase hover:bg-amber-500 hover:text-black hover:-translate-y-1 transition duration-500 backdrop-blur-sm bg-black/30"
         >
           Empezar Ciclo
         </a>
@@ -149,7 +151,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           d="M6 18L18 6M6 6l12 12"></path></svg
       >
     </button>
-
     <div
       class="relative w-full max-w-6xl aspect-video bg-black rounded-lg shadow-2xl overflow-hidden border border-stone-800"
     >
@@ -159,37 +160,39 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   <section
     id="sinopsis"
-    class="py-32 bg-stone-50 dark:bg-black transition-colors duration-300"
+    class="py-16 md:py-32 bg-stone-50 dark:bg-black transition-colors duration-300 overflow-hidden relative"
   >
-    <div class="container mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
+    <div
+      class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center"
+    >
       <div data-aos="fade-right" data-aos-duration="1000">
         <img
           src="/familia.jpg"
           alt="Winden"
-          class="rounded border border-stone-200 dark:border-stone-900 shadow-2xl dark:shadow-amber-900/10 transition duration-300 filter grayscale hover:grayscale-0"
+          class="rounded border border-stone-200 dark:border-stone-900 shadow-2xl dark:shadow-amber-900/10 transition duration-300 filter grayscale hover:grayscale-0 w-full object-cover"
         />
       </div>
 
       <div
-        class="space-y-8"
+        class="space-y-6 md:space-y-8"
         data-aos="fade-left"
         data-aos-duration="1000"
         data-aos-delay="200"
       >
         <h2
-          class="text-4xl md:text-5xl font-cinzel text-amber-950 dark:text-amber-500 font-bold tracking-[0.1em] transition-colors uppercase"
+          class="text-3xl md:text-5xl font-cinzel text-amber-950 dark:text-amber-500 font-bold tracking-[0.1em] transition-colors uppercase"
         >
           Winden
         </h2>
         <p
-          class="text-lg text-stone-800 dark:text-stone-300 font-light leading-relaxed transition-colors tracking-wide"
+          class="text-base md:text-lg text-stone-800 dark:text-stone-300 font-light leading-relaxed transition-colors tracking-wide"
         >
           Winden, 2019. Un pequeño pueblo alemán donde la aparente calma se
           rompe con la desaparición misteriosa de un niño. No es un crimen
           ordinario; es el catalizador de un rompecabezas narrativo complejo.
         </p>
         <p
-          class="text-md text-stone-600 dark:text-stone-400 font-light italic transition-colors tracking-wide"
+          class="text-sm md:text-md text-stone-600 dark:text-stone-400 font-light italic transition-colors tracking-wide"
         >
           La búsqueda de Mikkel Nielsen une las vidas y secretos de cuatro
           familias: los Kahnwald, los Nielsen, los Doppler y los Tiedemann.
@@ -201,62 +204,64 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   <section
     id="ciclos"
-    class="py-32 bg-stone-200 dark:bg-stone-900 transition-colors duration-300"
+    class="py-16 md:py-32 bg-stone-200 dark:bg-stone-900 transition-colors duration-300 overflow-hidden relative"
   >
-    <div class="container mx-auto px-6 text-center space-y-20">
+    <div class="container mx-auto px-6 text-center space-y-12 md:space-y-20">
       <h2
-        class="text-4xl md:text-5xl font-cinzel text-amber-950 dark:text-amber-500 font-bold tracking-[0.1em] transition-colors uppercase"
+        class="text-3xl md:text-5xl font-cinzel text-amber-950 dark:text-amber-500 font-bold tracking-[0.1em] transition-colors uppercase"
         data-aos="zoom-in"
         data-aos-duration="1000"
       >
         Los Tres Ciclos
       </h2>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10">
         <div
-          class="bg-stone-50 dark:bg-black p-12 rounded border border-stone-300 dark:border-stone-800 shadow-xl transition-colors hover:border-amber-500 dark:hover:border-amber-500 duration-500 group"
+          class="bg-stone-50 dark:bg-black p-8 md:p-12 rounded border border-stone-300 dark:border-stone-800 shadow-xl transition-colors hover:border-amber-500 dark:hover:border-amber-500 duration-500 group"
           data-aos="fade-up"
           data-aos-delay="100"
         >
           <h3
-            class="text-4xl font-cinzel font-bold text-amber-900 dark:text-amber-500 group-hover:scale-110 transition-transform duration-500"
+            class="text-3xl md:text-4xl font-cinzel font-bold text-amber-900 dark:text-amber-500 group-hover:scale-110 transition-transform duration-500"
           >
             1953
           </h3>
           <p
-            class="text-stone-600 dark:text-stone-400 mt-6 tracking-widest uppercase text-sm font-semibold"
+            class="text-stone-600 dark:text-stone-400 mt-4 md:mt-6 tracking-widest uppercase text-xs md:text-sm font-semibold"
           >
             El Origen
           </p>
         </div>
+
         <div
-          class="bg-stone-50 dark:bg-black p-12 rounded border border-stone-300 dark:border-stone-800 shadow-xl transition-colors hover:border-amber-500 dark:hover:border-amber-500 duration-500 group"
+          class="bg-stone-50 dark:bg-black p-8 md:p-12 rounded border border-stone-300 dark:border-stone-800 shadow-xl transition-colors hover:border-amber-500 dark:hover:border-amber-500 duration-500 group"
           data-aos="fade-up"
           data-aos-delay="300"
         >
           <h3
-            class="text-4xl font-cinzel font-bold text-amber-900 dark:text-amber-500 group-hover:scale-110 transition-transform duration-500"
+            class="text-3xl md:text-4xl font-cinzel font-bold text-amber-900 dark:text-amber-500 group-hover:scale-110 transition-transform duration-500"
           >
             1986
           </h3>
           <p
-            class="text-stone-600 dark:text-stone-400 mt-6 tracking-widest uppercase text-sm font-semibold"
+            class="text-stone-600 dark:text-stone-400 mt-4 md:mt-6 tracking-widest uppercase text-xs md:text-sm font-semibold"
           >
             El Nudo
           </p>
         </div>
+
         <div
-          class="bg-stone-50 dark:bg-black p-12 rounded border border-stone-300 dark:border-stone-800 shadow-xl transition-colors hover:border-amber-500 dark:hover:border-amber-500 duration-500 group"
+          class="bg-stone-50 dark:bg-black p-8 md:p-12 rounded border border-stone-300 dark:border-stone-800 shadow-xl transition-colors hover:border-amber-500 dark:hover:border-amber-500 duration-500 group"
           data-aos="fade-up"
           data-aos-delay="500"
         >
           <h3
-            class="text-4xl font-cinzel font-bold text-amber-900 dark:text-amber-500 group-hover:scale-110 transition-transform duration-500"
+            class="text-3xl md:text-4xl font-cinzel font-bold text-amber-900 dark:text-amber-500 group-hover:scale-110 transition-transform duration-500"
           >
             2019
           </h3>
           <p
-            class="text-stone-600 dark:text-stone-400 mt-6 tracking-widest uppercase text-sm font-semibold"
+            class="text-stone-600 dark:text-stone-400 mt-4 md:mt-6 tracking-widest uppercase text-xs md:text-sm font-semibold"
           >
             El Final
           </p>
@@ -265,39 +270,66 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </section>
 
-  <section id="teorias" class="py-24 bg-black transition-colors duration-300">
-    <div class="container mx-auto px-6 text-center space-y-16">
+  <section
+    id="teorias"
+    class="py-16 md:py-24 bg-black transition-colors duration-300 overflow-hidden relative"
+  >
+    <div class="container mx-auto px-6 text-center space-y-12 md:space-y-16">
       <h2
-        class="text-4xl md:text-5xl font-cinzel text-amber-500 font-bold transition-colors"
+        class="text-3xl md:text-5xl font-cinzel text-amber-500 font-bold transition-colors"
         data-aos="zoom-in"
       >
         Críticas de Críticos Notables
       </h2>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-        <div class="space-y-4" data-aos="fade-right" data-aos-delay="200">
-          <p class="text-5xl text-amber-500/30 font-cinzel font-bold">"</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
+        <div
+          class="space-y-2 md:space-y-4 px-4"
+          data-aos="fade-right"
+          data-aos-delay="200"
+        >
           <p
-            class="text-2xl text-stone-100 font-cinzel max-w-md mx-auto italic tracking-wide"
+            class="text-4xl md:text-5xl text-amber-500/30 font-cinzel font-bold"
+          >
+            "
+          </p>
+          <p
+            class="text-xl md:text-2xl text-stone-100 font-cinzel max-w-md mx-auto italic tracking-wide"
           >
             Esencial. El apocalipsis ha llegado, y es hermoso.
           </p>
-          <p class="text-5xl text-amber-500/30 font-cinzel font-bold">"</p>
-          <p class="text-sm font-semibold text-amber-400 pt-2">
+          <p
+            class="text-4xl md:text-5xl text-amber-500/30 font-cinzel font-bold"
+          >
+            "
+          </p>
+          <p class="text-xs md:text-sm font-semibold text-amber-400 pt-2">
             - H.G. Tannhaus, Creador
           </p>
         </div>
 
-        <div class="space-y-4" data-aos="fade-left" data-aos-delay="400">
-          <p class="text-5xl text-amber-500/30 font-cinzel font-bold">"</p>
+        <div
+          class="space-y-2 md:space-y-4 px-4"
+          data-aos="fade-left"
+          data-aos-delay="400"
+        >
           <p
-            class="text-2xl text-stone-100 font-cinzel max-w-md mx-auto italic tracking-wide"
+            class="text-4xl md:text-5xl text-amber-500/30 font-cinzel font-bold"
+          >
+            "
+          </p>
+          <p
+            class="text-xl md:text-2xl text-stone-100 font-cinzel max-w-md mx-auto italic tracking-wide"
           >
             La mejor serie que he visto en mi corta vida. Sic Mundus Creatus
             Est.
           </p>
-          <p class="text-5xl text-amber-500/30 font-cinzel font-bold">"</p>
-          <p class="text-sm font-semibold text-amber-400 pt-2">
+          <p
+            class="text-4xl md:text-5xl text-amber-500/30 font-cinzel font-bold"
+          >
+            "
+          </p>
+          <p class="text-xs md:text-sm font-semibold text-amber-400 pt-2">
             - Noah, Un Visitante
           </p>
         </div>

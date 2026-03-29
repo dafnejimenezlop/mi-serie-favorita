@@ -2,7 +2,7 @@
 // src/layouts/BaseLayout.astro
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import '../styles/global.css'; // Asegúrate de tener este archivo creado
+import '../styles/global.css';
 
 interface Props {
   title: string;
@@ -15,7 +15,7 @@ const { title } = Astro.props;
 <html lang="es" class="">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/prueba2.ico" />
     <title>{title}</title>
 
@@ -45,11 +45,11 @@ const { title } = Astro.props;
   </head>
 
   <body
-    class="bg-stone-50 text-stone-900 dark:bg-black dark:text-stone-100 transition-colors duration-300 font-sans overflow-x-hidden w-full relative"
+    class="bg-stone-50 text-stone-900 dark:bg-black dark:text-stone-100 transition-colors duration-300 font-sans relative w-full"
   >
     <Header />
 
-    <main>
+    <main class="overflow-x-hidden w-full relative">
       <slot />
     </main>
 
@@ -57,11 +57,9 @@ const { title } = Astro.props;
 
     <script is:inline src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script is:inline>
-      // Inicializar AOS aquí
       AOS.init({
-        // ¡Atención! 'once: false' hace que las animaciones funcionen en scroll UP y DOWN
         once: false,
-        mirror: true, // Esto ayuda a re-animar si vuelves a hacer scroll hacia arriba
+        mirror: true,
         duration: 800,
         offset: 120,
       });
