@@ -1,206 +1,128 @@
 ---
 // src/pages/index.astro
-import Layout from '../layouts/Layout.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import Carousel from '../components/Carousel.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<Layout title="Página Principal - Dark">
-    <Header />
+<BaseLayout title="DARK">
+  <section
+    id="inicio"
+    class="relative h-screen flex items-center justify-center bg-black transition-colors duration-300"
+  >
+    <img
+      src="https://images.unsplash.com/photo-1579970401774-4b51c140c83a?q=80&w=2000&auto=format&fit=crop"
+      alt="Reloj antiguo y túnel oscuro"
+      class="absolute inset-0 w-full h-full object-cover opacity-50 transition-opacity"
+    />
 
-    <div class="contenido">
-        <div class="container-fluid">
-            <Carousel />
-        </div>
-        
-        <div class="container">
-            <main class="col-xs-12 col-md-10 col-lg-11 order-2 mx-auto">
-                <div class="container-fluid">
-                    
-                    <div class="row justify-content-between mb-5" data-aos="fade-up">
-                        <h1 class="mb-5 mt-2 servi text-center">Dark</h1>
-                        
-                        <aside class="col-lg-6 mt-2 order-1 ms-lg-auto order-lg-2" data-aos="fade-left" data-aos-delay="200">
-                            <div class="ms-lg-auto text-center">
-                                <img src="/public/img/hola.jpg" class="img-fluid" style="width:68%">
-                            </div>
-                            </aside>   
-
-                        <main class="col-lg-6 mt-2 order-2 mx-auto order-lg-1" data-aos="fade-right" data-aos-delay="200">
-                            <p class="mx-auto" style="font-size:1em">
-                                <span class="fw-bold fst-italic">Dark</span> es una serie de suspense, drama y ciencia ficción...
-                            </p>
-                            <img src="/public/img/maquina.jpg" class="img-fluid mt-3">
-                        </main>
-                    </div>
-
-                    <div class="row justify-content-between mb-5">
-                        <h1 class="mb-4 servi text-center" data-aos="zoom-in">Sinopsis de la serie Dark</h1>
-                        <aside class="col-lg-7 mt-3" data-aos="fade-right">
-                            <img src="/public/img/familia.jpg" class="img-fluid">
-                        </aside>
-                        <main class="col-lg-5 mt-3 align-self-center" data-aos="fade-left">
-                            <p>En Winden (2019), un pequeño pueblo ficticio situado en Alemania...</p>
-                            </main>
-                    </div>
-
-                    <div class="row mb-3">
-                                <h1 class="mb-4 servi text-center">Reseñas de algunos usuarios</h1>
-                                <div class="col-12 col-sm-12 col-lg-6 caja mx-auto p-3 mb-2">
-                                    <div class="caja-top">
-                                        <div class="perfil">
-                                            <div class="perfil-img">
-                                                <img src="img/avatar2.png" alt="usuario2">
-                                            </div>
-                                            <div class="name-user">
-                                                <strong>Victor23432</strong>
-                                                <small>Publicada el 12 diciembre de 2022</small>
-                                            </div>
-                                        </div>
-                                        <div class="reseñas">
-                                            <span class="fa fa-star checked"></span>
-                                            <span class="fa fa-star checked"></span>
-                                            <span class="fa fa-star checked"></span>
-                                            <span class="fa fa-star checked"></span>
-                                            <span class="fa fa-star checked"></span>
-                                        </div>
-                                    </div>
-                        
-                                    <div class="comentarios_clientes">
-                                        Una serie que te atrapa desde el primer momento. Ambientación espectacular. Una trama muy original y única.
-                                    </div>
-                                </div>
-                    
-                                <div class="col-12 col-sm-12 col-lg-6 caja mx-auto p-3 mb-2 ">
-                                    <div class="caja-top">
-                                        <div class="perfil">
-                                            <div class="perfil-img">
-                                                <img src="img/user-5.jpg" alt="usuario2">
-                                            </div>
-                                            <div class="name-user">
-                                                <strong>Vanira23</strong>
-                                                <small>Publicada el 13 febrero de 2022</small>
-                                            </div>
-                                        </div>
-                                        <div class="reseñas">
-                                            <span class="fa fa-star checked"></span>
-                                            <span class="fa fa-star checked"></span>
-                                            <span class="fa fa-star checked"></span>
-                                            <span class="fa fa-star checked"></span>
-                                            <span class="fa fa-star"></span>
-                                        </div>
-                                    </div>
-                        
-                                    <div class="comentarios_clientes">
-                                        Una de las mejores series del momento. Deseando ver la siguiente temporada. Tiene todo lo que me gusta: intriga, historia, ciencia... Pese a ser ciencia ficción, llegas a replantearte muchas cosas. La recomiendo
-                                    </div>
-                                </div>
-                    
-                                <div class="col-12 col-sm-12 col-lg-6 caja mx-auto p-3 mb-2">
-                                    <div class="caja-top">
-                                        <div class="perfil">
-                                            <div class="perfil-img">
-                                                <img src="img/avatar3.png" alt="usuario2">
-                                            </div>
-                                            <div class="name-user">
-                                                <strong>Un visitante</strong>
-                                                <small>Publicada el 7 mayo de 2022</small>
-                                            </div>
-                                        </div>
-                                        <div class="reseñas">
-                                            <span class="fa fa-star checked"></span>
-                                            <span class="fa fa-star"></span>
-                                            <span class="fa fa-star"></span>
-                                            <span class="fa fa-star"></span>
-                                            <span class="fa fa-star"></span>
-                                        </div>
-                                    </div>
-                        
-                                    <div class="comentarios_clientes">
-                                        La temporada 1 es genial. La temporada 2 está muy bien. Pero la 3.ª temporada es muy lenta, no avanza, repite mucho el contenido y no sorprende. Una pena que una serie que estaba tan arriba baje tan rápido...
-                                    </div>
-                                </div>
-                    
-                                <div class="col-12 col-sm-12 col-lg-6 caja mx-auto p-3 mb-2">
-                                    <div class="caja-top">
-                                        <div class="perfil">
-                                            <div class="perfil-img">
-                                                <img src="img/avatar5.png" alt="usuario2">
-                                            </div>
-                                            <div class="name-user">
-                                                <strong>Anónimo</strong>
-                                                <small>Publicada el 25 junio de 2022</small>
-                                            </div>
-                                        </div>
-                                        <div class="reseñas">
-                                            <span class="fa fa-star checked"></span>
-                                            <span class="fa fa-star checked"></span>
-                                            <span class="fa fa-star checked"></span>
-                                            <span class="fa fa-star"></span>
-                                            <span class="fa fa-star"></span>
-                                        </div>
-                                    </div>
-                        
-                                    <div class="comentarios_clientes">
-                                        De las mejores series del momento! Las dos temporadas se me hicieron cortas en general, aunque más de un capítulo se me hizo también difícil de digerir. Esperando ansiosamente la tercera entrega.
-                                    </div>
-                                </div>
-
-                                <div class="col-12 col-sm-12 col-lg-6 caja mx-auto p-3 mb-2">
-                                    <div class="caja-top">
-                                        <div class="perfil">
-                                            <div class="perfil-img">
-                                                <img src="img/avatar4.png" alt="usuario2">
-                                            </div>
-                                            <div class="name-user">
-                                                <strong>Renzo</strong>
-                                                <small>Publicada el 2 enero de 2023</small>
-                                            </div>
-                                        </div>
-                                        <div class="reseñas">
-                                            <span class="fa fa-star checked"></span>
-                                            <span class="fa fa-star checked"></span>
-                                            <span class="fa fa-star checked"></span>
-                                            <span class="fa fa-star checked"></span>
-                                            <span class="fa fa-star checked"></span>
-                                        </div>
-                                    </div>
-                        
-                                    <div class="comentarios_clientes">
-                                        Una Excelente Obra maestra del drama irónico. Excelente fotografía, Casting de los mejores que he visto en mi corta vida, Ben Frost ha coronado su carrera con la música en esta serie. Muy recomendada, para ver varias veces si no la entendiste. 
-                                    </div>
-                                </div>
-
-                                <div class="col-12 col-sm-12 col-lg-6 caja mx-auto p-3 mb-2">
-                                    <div class="caja-top">
-                                        <div class="perfil">
-                                            <div class="perfil-img">
-                                                <img src="img/avatar6.png" alt="usuario2">
-                                            </div>
-                                            <div class="name-user">
-                                                <strong>Anonimus</strong>
-                                                <small>Publicada el 8 marzo de 2022</small>
-                                            </div>
-                                        </div>
-                                        <div class="reseñas">
-                                            <span class="fa fa-star checked"></span>
-                                            <span class="fa fa-star checked"></span>
-                                            <span class="fa fa-star checked"></span>
-                                            <span class="fa fa-star checked"></span>
-                                            <span class="fa fa-star"></span>
-                                        </div>
-                                    </div>
-                        
-                                    <div class="comentarios_clientes">
-                                        Buena serie, te mantiene enganchado en cada capitulo! Esperamos mas temporadas! Imprescindible de ver! 
-                                    </div>
-                                </div>
-
-                            </div>
-            </main>
-        </div>
+    <div class="relative z-10 text-center space-y-4 px-6">
+      <h1
+        class="text-5xl md:text-8xl font-cinzel text-orange-500 font-bold tracking-widest"
+        data-aos="zoom-in"
+        data-aos-duration="1200"
+      >
+        DARK
+      </h1>
+      <p
+        class="text-lg md:text-2xl font-light text-stone-200 tracking-wide font-sans max-w-2xl mx-auto"
+        data-aos="fade-up"
+        data-aos-delay="400"
+      >
+        La cuestión no es cómo, si no cuándo.
+      </p>
+      <div data-aos="fade-up" data-aos-delay="800">
+        <a
+          href="#sinopsis"
+          class="inline-block px-8 py-3 rounded-full border border-orange-500 text-orange-500 font-semibold hover:bg-orange-500 hover:text-black transition"
+        >
+          Empezar Ciclo
+        </a>
+      </div>
     </div>
+  </section>
 
-    <Footer />
-</Layout>
+  <section id="sinopsis" class="py-24 transition-colors duration-300">
+    <div class="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+      <div data-aos="fade-right">
+        <img
+          src="https://via.placeholder.com/600x400/1C1917/A87D4F"
+          alt="Imagen Sinopsis Winden"
+          class="rounded-lg shadow-xl shadow-stone-300 dark:shadow-stone-950 transition-shadow"
+        />
+      </div>
+
+      <div class="space-y-6" data-aos="fade-left" data-aos-delay="300">
+        <h2
+          class="text-4xl font-cinzel text-orange-900 dark:text-orange-400 font-bold transition-colors"
+        >
+          La Desaparición
+        </h2>
+        <p class="text-lg text-stone-800 dark:text-stone-200 transition-colors">
+          Winden, 2019. Un pequeño pueblo alemán donde nunca pasa nada. O eso
+          parecía. La desaparición misteriosa de un niño abre un agujero negro
+          que conecta pasado, presente y futuro de cuatro familias.
+        </p>
+        <p class="text-md text-stone-700 dark:text-stone-300 transition-colors">
+          El nudo que lo une todo está a punto de apretarse. "Sic Mundus Creatus
+          Est".
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section
+    id="ciclos"
+    class="py-24 bg-stone-100 dark:bg-black/50 transition-colors duration-300"
+  >
+    <div class="container mx-auto px-6 text-center space-y-12">
+      <h2
+        class="text-4xl font-cinzel text-orange-900 dark:text-orange-400 font-bold transition-colors"
+        data-aos="zoom-in"
+      >
+        Los Tres Ciclos
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div
+          class="bg-stone-50 dark:bg-black p-8 rounded-lg border border-stone-200 dark:border-stone-800 transition-colors"
+          data-aos="fade-up"
+          data-aos-delay="100"
+        >
+          <h3
+            class="text-2xl font-cinzel font-bold text-orange-800 dark:text-orange-300"
+          >
+            1953
+          </h3>
+          <p class="text-stone-700 dark:text-stone-300">Donde todo empezó.</p>
+        </div>
+        <div
+          class="bg-stone-50 dark:bg-black p-8 rounded-lg border border-stone-200 dark:border-stone-800 transition-colors"
+          data-aos="fade-up"
+          data-aos-delay="200"
+        >
+          <h3
+            class="text-2xl font-cinzel font-bold text-orange-800 dark:text-orange-300"
+          >
+            1986
+          </h3>
+          <p class="text-stone-700 dark:text-stone-300">
+            Donde el nudo se apretó.
+          </p>
+        </div>
+        <div
+          class="bg-stone-50 dark:bg-black p-8 rounded-lg border border-stone-200 dark:border-stone-800 transition-colors"
+          data-aos="fade-up"
+          data-aos-delay="300"
+        >
+          <h3
+            class="text-2xl font-cinzel font-bold text-orange-800 dark:text-orange-300"
+          >
+            2019
+          </h3>
+          <p class="text-stone-700 dark:text-stone-300">
+            Donde el nudo debe romperse.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
