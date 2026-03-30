@@ -1,0 +1,79 @@
+---
+// src/components/sections/Timeline.astro
+// No se necesitan props específicos para este diseño, los datos son estáticos basándonos en tu ejemplo cinemático.
+---
+
+<section
+  id="ciclos"
+  class="py-24 bg-stone-200 dark:bg-stone-900 transition-colors duration-300 overflow-hidden relative"
+>
+  <div class="container mx-auto px-6 text-center space-y-12 md:space-y-20">
+    <h2
+      class="text-4xl md:text-5xl font-cinzel text-amber-950 dark:text-amber-500 font-bold tracking-[0.1em] transition-colors uppercase text-center"
+      data-aos="zoom-in"
+      data-aos-duration="1000"
+    >
+      Los Tres Ciclos del Tiempo
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+      <div
+        class="bg-stone-50 dark:bg-black p-12 rounded border border-stone-300 dark:border-stone-800 shadow-xl transition-colors hover:border-amber-500 dark:hover:border-amber-500 duration-500 group"
+        data-aos="fade-up"
+        data-aos-delay="100"
+      >
+        <h3
+          class="text-4xl font-cinzel font-bold text-amber-900 dark:text-amber-500 group-hover:scale-110 transition-transform duration-500"
+        >
+          1953
+        </h3>
+        <p
+          class="text-stone-600 dark:text-stone-400 mt-6 tracking-widest uppercase text-sm font-semibold"
+        >
+          El Origen
+        </p>
+        <p class="text-xs text-stone-500 dark:text-stone-500 mt-2 font-light">
+          Se construye la planta nuclear.
+        </p>
+      </div>
+      <div
+        class="bg-stone-50 dark:bg-black p-12 rounded border border-stone-300 dark:border-stone-800 shadow-xl transition-colors hover:border-amber-500 dark:hover:border-amber-500 duration-500 group"
+        data-aos="fade-up"
+        data-aos-delay="300"
+      >
+        <h3
+          class="text-4xl font-cinzel font-bold text-amber-900 dark:text-amber-500 group-hover:scale-110 transition-transform duration-500"
+        >
+          1986
+        </h3>
+        <p
+          class="text-stone-600 dark:text-stone-400 mt-6 tracking-widest uppercase text-sm font-semibold"
+        >
+          El Nudo
+        </p>
+        <p class="text-xs text-stone-500 dark:text-stone-500 mt-2 font-light">
+          El agujero de gusano se estabiliza.
+        </p>
+      </div>
+      <div
+        class="bg-stone-50 dark:bg-black p-12 rounded border border-stone-300 dark:border-stone-800 shadow-xl transition-colors hover:border-amber-500 dark:hover:border-amber-500 duration-500 group"
+        data-aos="fade-up"
+        data-aos-delay="500"
+      >
+        <h3
+          class="text-4xl font-cinzel font-bold text-amber-900 dark:text-amber-500 group-hover:scale-110 transition-transform duration-500"
+        >
+          2019
+        </h3>
+        <p
+          class="text-stone-600 dark:text-stone-400 mt-6 tracking-widest uppercase text-sm font-semibold"
+        >
+          El Final
+        </p>
+        <p class="text-xs text-stone-500 dark:text-stone-500 mt-2 font-light">
+          Mikkel Nielsen desaparece.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

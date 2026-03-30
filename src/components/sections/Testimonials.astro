@@ -1,0 +1,99 @@
+---
+// src/components/sections/Testimonials.astro
+const reviews = [
+  {
+    author: 'H.G. Tannhaus, Creador',
+    comment: 'Esencial. El apocalipsis ha llegado, y es hermoso.',
+    rating: 5,
+  },
+  {
+    author: 'Noah, Un Visitante',
+    comment:
+      'La mejor serie que he visto en mi corta vida. Sic Mundus Creatus Est.',
+    rating: 5,
+  },
+  {
+    author: 'Martha Nielsen',
+    comment:
+      'Todo está conectado. Un viaje cinemático que me dejó sin aliento.',
+    rating: 4,
+  },
+  {
+    author: 'Jonas Kahnwald',
+    comment: 'El final es el principio. Una obra maestra del suspense alemán.',
+    rating: 5,
+  },
+];
+---
+
+<section
+  id="testimonios"
+  class="py-24 bg-black transition-colors duration-300 overflow-hidden relative"
+>
+  <div class="container mx-auto px-6">
+    <h2
+      class="text-3xl md:text-5xl font-cinzel text-amber-500 font-bold transition-colors text-center mb-16"
+      data-aos="zoom-in"
+    >
+      Ecos del Futuro
+    </h2>
+
+    <div class="swiper-container testimonials-slider" data-aos="fade-up">
+      <div class="swiper-wrapper py-10">
+        {
+          reviews.map((review) => (
+            <div class="swiper-slide h-auto pt-16">
+              {' '}
+              <div class="bg-stone-50 dark:bg-black p-8 md:p-10 rounded-lg border border-amber-900/50 dark:border-amber-500/50 shadow-xl space-y-4 max-w-md mx-auto h-full flex flex-col justify-between relative z-10">
+                <div class="absolute -top-12 left-1/2 transform -translate-x-1/2 w-24 h-24 rounded-full border-4 border-amber-500/50 bg-black overflow-hidden shadow-2xl z-20">
+                  <img src="/avatar2.png" class="w-full h-full object-cover" />
+                </div>
+
+                <p class="text-xl md:text-2xl text-stone-900 dark:text-stone-100 font-cinzel max-w-md mx-auto italic tracking-wide">
+                  "{review.comment}"
+                </p>
+
+                <div class="pt-4 border-t border-amber-900/50 dark:border-amber-500/50">
+                  <p class="text-sm font-semibold text-amber-900 dark:text-amber-400 font-cinzel uppercase tracking-[0.2em]">
+                    {review.author}
+                  </p>
+                  <p class="text-xs text-stone-600 dark:text-stone-500 tracking-wide">
+                    Visitante del Futuro
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="swiper-button-prev testimonials-prev text-amber-500"></div>
+      <div class="swiper-button-next testimonials-next text-amber-500"></div>
+    </div>
+  </div>
+</section>
+
+<script is:inline src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    new Swiper('.testimonials-slider', {
+      loop: true,
+      slidesPerView: 1,
+      spaceBetween: 30,
+      navigation: {
+        nextEl: '.testimonials-next',
+        prevEl: '.testimonials-prev',
+      },
+      breakpoints: {
+        768: {
+          slidesPerView: 2,
+        },
+        1024: {
+          slidesPerView: 3,
+        },
+      },
+    });
+  });
+</script>
