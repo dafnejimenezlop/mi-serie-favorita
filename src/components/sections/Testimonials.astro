@@ -7,7 +7,7 @@ const reviews = [
     author: 'H.G. Tannhaus, Creador',
     comment: 'Esencial. El apocalipsis ha llegado, y es hermoso.',
     rating: 5,
-    image: '/avatar.png', // Reemplaza con tus propias imágenes
+    image: '/avatar.png', // Asegúrate de tener estas imágenes en public/
     colorClass: 'border-emerald-500/50 shadow-emerald-900/20',
     textClass: 'text-emerald-500',
   },
@@ -33,17 +33,27 @@ const reviews = [
     author: 'Jonas Kahnwald',
     comment: 'El final es el principio. Una obra maestra del suspense alemán.',
     rating: 5,
-    image: '/avatar4.png',
+    image: '/avatar4.png', // Cambia por tu ruta real
     colorClass: 'border-rose-500/50 shadow-rose-900/20',
     textClass: 'text-rose-500',
+  },
+  {
+    author: 'Anonimo',
+    comment:
+      'Recomiendo ver la serie al menos 3 veces para entenderla completamente. Cada detalle tiene un propósito, y el diseño de producción es simplemente espectacular.',
+    rating: 6,
+    image: '/avatar5.png', // Cambia por tu ruta real
+    colorClass: 'border-red-500/50 shadow-red-900/20',
+    textClass: 'text-red-500',
   },
 ];
 ---
 
 <style>
-  /* Este pequeño código CSS obliga a Swiper a que todas las tarjetas tengan exactamente la misma altura */
+  /* Forzamos a que todas las tarjetas (slides) compartan la misma altura y usen flexbox */
   .testimonials-slider .swiper-slide {
     height: auto;
+    display: flex;
   }
 </style>
 
@@ -59,45 +69,56 @@ const reviews = [
       Ecos del Futuro
     </h2>
 
-    <div class="swiper-container testimonials-slider" data-aos="fade-up">
-      <div class="swiper-wrapper py-10">
-        {
-          reviews.map((review) => (
-            <div class="swiper-slide h-auto pt-12 md:pt-16 px-2">
-              <div
-                class={`bg-stone-50 dark:bg-stone-900 p-8 md:p-10 rounded-lg border ${review.colorClass} shadow-xl space-y-6 max-w-md mx-auto h-full flex flex-col justify-between relative z-10 transition-transform duration-300 hover:-translate-y-2`}
-              >
+    <div class="relative px-8 md:px-16 max-w-7xl mx-auto">
+      <div
+        class="swiper-container testimonials-slider overflow-hidden"
+        data-aos="fade-up"
+      >
+        <div class="swiper-wrapper py-12">
+          {
+            reviews.map((review) => (
+              <div class="swiper-slide w-full">
                 <div
-                  class={`absolute -top-10 left-1/2 transform -translate-x-1/2 w-20 h-20 md:w-24 md:h-24 rounded-full border-4 bg-black overflow-hidden shadow-2xl z-20 ${review.colorClass}`}
+                  class={`bg-stone-50 dark:bg-stone-900 p-6 md:p-10 rounded-lg border ${review.colorClass} shadow-xl space-y-6 w-full h-full flex flex-col justify-between relative z-10 transition-transform duration-300 hover:-translate-y-2`}
                 >
-                  <img
-                    src={review.image}
-                    alt={review.author}
-                    class="w-full h-full object-cover"
-                  />
-                </div>
-
-                <div class="flex-grow pt-4">
-                  <p class="text-lg md:text-xl text-stone-900 dark:text-stone-100 font-cinzel text-center italic tracking-wide">
-                    "{review.comment}"
-                  </p>
-                </div>
-
-                <div class={`pt-4 border-t ${review.colorClass}`}>
-                  <p
-                    class={`text-sm md:text-base font-bold font-cinzel uppercase tracking-widest text-center ${review.textClass}`}
+                  <div
+                    class={`absolute -top-10 left-1/2 transform -translate-x-1/2 w-20 h-20 md:w-24 md:h-24 rounded-full border-4 bg-black overflow-hidden shadow-2xl z-20 ${review.colorClass}`}
                   >
-                    {review.author}
-                  </p>
+                    <img
+                      src={review.image}
+                      alt={review.author}
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  <div class="flex-grow pt-8 md:pt-10">
+                    <p class="text-base md:text-lg text-stone-900 dark:text-stone-100 font-cinzel text-center italic tracking-wide leading-relaxed">
+                      "{review.comment}"
+                    </p>
+                  </div>
+
+                  <div class={`pt-4 border-t ${review.colorClass} mt-auto`}>
+                    <p
+                      class={`text-xs md:text-sm font-bold font-cinzel uppercase tracking-widest text-center ${review.textClass}`}
+                    >
+                      {review.author}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
-        }
+            ))
+          }
+        </div>
       </div>
 
-      <div class="swiper-button-prev testimonials-prev !text-amber-500"></div>
-      <div class="swiper-button-next testimonials-next !text-amber-500"></div>
+      <div
+        class="swiper-button-prev testimonials-prev !text-amber-500 !left-0 md:!-left-4"
+      >
+      </div>
+      <div
+        class="swiper-button-next testimonials-next !text-amber-500 !right-0 md:!-right-4"
+      >
+      </div>
     </div>
   </div>
 </section>
@@ -109,7 +130,7 @@ const reviews = [
   document.addEventListener('DOMContentLoaded', () => {
     new Swiper('.testimonials-slider', {
       loop: true,
-      slidesPerView: 1,
+      slidesPerView: 1, // 1 tarjeta en móvil
       spaceBetween: 20,
       grabCursor: true,
       navigation: {
@@ -118,11 +139,11 @@ const reviews = [
       },
       breakpoints: {
         768: {
-          slidesPerView: 2,
+          slidesPerView: 2, // 2 tarjetas en tablet
           spaceBetween: 30,
         },
         1024: {
-          slidesPerView: 3,
+          slidesPerView: 3, // 3 tarjetas en escritorio
           spaceBetween: 40,
         },
       },
