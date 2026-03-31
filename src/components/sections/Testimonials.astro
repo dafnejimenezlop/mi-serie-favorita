@@ -3,15 +3,19 @@
 
 const reviews = [
   {
-    author: 'H.G. Tannhaus, Creador',
+    author: 'H.G. Tannhaus',
+    role: 'Creador del aparato',
+    date: '21 de Junio, 1986',
     comment: 'Esencial. El apocalipsis ha llegado, y es hermoso.',
-    rating: 5,
+    rating: 3,
     image: '/avatar.png',
     colorClass: 'border-emerald-500/50 shadow-emerald-900/20',
     textClass: 'text-emerald-500',
   },
   {
-    author: 'Noah, Un Visitante',
+    author: 'Noah',
+    role: 'Sacerdote del tiempo',
+    date: '12 de Noviembre, 1953',
     comment:
       'La mejor serie que he visto en mi corta vida. Sic Mundus Creatus Est.',
     rating: 5,
@@ -21,15 +25,19 @@ const reviews = [
   },
   {
     author: 'Martha Nielsen',
+    role: 'Viajera',
+    date: '4 de Noviembre, 2019',
     comment:
-      'Todo está conectado. Un viaje cinemático que me dejó sin aliento. Jamás volverás a ver el tiempo de la misma manera.',
-    rating: 4,
+      'Todo está conectado. Un viaje cinemático que me dejó sin aliento. Jamás volverás a ver el tiempo de la misma manera. Necesito verla otra vez para entenderla',
+    rating: 1,
     image: '/avatar3.png',
     colorClass: 'border-blue-500/50 shadow-blue-900/20',
     textClass: 'text-blue-500',
   },
   {
     author: 'Jonas Kahnwald',
+    role: 'El Desconocido',
+    date: '27 de Junio, 2052',
     comment: 'El final es el principio. Una obra maestra del suspense alemán.',
     rating: 5,
     image: '/avatar4.png',
@@ -38,8 +46,10 @@ const reviews = [
   },
   {
     author: 'Anonimo',
+    role: 'Espectador',
+    date: 'Estreno 2017',
     comment:
-      'Recomiendo esta serie a todo el mundo. Es un viaje emocional y mental que no olvidarás. No os arrepentiréis de verla, aunque necesitarás más de una vez para entenderla completamente.',
+      'Recomiendo esta serie a todo el mundo. Es un viaje emocional y mental que no olvidarás. No os arrepentiréis de verla.',
     rating: 5,
     image: '/avatar5.png',
     colorClass: 'border-lime-500/50 shadow-lime-900/20',
@@ -47,6 +57,8 @@ const reviews = [
   },
   {
     author: 'Periodista',
+    role: 'Crítico de Cine',
+    date: 'Reseña Destacada',
     comment:
       '¿Alguna vez os habéis preguntado por qué la serie de Dark es tan popular? Es simple: es una obra maestra del cine y la televisión.',
     rating: 5,
@@ -98,18 +110,40 @@ const reviews = [
                     />
                   </div>
 
-                  <div class="flex-grow pt-8 md:pt-10">
+                  <div class="flex-grow pt-8 md:pt-10 flex flex-col justify-center">
                     <p class="text-base md:text-lg text-stone-900 dark:text-stone-100 font-cinzel text-center italic tracking-wide leading-relaxed">
                       "{review.comment}"
                     </p>
                   </div>
 
-                  <div class={`pt-4 border-t ${review.colorClass} mt-auto`}>
-                    <p
-                      class={`text-xs md:text-sm font-bold font-cinzel uppercase tracking-widest text-center ${review.textClass}`}
-                    >
-                      {review.author}
-                    </p>
+                  <div
+                    class={`pt-5 border-t ${review.colorClass} mt-auto space-y-3`}
+                  >
+                    <div class="flex justify-center space-x-1 text-amber-500">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <svg
+                          class={`w-4 h-4 ${i < review.rating ? 'opacity-100' : 'opacity-20 grayscale'}`}
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      ))}
+                    </div>
+
+                    <div class="text-center space-y-1">
+                      <p
+                        class={`text-sm md:text-base font-bold font-cinzel uppercase tracking-widest ${review.textClass}`}
+                      >
+                        {review.author}
+                      </p>
+                      <p class="text-[11px] md:text-xs text-stone-500 dark:text-stone-400 font-mono tracking-wider uppercase">
+                        {review.role}
+                      </p>
+                      <p class="text-[10px] md:text-xs text-stone-400/80 dark:text-stone-500/80 italic pt-1">
+                        {review.date}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
