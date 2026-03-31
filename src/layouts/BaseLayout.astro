@@ -33,7 +33,6 @@ const { title } = Astro.props;
         }
         return 'light';
       })();
-
       if (theme === 'light') {
         document.documentElement.classList.remove('dark');
       } else {
@@ -41,30 +40,59 @@ const { title } = Astro.props;
       }
       window.localStorage.setItem('theme', theme);
     </script>
+
+    <style>
+      /* Animación del trazado del símbolo de infinito */
+      .infinity-path {
+        stroke-dasharray: 150;
+        stroke-dashoffset: 150;
+        animation: trace-infinity 2s ease-in-out infinite;
+      }
+      @keyframes trace-infinity {
+        0% {
+          stroke-dashoffset: 150;
+        }
+        50% {
+          stroke-dashoffset: 0;
+        }
+        100% {
+          stroke-dashoffset: -150;
+        }
+      }
+    </style>
   </head>
 
   <body
     class="bg-stone-200 text-stone-900 dark:bg-[#141414] dark:text-stone-100 transition-colors duration-300 font-sans overflow-x-hidden w-full relative"
   >
-    <!--
-      Capa de color base que da el tono al fondo antes de que el vídeo cargue.
-      En claro: gris cálido oscuro para que el mix-blend-screen funcione igual que en oscuro.
-      En oscuro: negro como antes.
-    -->
+    <div
+      id="global-loader"
+      class="fixed inset-0 z-[9999] bg-[#141414] flex items-center justify-center transition-opacity duration-1000 ease-out"
+    >
+      <div class="flex flex-col items-center space-y-4">
+        <svg
+          viewBox="0 0 100 50"
+          class="w-16 h-16 md:w-20 md:h-20 drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]"
+        >
+          <path
+            d="M 25,25 C 10,25 10,10 25,10 C 40,10 60,40 75,40 C 90,40 90,25 75,25 C 60,25 40,10 25,10 Z"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="infinity-path"></path>
+        </svg>
+      </div>
+    </div>
     <div class="fixed inset-0 bg-stone-400 dark:bg-[#141414] -z-30"></div>
 
-    <!-- Vídeo ambiental — mix-blend-screen funciona igual en claro y oscuro -->
     <div
       class="fixed top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-50 dark:opacity-30 mix-blend-screen filter grayscale -z-20"
     >
       <div id="youtube-ambient-player" class="w-full h-full"></div>
     </div>
 
-    <!--
-      Gradiente translúcido encima del vídeo.
-      En claro: usa stone-200 semitransparente para suavizar sin tapar.
-      En oscuro: igual que antes.
-    -->
     <div
       class="fixed inset-0 pointer-events-none
              bg-gradient-to-b from-stone-200/50 via-stone-200/70 to-stone-200/90
@@ -123,6 +151,7 @@ const { title } = Astro.props;
       var ambientPlayer, heroPlayer, modalPlayer;
       var isPlaying = true;
       var isMuted = true;
+      var isVideoLoaded = false; // Variable para controlar la carga
 
       function onYouTubeIframeAPIReady() {
         ambientPlayer = new YT.Player('youtube-ambient-player', {
@@ -140,6 +169,7 @@ const { title } = Astro.props;
           },
           events: { onReady: (e) => e.target.playVideo() },
         });
+
         heroPlayer = new YT.Player('youtube-hero-player', {
           videoId: '14FGjkrrXFk',
           playerVars: {
@@ -153,12 +183,37 @@ const { title } = Astro.props;
             playsinline: 1,
             disablekb: 1,
           },
-          events: { onReady: onHeroReady },
+          events: {
+            onReady: onHeroReady,
+            onStateChange: onHeroStateChange, // ESCUCHAMOS EL ESTADO DEL VÍDEO
+          },
         });
+
         modalPlayer = new YT.Player('youtube-modal-player', {
           videoId: '14FGjkrrXFk',
           playerVars: { autoplay: 0, controls: 1, rel: 0 },
         });
+      }
+
+      // NUEVA FUNCIÓN: Se activa cuando el vídeo cambia de estado (ej: empieza a reproducirse)
+      function onHeroStateChange(event) {
+        // YT.PlayerState.PLAYING equivale a 1. Si está reproduciendo y no lo habíamos marcado como cargado...
+        if (event.data === 1 && !isVideoLoaded) {
+          isVideoLoaded = true;
+
+          // Esperamos exactamente 1 segundo (1000ms) desde que arranca
+          setTimeout(() => {
+            const loader = document.getElementById('global-loader');
+            if (loader) {
+              // Lo hacemos transparente
+              loader.classList.add('opacity-0');
+              loader.classList.add('pointer-events-none');
+
+              // Lo quitamos del HTML después de la transición para no estorbar
+              setTimeout(() => loader.remove(), 1000);
+            }
+          }, 1000);
+        }
       }
 
       function onHeroReady(event) {
@@ -166,6 +221,7 @@ const { title } = Astro.props;
         const btnPlayPause = document.getElementById('btnPlayPause');
         const iconPlay = document.getElementById('icon-play');
         const iconPause = document.getElementById('icon-pause');
+
         if (btnPlayPause) {
           btnPlayPause.addEventListener('click', () => {
             if (isPlaying) {
@@ -180,9 +236,11 @@ const { title } = Astro.props;
             isPlaying = !isPlaying;
           });
         }
+
         const btnMute = document.getElementById('btnMute');
         const iconMuted = document.getElementById('icon-muted');
         const iconUnmuted = document.getElementById('icon-unmuted');
+
         if (btnMute) {
           btnMute.addEventListener('click', () => {
             if (isMuted) {
@@ -214,6 +272,7 @@ const { title } = Astro.props;
               modalPlayer.playVideo();
           });
         }
+
         if (btnCloseModal) {
           btnCloseModal.addEventListener('click', () => {
             videoModal.classList.add('opacity-0');
