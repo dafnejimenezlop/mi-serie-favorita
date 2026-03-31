@@ -4,17 +4,17 @@
 
 <section
   id="inicio"
-  class="relative h-screen bg-black transition-colors duration-300 overflow-hidden flex items-center justify-center"
+  class="relative h-screen flex items-center justify-center overflow-hidden bg-black"
 >
   <div
-    class="absolute top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-30 dark:opacity-20 z-0"
+    class="absolute top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-40 z-0"
   >
-    <div id="youtube-bg-player" class="w-full h-full"></div>
+    <div id="youtube-hero-player" class="w-full h-full"></div>
   </div>
 
-  <div class="relative z-10 text-center space-y-6 px-6 pt-24">
+  <div class="relative z-10 text-center space-y-6 px-6 pt-16">
     <h1
-      class="text-6xl md:text-9xl font-cinzel text-amber-500 font-bold tracking-widest drop-shadow-2xl"
+      class="text-6xl md:text-9xl font-cinzel text-amber-500 font-bold tracking-widest drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]"
       data-aos="zoom-in"
       data-aos-duration="1500"
     >
@@ -47,7 +47,7 @@
     <button
       id="btnMute"
       aria-label="Mutear sonido"
-      class="p-2.5 md:p-3 rounded-full bg-black/40 border border-amber-500/50 text-amber-500 hover:bg-amber-500 hover:text-black transition-all duration-300 backdrop-blur-md group"
+      class="p-2.5 md:p-3 rounded-full bg-stone-900/60 border border-stone-600 text-white hover:bg-amber-500 hover:border-amber-500 hover:text-black transition-all duration-300 backdrop-blur-md group"
     >
       <svg
         id="icon-muted"
@@ -84,7 +84,7 @@
     <button
       id="btnPlayPause"
       aria-label="Pausar vídeo"
-      class="p-2.5 md:p-3 rounded-full bg-black/40 border border-amber-500/50 text-amber-500 hover:bg-amber-500 hover:text-black transition-all duration-300 backdrop-blur-md group"
+      class="p-2.5 md:p-3 rounded-full bg-stone-900/60 border border-stone-600 text-white hover:bg-amber-500 hover:border-amber-500 hover:text-black transition-all duration-300 backdrop-blur-md group"
     >
       <svg
         id="icon-pause"
@@ -109,7 +109,7 @@
     <button
       id="btnModal"
       aria-label="Ver en pantalla completa"
-      class="p-2.5 md:p-3 rounded-full bg-black/40 border border-amber-500/50 text-amber-500 hover:bg-amber-500 hover:text-black transition-all duration-300 backdrop-blur-md group"
+      class="p-2.5 md:p-3 rounded-full bg-stone-900/60 border border-stone-600 text-white hover:bg-amber-500 hover:border-amber-500 hover:text-black transition-all duration-300 backdrop-blur-md group"
     >
       <svg
         class="w-5 h-5 md:w-6 md:h-6 group-hover:scale-110 transition-transform"
@@ -126,139 +126,3 @@
     </button>
   </div>
 </section>
-
-<script is:inline>
-  // 1. Cargar la API de YouTube de forma asíncrona
-  var tag = document.createElement('script');
-  tag.src = 'https://www.youtube.com/iframe_api';
-  var firstScriptTag = document.getElementsByTagName('script')[0];
-  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-  var bgPlayer;
-  var modalPlayer;
-  var isPlaying = true;
-  var isMuted = true;
-
-  // 2. Función que ejecuta YouTube cuando la API está lista
-  function onYouTubeIframeAPIReady() {
-    // --- Reproductor de Fondo ---
-    bgPlayer = new YT.Player('youtube-bg-player', {
-      videoId: '14FGjkrrXFk', // ID de tu vídeo
-      playerVars: {
-        autoplay: 1,
-        controls: 0, // Sin controles
-        showinfo: 0,
-        rel: 0,
-        loop: 1,
-        playlist: '14FGjkrrXFk', // Necesario para loop
-        mute: 1, // Obligatorio mutear para que funcione autoplay
-        playsinline: 1,
-        modestbranding: 1,
-        disablekb: 1,
-      },
-      events: {
-        onReady: onPlayerReady,
-      },
-    });
-
-    // --- Reproductor del Modal ---
-    modalPlayer = new YT.Player('youtube-modal-player', {
-      videoId: '14FGjkrrXFk',
-      playerVars: {
-        autoplay: 0,
-        controls: 1, // Con controles normales
-        rel: 0,
-      },
-    });
-  }
-
-  // 3. Cuando el vídeo de fondo esté listo para controlarse
-  function onPlayerReady(event) {
-    event.target.playVideo();
-
-    // --- LÓGICA BOTÓN PLAY / PAUSE ---
-    const btnPlayPause = document.getElementById('btnPlayPause');
-    const iconPlay = document.getElementById('icon-play');
-    const iconPause = document.getElementById('icon-pause');
-
-    btnPlayPause.addEventListener('click', () => {
-      if (isPlaying) {
-        bgPlayer.pauseVideo();
-        iconPause.classList.add('hidden');
-        iconPause.classList.remove('block');
-        iconPlay.classList.add('block');
-        iconPlay.classList.remove('hidden');
-      } else {
-        bgPlayer.playVideo();
-        iconPlay.classList.add('hidden');
-        iconPlay.classList.remove('block');
-        iconPause.classList.add('block');
-        iconPause.classList.remove('hidden');
-      }
-      isPlaying = !isPlaying;
-    });
-
-    // --- LÓGICA BOTÓN MUTE ---
-    const btnMute = document.getElementById('btnMute');
-    const iconMuted = document.getElementById('icon-muted');
-    const iconUnmuted = document.getElementById('icon-unmuted');
-
-    btnMute.addEventListener('click', () => {
-      if (isMuted) {
-        bgPlayer.unMute();
-        iconMuted.classList.add('hidden');
-        iconMuted.classList.remove('block');
-        iconUnmuted.classList.add('block');
-        iconUnmuted.classList.remove('hidden');
-      } else {
-        bgPlayer.mute();
-        iconUnmuted.classList.add('hidden');
-        iconUnmuted.classList.remove('block');
-        iconMuted.classList.add('block');
-        iconMuted.classList.remove('hidden');
-      }
-      isMuted = !isMuted;
-    });
-  }
-
-  // --- LÓGICA DEL MODAL ---
-  document.addEventListener('DOMContentLoaded', () => {
-    const btnModal = document.getElementById('btnModal');
-    const btnCloseModal = document.getElementById('btnCloseModal');
-    const videoModal = document.getElementById('videoModal');
-
-    // Abrir Modal
-    btnModal.addEventListener('click', () => {
-      videoModal.classList.remove('hidden');
-      videoModal.classList.add('flex');
-      setTimeout(() => videoModal.classList.remove('opacity-0'), 10);
-
-      // Pausar el fondo
-      if (bgPlayer && typeof bgPlayer.pauseVideo === 'function') {
-        bgPlayer.pauseVideo();
-      }
-      // Reproducir el modal
-      if (modalPlayer && typeof modalPlayer.playVideo === 'function') {
-        modalPlayer.playVideo();
-      }
-    });
-
-    // Cerrar Modal
-    btnCloseModal.addEventListener('click', () => {
-      videoModal.classList.add('opacity-0');
-      setTimeout(() => {
-        videoModal.classList.add('hidden');
-        videoModal.classList.remove('flex');
-      }, 500);
-
-      // Pausar modal
-      if (modalPlayer && typeof modalPlayer.pauseVideo === 'function') {
-        modalPlayer.pauseVideo();
-      }
-      // Reanudar fondo (solo si estaba reproduciendo antes de abrir el modal)
-      if (isPlaying && bgPlayer && typeof bgPlayer.playVideo === 'function') {
-        bgPlayer.playVideo();
-      }
-    });
-  });
-</script>

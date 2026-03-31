@@ -1,7 +1,7 @@
 ---
 // src/components/Header.astro
 const navLinks = [
-  { href: '/#inicio', label: 'Ciclo' },
+  { href: '/#inicio', label: 'Inicio' },
   { href: '/#sinopsis', label: 'Sinopsis' },
   { href: '/#ciclos', label: 'Viajes' },
   { href: '/#personajes', label: 'Familias' },
@@ -9,123 +9,89 @@ const navLinks = [
 ];
 ---
 
-<header class="fixed top-0 left-0 w-full z-50 transition-colors duration-300">
+<header
+  id="netflix-header"
+  class="fixed top-0 left-0 w-full z-50 transition-all duration-500 bg-gradient-to-b from-black/90 to-transparent pt-2 pb-6"
+>
   <div
-    class="bg-stone-50/90 dark:bg-black/80 backdrop-blur-md border-b border-stone-200 dark:border-stone-900 relative z-10"
+    class="container mx-auto px-4 md:px-12 flex items-center justify-between py-2 md:py-3"
   >
-    <div class="container mx-auto px-6 py-4 flex items-center justify-between">
-      <a href="/" class="flex-shrink-0">
-        <img
-          src="/prueba.png"
-          alt="Dark Logo"
-          class="h-10 md:h-12 w-auto object-contain drop-shadow-lg"
-        />
-      </a>
+    <a href="/" class="flex-shrink-0">
+      <img
+        src="/prueba.png"
+        alt="Dark Logo"
+        class="h-8 md:h-12 w-auto object-contain transition-transform hover:scale-105"
+      />
+    </a>
 
-      <div class="flex items-center space-x-4 md:space-x-6">
-        <a
-          href="#"
-          class="hidden md:inline-block text-xs font-cinzel font-bold px-6 py-2 rounded border border-amber-900 dark:border-amber-500 text-amber-900 dark:text-amber-500 hover:bg-amber-900 hover:text-stone-50 dark:hover:bg-amber-500 dark:hover:text-black transition duration-300 uppercase tracking-[0.15em]"
+    <div class="flex items-center">
+      <button
+        id="themeToggle"
+        aria-label="Cambiar tema"
+        class="p-2 rounded-full hover:bg-stone-800/50 transition text-amber-500"
+      >
+        <svg
+          id="sunIcon"
+          class="w-5 h-5 hidden dark:block"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          ><path
+            d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 17.95a1 1 0 01-1.414 0l-.707-.707a1 1 0 011.414-1.414l.707.707a1 1 0 010 1.414zm-.706-10.607a1 1 0 01-1.414 0l-.707-.707a1 1 0 011.414-1.414l.707.707a1 1 0 010 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z"
+          ></path></svg
         >
-          Contacto
-        </a>
-
-        <button
-          id="themeToggle"
-          aria-label="Cambiar tema"
-          class="p-2 rounded-full border border-stone-300 dark:border-stone-800 hover:bg-stone-200 dark:hover:bg-stone-900 transition text-amber-600 dark:text-amber-500"
+        <svg
+          id="moonIcon"
+          class="w-5 h-5 block dark:hidden"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          ><path
+            d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+          ></path></svg
         >
-          <svg
-            id="sunIcon"
-            class="w-5 h-5 hidden dark:block"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            ><path
-              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 17.95a1 1 0 01-1.414 0l-.707-.707a1 1 0 011.414-1.414l.707.707a1 1 0 010 1.414zm-.706-10.607a1 1 0 01-1.414 0l-.707-.707a1 1 0 011.414-1.414l.707.707a1 1 0 010 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z"
-            ></path></svg
-          >
-          <svg
-            id="moonIcon"
-            class="w-5 h-5 block dark:hidden"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            ><path
-              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
-            ></path></svg
-          >
-        </button>
-
-        <button
-          id="mobileMenuButton"
-          class="md:hidden p-2 rounded hover:bg-stone-200 dark:hover:bg-stone-900 transition text-amber-600 dark:text-amber-500"
-        >
-          <svg
-            class="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            ><path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 6h16M4 12h16M4 18h16"></path></svg
-          >
-        </button>
-      </div>
+      </button>
     </div>
-
-    <nav
-      class="hidden md:block border-t border-stone-200 dark:border-stone-800"
-    >
-      <ul class="container mx-auto px-6 py-3 flex justify-center space-x-12">
-        {
-          navLinks.map((link) => (
-            <li>
-              <a
-                href={link.href}
-                class="text-xs uppercase tracking-[0.25em] font-cinzel font-bold text-stone-700 dark:text-stone-300 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
-              >
-                {link.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
   </div>
 
-  <div
-    id="mobileMenu"
-    class="hidden absolute top-full left-0 w-full bg-stone-50/95 dark:bg-black/95 backdrop-blur-xl border-b border-stone-200 dark:border-stone-800 shadow-2xl z-0"
-  >
-    <ul class="flex flex-col px-6 py-8 space-y-6 text-center">
+  <nav class="w-full flex justify-center container mx-auto px-4 mt-1">
+    <ul
+      class="inline-flex items-center space-x-1 bg-stone-900/60 dark:bg-stone-800/40 backdrop-blur-md rounded-full p-1 border border-stone-600/30 shadow-lg overflow-x-auto no-scrollbar max-w-full"
+    >
       {
-        navLinks.map((link) => (
-          <li>
+        navLinks.map((link, index) => (
+          <li class="shrink-0">
             <a
               href={link.href}
-              class="block text-sm uppercase tracking-[0.2em] font-cinzel font-bold text-stone-700 dark:text-stone-300 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
+              class={`px-5 py-2 md:px-6 md:py-2 rounded-full text-sm font-semibold transition-all duration-300 inline-block
+              ${
+                index === 0
+                  ? 'bg-stone-800 text-white shadow-sm'
+                  : 'text-stone-300 hover:text-white hover:bg-stone-800/50'
+              }`}
             >
               {link.label}
             </a>
           </li>
         ))
       }
-      <li class="pt-6 border-t border-stone-200 dark:border-stone-800">
-        <a
-          href="#"
-          class="inline-block w-full text-xs font-cinzel font-bold px-6 py-4 rounded border border-amber-900 dark:border-amber-500 text-amber-900 dark:text-amber-500 hover:bg-amber-900 hover:text-stone-50 dark:hover:bg-amber-500 dark:hover:text-black transition duration-300 uppercase tracking-[0.2em]"
-        >
-          Contacto
-        </a>
-      </li>
     </ul>
-  </div>
+  </nav>
 </header>
+
+<style>
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+</style>
 
 <script is:inline>
   document.addEventListener('DOMContentLoaded', () => {
     const themeToggleBtn = document.getElementById('themeToggle');
+    const header = document.getElementById('netflix-header');
+
     if (themeToggleBtn) {
       themeToggleBtn.addEventListener('click', () => {
         document.documentElement.classList.toggle('dark');
@@ -134,20 +100,27 @@ const navLinks = [
       });
     }
 
-    const mobileBtn = document.getElementById('mobileMenuButton');
-    const mobileMenu = document.getElementById('mobileMenu');
-    if (mobileBtn && mobileMenu) {
-      mobileBtn.addEventListener('click', () => {
-        mobileMenu.classList.toggle('hidden');
-      });
-
-      // Cerrar menú al hacer clic en un enlace (Mejora de usabilidad)
-      const menuLinks = mobileMenu.querySelectorAll('a');
-      menuLinks.forEach((link) => {
-        link.addEventListener('click', () => {
-          mobileMenu.classList.add('hidden');
-        });
-      });
-    }
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 10) {
+        header.classList.add('bg-[#141414]', 'shadow-lg');
+        header.classList.remove(
+          'bg-gradient-to-b',
+          'from-black/90',
+          'to-transparent',
+          'pt-2',
+          'pb-6',
+        );
+        header.classList.add('py-2');
+      } else {
+        header.classList.remove('bg-[#141414]', 'shadow-lg', 'py-2');
+        header.classList.add(
+          'bg-gradient-to-b',
+          'from-black/90',
+          'to-transparent',
+          'pt-2',
+          'pb-6',
+        );
+      }
+    });
   });
 </script>

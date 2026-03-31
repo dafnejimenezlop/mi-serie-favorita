@@ -12,13 +12,12 @@ const { title } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="es" class="">
+<html lang="es" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/prueba2.ico" />
     <title>{title}</title>
-
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
 
     <script is:inline>
@@ -45,23 +44,189 @@ const { title } = Astro.props;
   </head>
 
   <body
-    class="bg-stone-50 text-stone-900 dark:bg-black dark:text-stone-100 transition-colors duration-300 font-sans relative w-full"
+    class="text-stone-100 transition-colors duration-300 font-sans overflow-x-hidden w-full relative bg-[#141414]"
   >
+    <div
+      class="fixed top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-40 dark:opacity-30 mix-blend-screen filter grayscale -z-20"
+    >
+      <div id="youtube-ambient-player" class="w-full h-full"></div>
+    </div>
+
+    <div
+      class="fixed inset-0 pointer-events-none bg-gradient-to-b from-[#141414]/40 via-[#141414]/80 to-[#141414] dark:from-[#080808]/40 dark:via-[#080808]/85 dark:to-[#080808] -z-10"
+    >
+    </div>
+
     <Header />
 
-    <main class="overflow-x-hidden w-full relative">
+    <main class="w-full relative z-10">
       <slot />
     </main>
 
     <Footer />
 
+    <div
+      id="videoModal"
+      class="fixed inset-0 z-[100] hidden flex-col items-center justify-center bg-black/95 backdrop-blur-lg opacity-0 transition-opacity duration-500 p-4"
+    >
+      <button
+        id="btnCloseModal"
+        class="absolute top-4 right-4 md:top-8 md:right-8 z-[110] p-2 bg-stone-900/80 hover:bg-black text-stone-400 hover:text-amber-500 rounded-full transition-all border border-stone-700 hover:border-amber-500"
+      >
+        <svg
+          class="w-8 h-8 md:w-10 md:h-10"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          ><path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"></path></svg
+        >
+      </button>
+      <div
+        class="relative w-full max-w-6xl aspect-video bg-black rounded-lg shadow-2xl overflow-hidden border border-stone-800"
+      >
+        <div id="youtube-modal-player" class="w-full h-full"></div>
+      </div>
+    </div>
+
     <script is:inline src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script is:inline>
-      AOS.init({
-        once: false,
-        mirror: true,
-        duration: 800,
-        offset: 120,
+      AOS.init({ once: false, mirror: true, duration: 800, offset: 120 });
+    </script>
+
+    <script is:inline>
+      var tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      var ambientPlayer, heroPlayer, modalPlayer;
+      var isPlaying = true;
+      var isMuted = true;
+
+      function onYouTubeIframeAPIReady() {
+        // 1. VÍDEO AMBIENTAL (Fondo total, siempre en loop, sin controles de usuario)
+        ambientPlayer = new YT.Player('youtube-ambient-player', {
+          videoId: '14FGjkrrXFk',
+          playerVars: {
+            autoplay: 1,
+            controls: 0,
+            showinfo: 0,
+            rel: 0,
+            loop: 1,
+            playlist: '14FGjkrrXFk',
+            mute: 1,
+            playsinline: 1,
+            disablekb: 1,
+          },
+          events: { onReady: (e) => e.target.playVideo() },
+        });
+
+        // 2. VÍDEO DEL HERO (Controlable por los botones de la pantalla)
+        heroPlayer = new YT.Player('youtube-hero-player', {
+          videoId: '14FGjkrrXFk',
+          playerVars: {
+            autoplay: 1,
+            controls: 0,
+            showinfo: 0,
+            rel: 0,
+            loop: 1,
+            playlist: '14FGjkrrXFk',
+            mute: 1,
+            playsinline: 1,
+            disablekb: 1,
+          },
+          events: { onReady: onHeroReady },
+        });
+
+        // 3. VÍDEO DEL MODAL (Pantalla completa con controles nativos)
+        modalPlayer = new YT.Player('youtube-modal-player', {
+          videoId: '14FGjkrrXFk',
+          playerVars: { autoplay: 0, controls: 1, rel: 0 },
+        });
+      }
+
+      function onHeroReady(event) {
+        event.target.playVideo();
+
+        // Controlamos SOLO el heroPlayer
+        const btnPlayPause = document.getElementById('btnPlayPause');
+        const iconPlay = document.getElementById('icon-play');
+        const iconPause = document.getElementById('icon-pause');
+        if (btnPlayPause) {
+          btnPlayPause.addEventListener('click', () => {
+            if (isPlaying) {
+              heroPlayer.pauseVideo();
+              iconPause.classList.replace('block', 'hidden');
+              iconPlay.classList.replace('hidden', 'block');
+            } else {
+              heroPlayer.playVideo();
+              iconPlay.classList.replace('block', 'hidden');
+              iconPause.classList.replace('hidden', 'block');
+            }
+            isPlaying = !isPlaying;
+          });
+        }
+
+        const btnMute = document.getElementById('btnMute');
+        const iconMuted = document.getElementById('icon-muted');
+        const iconUnmuted = document.getElementById('icon-unmuted');
+        if (btnMute) {
+          btnMute.addEventListener('click', () => {
+            if (isMuted) {
+              heroPlayer.unMute();
+              iconMuted.classList.replace('block', 'hidden');
+              iconUnmuted.classList.replace('hidden', 'block');
+            } else {
+              heroPlayer.mute();
+              iconUnmuted.classList.replace('block', 'hidden');
+              iconMuted.classList.replace('hidden', 'block');
+            }
+            isMuted = !isMuted;
+          });
+        }
+      }
+
+      // Lógica del Modal
+      document.addEventListener('DOMContentLoaded', () => {
+        const btnModal = document.getElementById('btnModal');
+        const btnCloseModal = document.getElementById('btnCloseModal');
+        const videoModal = document.getElementById('videoModal');
+
+        if (btnModal) {
+          btnModal.addEventListener('click', () => {
+            videoModal.classList.remove('hidden');
+            videoModal.classList.add('flex');
+            setTimeout(() => videoModal.classList.remove('opacity-0'), 10);
+
+            if (heroPlayer && typeof heroPlayer.pauseVideo === 'function')
+              heroPlayer.pauseVideo();
+            if (modalPlayer && typeof modalPlayer.playVideo === 'function')
+              modalPlayer.playVideo();
+          });
+        }
+
+        if (btnCloseModal) {
+          btnCloseModal.addEventListener('click', () => {
+            videoModal.classList.add('opacity-0');
+            setTimeout(() => {
+              videoModal.classList.add('hidden');
+              videoModal.classList.remove('flex');
+            }, 500);
+
+            if (modalPlayer && typeof modalPlayer.pauseVideo === 'function')
+              modalPlayer.pauseVideo();
+            if (
+              isPlaying &&
+              heroPlayer &&
+              typeof heroPlayer.playVideo === 'function'
+            )
+              heroPlayer.playVideo();
+          });
+        }
       });
     </script>
   </body>

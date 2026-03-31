@@ -1,13 +1,12 @@
 ---
 // src/components/sections/Testimonials.astro
 
-// Array actualizado: Imágenes individuales y colores dinámicos por cada tarjeta.
 const reviews = [
   {
     author: 'H.G. Tannhaus, Creador',
     comment: 'Esencial. El apocalipsis ha llegado, y es hermoso.',
     rating: 5,
-    image: '/avatar.png', // Asegúrate de tener estas imágenes en public/
+    image: '/avatar.png',
     colorClass: 'border-emerald-500/50 shadow-emerald-900/20',
     textClass: 'text-emerald-500',
   },
@@ -33,24 +32,32 @@ const reviews = [
     author: 'Jonas Kahnwald',
     comment: 'El final es el principio. Una obra maestra del suspense alemán.',
     rating: 5,
-    image: '/avatar4.png', // Cambia por tu ruta real
+    image: '/avatar4.png',
     colorClass: 'border-rose-500/50 shadow-rose-900/20',
     textClass: 'text-rose-500',
   },
   {
     author: 'Anonimo',
     comment:
-      'Recomiendo ver la serie al menos 3 veces para entenderla completamente. Cada detalle tiene un propósito, y el diseño de producción es simplemente espectacular.',
-    rating: 6,
-    image: '/avatar5.png', // Cambia por tu ruta real
-    colorClass: 'border-red-500/50 shadow-red-900/20',
-    textClass: 'text-red-500',
+      'Recomiendo esta serie a todo el mundo. Es un viaje emocional y mental que no olvidarás. No os arrepentiréis de verla, aunque necesitarás más de una vez para entenderla completamente.',
+    rating: 5,
+    image: '/avatar5.png',
+    colorClass: 'border-lime-500/50 shadow-lime-900/20',
+    textClass: 'text-lime-500',
+  },
+  {
+    author: 'Periodista',
+    comment:
+      '¿Alguna vez os habéis preguntado por qué la serie de Dark es tan popular? Es simple: es una obra maestra del cine y la televisión.',
+    rating: 5,
+    image: '/avatar6.png',
+    colorClass: 'border-cyan-500/50 shadow-cyan-900/20',
+    textClass: 'text-cyan-500',
   },
 ];
 ---
 
 <style>
-  /* Forzamos a que todas las tarjetas (slides) compartan la misma altura y usen flexbox */
   .testimonials-slider .swiper-slide {
     height: auto;
     display: flex;
@@ -59,7 +66,7 @@ const reviews = [
 
 <section
   id="testimonios"
-  class="py-24 bg-black transition-colors duration-300 overflow-hidden relative"
+  class="py-24 bg-transparent transition-colors duration-300 overflow-hidden relative"
 >
   <div class="container mx-auto px-6">
     <h2
@@ -79,7 +86,7 @@ const reviews = [
             reviews.map((review) => (
               <div class="swiper-slide w-full">
                 <div
-                  class={`bg-stone-50 dark:bg-stone-900 p-6 md:p-10 rounded-lg border ${review.colorClass} shadow-xl space-y-6 w-full h-full flex flex-col justify-between relative z-10 transition-transform duration-300 hover:-translate-y-2`}
+                  class={`bg-stone-50/90 dark:bg-stone-900/80 p-6 md:p-10 rounded-lg border ${review.colorClass} shadow-xl space-y-6 w-full h-full flex flex-col justify-between relative z-10 transition-transform duration-300 hover:-translate-y-2 backdrop-blur-md`}
                 >
                   <div
                     class={`absolute -top-10 left-1/2 transform -translate-x-1/2 w-20 h-20 md:w-24 md:h-24 rounded-full border-4 bg-black overflow-hidden shadow-2xl z-20 ${review.colorClass}`}
@@ -130,7 +137,7 @@ const reviews = [
   document.addEventListener('DOMContentLoaded', () => {
     new Swiper('.testimonials-slider', {
       loop: true,
-      slidesPerView: 1, // 1 tarjeta en móvil
+      slidesPerView: 1,
       spaceBetween: 20,
       grabCursor: true,
       navigation: {
@@ -139,11 +146,11 @@ const reviews = [
       },
       breakpoints: {
         768: {
-          slidesPerView: 2, // 2 tarjetas en tablet
+          slidesPerView: 2,
           spaceBetween: 30,
         },
         1024: {
-          slidesPerView: 3, // 3 tarjetas en escritorio
+          slidesPerView: 3,
           spaceBetween: 40,
         },
       },
