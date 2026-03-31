@@ -42,22 +42,22 @@ const { title } = Astro.props;
     </script>
 
     <style>
-      /* Animación del trazado del símbolo de infinito */
+      /* Animación perfecta del trazado del símbolo de infinito */
       .infinity-path {
-        stroke-dasharray: 150;
-        stroke-dashoffset: 150;
-        animation: trace-infinity 2s ease-in-out infinite;
+        stroke-dasharray: 100;
+        stroke-dashoffset: 100;
+        animation: draw-infinity 2.5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
       }
-      @keyframes trace-infinity {
+      @keyframes draw-infinity {
         0% {
-          stroke-dashoffset: 150;
-        }
+          stroke-dashoffset: 100;
+        } /* Empieza vacío */
         50% {
           stroke-dashoffset: 0;
-        }
+        } /* Se llena por completo */
         100% {
-          stroke-dashoffset: -150;
-        }
+          stroke-dashoffset: -100;
+        } /* Desaparece por el otro lado */
       }
     </style>
   </head>
@@ -67,23 +67,28 @@ const { title } = Astro.props;
   >
     <div
       id="global-loader"
-      class="fixed inset-0 z-[9999] bg-[#141414] flex items-center justify-center transition-opacity duration-1000 ease-out"
+      class="fixed inset-0 z-[9999] bg-[#141414] flex flex-col items-center justify-center transition-opacity duration-1000 ease-out"
     >
-      <div class="flex flex-col items-center space-y-4">
-        <svg
-          viewBox="0 0 100 50"
-          class="w-16 h-16 md:w-20 md:h-20 drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]"
-        >
-          <path
-            d="M 25,25 C 10,25 10,10 25,10 C 40,10 60,40 75,40 C 90,40 90,25 75,25 C 60,25 40,10 25,10 Z"
-            fill="none"
-            stroke="#ffffff"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="infinity-path"></path>
-        </svg>
-      </div>
+      <svg
+        viewBox="0 0 100 50"
+        class="w-20 h-20 md:w-24 md:h-24 drop-shadow-[0_0_12px_rgba(255,255,255,0.4)]"
+      >
+        <path
+          d="M 50 25 C 35 5, 10 5, 10 25 C 10 45, 35 45, 50 25 C 65 5, 90 5, 90 25 C 90 45, 65 45, 50 25 Z"
+          fill="none"
+          stroke="#ffffff"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="infinity-path"
+          pathLength="100"></path>
+      </svg>
+
+      <p
+        class="mt-6 font-mono text-[10px] tracking-[0.4em] text-stone-500 uppercase animate-pulse"
+      >
+        Iniciando ciclo...
+      </p>
     </div>
     <div class="fixed inset-0 bg-stone-400 dark:bg-[#141414] -z-30"></div>
 
@@ -195,21 +200,19 @@ const { title } = Astro.props;
         });
       }
 
-      // NUEVA FUNCIÓN: Se activa cuando el vídeo cambia de estado (ej: empieza a reproducirse)
+      // Esta función quita el Loader cuando el vídeo arranca de verdad
       function onHeroStateChange(event) {
-        // YT.PlayerState.PLAYING equivale a 1. Si está reproduciendo y no lo habíamos marcado como cargado...
+        // YT.PlayerState.PLAYING equivale a 1.
         if (event.data === 1 && !isVideoLoaded) {
           isVideoLoaded = true;
 
-          // Esperamos exactamente 1 segundo (1000ms) desde que arranca
           setTimeout(() => {
             const loader = document.getElementById('global-loader');
             if (loader) {
-              // Lo hacemos transparente
               loader.classList.add('opacity-0');
               loader.classList.add('pointer-events-none');
 
-              // Lo quitamos del HTML después de la transición para no estorbar
+              // Elimina el nodo del DOM tras acabar la transición de opacidad (1 segundo)
               setTimeout(() => loader.remove(), 1000);
             }
           }, 1000);
@@ -261,6 +264,7 @@ const { title } = Astro.props;
         const btnModal = document.getElementById('btnModal');
         const btnCloseModal = document.getElementById('btnCloseModal');
         const videoModal = document.getElementById('videoModal');
+
         if (btnModal) {
           btnModal.addEventListener('click', () => {
             videoModal.classList.remove('hidden');
