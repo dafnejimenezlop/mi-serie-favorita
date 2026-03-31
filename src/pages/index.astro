@@ -2,18 +2,19 @@
 // src/pages/index.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/sections/Hero.astro';
-import Ratings from '../components/sections/Ratings.astro'; // Nueva sección cinemática (Sino y Valo)
+import Ratings from '../components/sections/Ratings.astro';
 import Timeline from '../components/sections/Timeline.astro';
-import Testimonials from '../components/sections/Testimonials.astro'; // Testimonios con imagen circular
+import Testimonials from '../components/sections/Testimonials.astro';
 import Synopsis from '../components/sections/Synopsis.astro';
+import Whatsapp from '../components/Whatsapp.astro'; // <-- 1. Importamos el componente
 ---
 
 <BaseLayout title="DARK">
   <Hero />
-
   <Ratings />
   <Synopsis />
   <Timeline />
-
   <Testimonials />
+
+  <Whatsapp />
 </BaseLayout>
