@@ -1,7 +1,6 @@
-@import 'tailwindcss';
-
 /* src/styles/global.css */
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Open+Sans:wght@400;600&display=swap');
+@import 'tailwindcss';
 
 html,
 body {
