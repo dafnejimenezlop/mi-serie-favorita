@@ -44,19 +44,30 @@ const { title } = Astro.props;
   </head>
 
   <body
-    class="bg-stone-100 text-stone-900 dark:bg-[#141414] dark:text-stone-100 transition-colors duration-300 font-sans overflow-x-hidden w-full relative"
+    class="bg-stone-200 text-stone-900 dark:bg-[#141414] dark:text-stone-100 transition-colors duration-300 font-sans overflow-x-hidden w-full relative"
   >
-    <!-- Vídeo ambiental de fondo -->
+    <!--
+      Capa de color base que da el tono al fondo antes de que el vídeo cargue.
+      En claro: gris cálido oscuro para que el mix-blend-screen funcione igual que en oscuro.
+      En oscuro: negro como antes.
+    -->
+    <div class="fixed inset-0 bg-stone-400 dark:bg-[#141414] -z-30"></div>
+
+    <!-- Vídeo ambiental — mix-blend-screen funciona igual en claro y oscuro -->
     <div
-      class="fixed top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-20 dark:opacity-30 mix-blend-multiply dark:mix-blend-screen filter grayscale -z-20"
+      class="fixed top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-50 dark:opacity-30 mix-blend-screen filter grayscale -z-20"
     >
       <div id="youtube-ambient-player" class="w-full h-full"></div>
     </div>
 
-    <!-- Gradiente de fondo suave según tema -->
+    <!--
+      Gradiente translúcido encima del vídeo.
+      En claro: usa stone-200 semitransparente para suavizar sin tapar.
+      En oscuro: igual que antes.
+    -->
     <div
       class="fixed inset-0 pointer-events-none
-             bg-gradient-to-b from-stone-100/60 via-stone-100/85 to-stone-100
+             bg-gradient-to-b from-stone-200/50 via-stone-200/70 to-stone-200/90
              dark:from-[#080808]/40 dark:via-[#080808]/85 dark:to-[#080808]
              -z-10 transition-colors duration-300"
     >
@@ -83,12 +94,13 @@ const { title } = Astro.props;
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
-          ><path
+        >
+          <path
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="2"
-            d="M6 18L18 6M6 6l12 12"></path></svg
-        >
+            d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
       </button>
       <div
         class="relative w-full max-w-6xl aspect-video bg-black rounded-lg shadow-2xl overflow-hidden border border-stone-800"
@@ -128,7 +140,6 @@ const { title } = Astro.props;
           },
           events: { onReady: (e) => e.target.playVideo() },
         });
-
         heroPlayer = new YT.Player('youtube-hero-player', {
           videoId: '14FGjkrrXFk',
           playerVars: {
@@ -144,7 +155,6 @@ const { title } = Astro.props;
           },
           events: { onReady: onHeroReady },
         });
-
         modalPlayer = new YT.Player('youtube-modal-player', {
           videoId: '14FGjkrrXFk',
           playerVars: { autoplay: 0, controls: 1, rel: 0 },
@@ -153,7 +163,6 @@ const { title } = Astro.props;
 
       function onHeroReady(event) {
         event.target.playVideo();
-
         const btnPlayPause = document.getElementById('btnPlayPause');
         const iconPlay = document.getElementById('icon-play');
         const iconPause = document.getElementById('icon-pause');
@@ -171,7 +180,6 @@ const { title } = Astro.props;
             isPlaying = !isPlaying;
           });
         }
-
         const btnMute = document.getElementById('btnMute');
         const iconMuted = document.getElementById('icon-muted');
         const iconUnmuted = document.getElementById('icon-unmuted');
@@ -195,7 +203,6 @@ const { title } = Astro.props;
         const btnModal = document.getElementById('btnModal');
         const btnCloseModal = document.getElementById('btnCloseModal');
         const videoModal = document.getElementById('videoModal');
-
         if (btnModal) {
           btnModal.addEventListener('click', () => {
             videoModal.classList.remove('hidden');
@@ -207,7 +214,6 @@ const { title } = Astro.props;
               modalPlayer.playVideo();
           });
         }
-
         if (btnCloseModal) {
           btnCloseModal.addEventListener('click', () => {
             videoModal.classList.add('opacity-0');

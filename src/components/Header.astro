@@ -9,74 +9,91 @@ const navLinks = [
 ];
 ---
 
+<!--
+  El header en sí es transparente — sin gradiente de fondo propio.
+  Cada fila gestiona su propio fondo de forma independiente.
+-->
 <header
   id="netflix-header"
-  class="fixed top-0 left-0 w-full z-50 transition-all duration-500 bg-gradient-to-b from-black/90 to-transparent pt-2 pb-6"
+  class="fixed top-0 left-0 w-full z-50 transition-all duration-500"
 >
+  <!-- FILA 1: Logo + Botón tema — fondo oscuro degradado solo en esta fila -->
   <div
-    class="container mx-auto px-4 md:px-12 flex items-center justify-between py-2 md:py-3"
+    id="header-top-bar"
+    class="w-full bg-gradient-to-b from-black/70 to-transparent transition-all duration-500"
   >
-    <a href="/" class="flex-shrink-0">
-      <img
-        src="/prueba.png"
-        alt="Dark Logo"
-        class="h-8 md:h-12 w-auto object-contain transition-transform hover:scale-105"
-      />
-    </a>
+    <div
+      class="container mx-auto px-4 md:px-12 flex items-center justify-between py-2 md:py-3"
+    >
+      <a href="/" class="flex-shrink-0">
+        <img
+          src="/prueba.png"
+          alt="Dark Logo"
+          class="h-8 md:h-12 w-auto object-contain transition-transform hover:scale-105"
+        />
+      </a>
 
-    <div class="flex items-center">
-      <button
-        id="themeToggle"
-        aria-label="Cambiar tema"
-        class="p-2 rounded-full hover:bg-stone-800/50 dark:hover:bg-stone-800/50 transition text-amber-500"
-      >
-        <!-- Sol: visible en modo OSCURO (para pasar a claro) -->
-        <svg
-          id="sunIcon"
-          class="w-5 h-5 hidden dark:block"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-          ><path
-            d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 17.95a1 1 0 01-1.414 0l-.707-.707a1 1 0 011.414-1.414l.707.707a1 1 0 010 1.414zm-.706-10.607a1 1 0 01-1.414 0l-.707-.707a1 1 0 011.414-1.414l.707.707a1 1 0 010 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z"
-          ></path></svg
+      <div class="flex items-center">
+        <button
+          id="themeToggle"
+          aria-label="Cambiar tema"
+          class="p-2 rounded-full transition-all duration-300
+                 border border-stone-600 bg-black/40 text-amber-500
+                 hover:border-amber-500 hover:bg-black/60"
         >
-        <!-- Luna: visible en modo CLARO (para pasar a oscuro) -->
-        <svg
-          id="moonIcon"
-          class="w-5 h-5 block dark:hidden"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-          ><path
-            d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
-          ></path></svg
-        >
-      </button>
+          <!-- Sol: visible en modo OSCURO -->
+          <svg
+            id="sunIcon"
+            class="w-5 h-5 hidden dark:block"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 17.95a1 1 0 01-1.414 0l-.707-.707a1 1 0 011.414-1.414l.707.707a1 1 0 010 1.414zm-.706-10.607a1 1 0 01-1.414 0l-.707-.707a1 1 0 011.414-1.414l.707.707a1 1 0 010 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z"
+            ></path>
+          </svg>
+          <!-- Luna: visible en modo CLARO -->
+          <svg
+            id="moonIcon"
+            class="w-5 h-5 block dark:hidden"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+            ></path>
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
 
-  <nav class="w-full flex justify-center container mx-auto px-4 mt-1">
-    <ul
-      class="inline-flex items-center space-x-1 bg-stone-900/60 dark:bg-stone-800/40 backdrop-blur-md rounded-full p-1 border border-stone-600/30 shadow-lg overflow-x-auto no-scrollbar max-w-full"
-    >
-      {
-        navLinks.map((link, index) => (
-          <li class="shrink-0">
-            <a
-              href={link.href}
-              class={`px-5 py-2 md:px-6 md:py-2 rounded-full text-sm font-semibold transition-all duration-300 inline-block
-              ${
-                index === 0
-                  ? 'bg-stone-800 text-white shadow-sm'
-                  : 'text-stone-300 hover:text-white hover:bg-stone-800/50'
-              }`}
-            >
-              {link.label}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-  </nav>
+  <!-- FILA 2: Navegación — fondo propio solo en la píldora, resto 100% transparente -->
+  <div class="w-full flex justify-center px-4 mt-1 pb-3">
+    <nav>
+      <ul
+        class="inline-flex items-center space-x-1 bg-stone-900/70 backdrop-blur-md rounded-full p-1 border border-stone-600/40 shadow-lg overflow-x-auto no-scrollbar max-w-full"
+      >
+        {
+          navLinks.map((link, index) => (
+            <li class="shrink-0">
+              <a
+                href={link.href}
+                class={`px-5 py-2 md:px-6 md:py-2 rounded-full text-sm font-semibold transition-all duration-300 inline-block
+                ${
+                  index === 0
+                    ? 'bg-stone-700 text-white shadow-sm'
+                    : 'text-stone-300 hover:text-white hover:bg-stone-700/60'
+                }`}
+              >
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
 </header>
 
 <style>
@@ -92,7 +109,7 @@ const navLinks = [
 <script is:inline>
   document.addEventListener('DOMContentLoaded', () => {
     const themeToggleBtn = document.getElementById('themeToggle');
-    const header = document.getElementById('netflix-header');
+    const topBar = document.getElementById('header-top-bar');
 
     if (themeToggleBtn) {
       themeToggleBtn.addEventListener('click', () => {
@@ -101,33 +118,22 @@ const navLinks = [
       });
     }
 
+    // Al hacer scroll, solo la fila del logo/botón se vuelve sólida
+    // La fila de la nav sigue igual (la píldora ya tiene su propio fondo)
     window.addEventListener('scroll', () => {
       if (window.scrollY > 10) {
-        // Al hacer scroll: fondo sólido que respeta el tema
-        header.classList.add('shadow-lg');
-        // Oscuro -> fondo casi negro; Claro -> fondo casi blanco
-        header.classList.add('dark:bg-[#141414]', 'bg-stone-100');
-        header.classList.remove(
+        topBar.classList.remove(
           'bg-gradient-to-b',
-          'from-black/90',
+          'from-black/70',
           'to-transparent',
-          'pt-2',
-          'pb-6',
         );
-        header.classList.add('py-2');
+        topBar.classList.add('bg-stone-900/95', 'shadow-lg');
       } else {
-        header.classList.remove(
-          'shadow-lg',
-          'py-2',
-          'dark:bg-[#141414]',
-          'bg-stone-100',
-        );
-        header.classList.add(
+        topBar.classList.remove('bg-stone-900/95', 'shadow-lg');
+        topBar.classList.add(
           'bg-gradient-to-b',
-          'from-black/90',
+          'from-black/70',
           'to-transparent',
-          'pt-2',
-          'pb-6',
         );
       }
     });
