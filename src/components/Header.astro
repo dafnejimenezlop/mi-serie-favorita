@@ -78,18 +78,25 @@ const navLinks = [
     </div>
   </div>
 
-  <div class="hidden md:flex w-full justify-center px-4 mt-1 pb-3">
-    <nav>
+  <div class="hidden md:flex w-full justify-center px-4 mt-1 pb-3 relative">
+    <nav class="relative">
       <ul
-        class="inline-flex items-center space-x-1 bg-stone-900/70 backdrop-blur-md rounded-full p-1 border border-stone-600/40 shadow-lg"
+        class="relative inline-flex items-center space-x-1 bg-stone-900/70 backdrop-blur-md rounded-full p-1 border border-stone-600/40 shadow-lg"
       >
+        <div
+          id="nav-slider"
+          class="absolute top-1 bottom-1 rounded-full bg-stone-700 shadow-sm transition-transform duration-300 ease-out z-0 opacity-0"
+          style="left: 0;"
+        >
+        </div>
+
         {
           navLinks.map((link) => (
-            <li class="shrink-0">
+            <li class="shrink-0 relative z-10">
               <a
                 href={link.href}
                 data-nav-link
-                class="nav-item px-5 py-2 md:px-6 md:py-2 rounded-full text-sm font-semibold transition-all duration-300 inline-block text-stone-300 hover:text-white hover:bg-stone-700/60"
+                class="nav-item px-5 py-2 md:px-6 md:py-2 rounded-full text-sm font-semibold transition-colors duration-300 inline-block text-stone-300 hover:text-white"
               >
                 {link.label}
               </a>
@@ -214,22 +221,39 @@ const navLinks = [
       }
     });
 
-    // --- NUEVO: SCRIPT PARA ACTUALIZAR EL MENÚ ACTIVO SEGÚN LA RUTA ---
+    // === EL NUEVO SCRIPT DE LA PÍLDORA DESLIZANTE ===
     function updateActiveNav() {
       let currentHash = window.location.hash || '#inicio';
       const desktopLinks = document.querySelectorAll('[data-nav-link]');
       const mobLinks = document.querySelectorAll('.mobile-nav-link');
+      const slider = document.getElementById('nav-slider');
 
-      // Actualizar Desktop
+      let activeFound = false;
+
+      // Actualizar Desktop con la píldora
       desktopLinks.forEach((link) => {
         if (link.getAttribute('href') === currentHash) {
-          link.classList.add('bg-stone-700', 'text-white', 'shadow-sm');
-          link.classList.remove('text-stone-300', 'hover:bg-stone-700/60');
+          link.classList.add('text-white');
+          link.classList.remove('text-stone-300');
+
+          if (slider) {
+            // Calculamos cuánto mide la palabra y a qué distancia está de la izquierda
+            const leftPos = link.parentElement.offsetLeft;
+            const width = link.offsetWidth;
+            slider.style.transform = `translateX(${leftPos}px)`;
+            slider.style.width = `${width}px`;
+            slider.style.opacity = '1';
+          }
+          activeFound = true;
         } else {
-          link.classList.remove('bg-stone-700', 'text-white', 'shadow-sm');
-          link.classList.add('text-stone-300', 'hover:bg-stone-700/60');
+          link.classList.remove('text-white');
+          link.classList.add('text-stone-300');
         }
       });
+
+      if (!activeFound && slider) {
+        slider.style.opacity = '0';
+      }
 
       // Actualizar Mobile
       mobLinks.forEach((link) => {
@@ -253,10 +277,10 @@ const navLinks = [
       });
     }
 
-    // Ejecutamos al cargar y cada vez que cambie el "#" en la URL
+    // Ejecutamos al cargar la página por si entraste directamente a /#resumen
+    setTimeout(updateActiveNav, 100);
     window.addEventListener('hashchange', updateActiveNav);
-    updateActiveNav();
-    // ------------------------------------------------------------------
+    window.addEventListener('resize', updateActiveNav); // Recalcular si redimensionas ventana
 
     function openMenu() {
       mobileMenu.setAttribute('aria-hidden', 'false');

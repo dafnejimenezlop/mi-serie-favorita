@@ -25,41 +25,39 @@ import Resumen from '../components/Resumen.astro';
 </BaseLayout>
 
 <script is:inline>
-  // Esta función decide qué vista mostrar dependiendo del enlace pulsado
   function controlarVistas() {
     const hash = window.location.hash;
     const vistaInicio = document.getElementById('vista-inicio');
     const vistaResumen = document.getElementById('vista-resumen');
 
-    // Si el enlace es #resumen, ocultamos Inicio y mostramos Resumen
     if (hash === '#resumen') {
       vistaInicio.classList.add('hidden');
       vistaInicio.classList.remove('block');
-
       vistaResumen.classList.remove('hidden');
       vistaResumen.classList.add('block');
-
-      // Subimos el scroll arriba del todo al "cambiar" de página
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-    // Si no es resumen, nos aseguramos de que se muestre Inicio
-    else {
+
+      // Magia: Forzar a AOS a que actualice las animaciones al cambiar de vista
+      setTimeout(() => {
+        if (typeof AOS !== 'undefined') AOS.refresh();
+      }, 50);
+    } else {
       vistaResumen.classList.add('hidden');
       vistaResumen.classList.remove('block');
-
       vistaInicio.classList.remove('hidden');
       vistaInicio.classList.add('block');
 
-      // Si es #inicio, subimos al top. Si es #ciclos, el navegador bajará automáticamente.
       if (hash === '' || hash === '#inicio') {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
+
+      // Magia: Forzar a AOS a que actualice las animaciones
+      setTimeout(() => {
+        if (typeof AOS !== 'undefined') AOS.refresh();
+      }, 50);
     }
   }
 
-  // Ejecutar cuando se carga la página por primera vez
   document.addEventListener('DOMContentLoaded', controlarVistas);
-
-  // Ejecutar CADA VEZ que el usuario hace clic en el menú y cambia el "#" de la URL
   window.addEventListener('hashchange', controlarVistas);
 </script>
