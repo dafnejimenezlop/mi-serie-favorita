@@ -2,32 +2,35 @@
 // src/components/sections/Resumen.astro
 ---
 
-<div class="pt-32 pb-24 relative z-10 w-full">
-  <div class="container mx-auto px-6 max-w-6xl">
+<div class="pt-32 pb-24 relative z-10 w-full min-h-screen">
+  <div class="container mx-auto px-6 max-w-7xl">
     <div class="text-center space-y-6 mb-12" data-aos="fade-down">
       <h2
-        class="text-5xl md:text-7xl font-cinzel text-amber-500 font-bold tracking-widest drop-shadow-lg uppercase"
+        class="text-4xl md:text-6xl font-cinzel text-stone-100 font-bold tracking-[0.2em] drop-shadow-2xl uppercase"
       >
         Resumen
       </h2>
       <p
-        class="text-lg md:text-xl text-stone-900 dark:text-stone-300 font-light leading-relaxed max-w-3xl mx-auto"
+        class="text-base md:text-lg text-stone-300 font-light leading-relaxed max-w-2xl mx-auto tracking-wide"
       >
-        Dark está compuesta por 26 episodios, divididos en tres temporadas. En
-        el recorrido de la serie se va fraguando un misterio que inicia desde el
-        capítulo piloto y continúa hasta el final de la tercera temporada.
+        26 episodios. Tres temporadas. Un misterio que inicia desde el capítulo
+        piloto y se entrelaza hasta el apocalipsis final.
       </p>
     </div>
 
     <div
-      class="bg-red-100/80 dark:bg-red-950/30 border border-red-500/50 dark:border-red-600/50 backdrop-blur-md rounded-lg p-4 mb-16 text-center shadow-[0_0_20px_rgba(220,38,38,0.15)] mx-auto max-w-2xl"
+      class="flex items-center justify-center gap-4 mb-16 opacity-80"
       data-aos="zoom-in"
     >
+      <div
+        class="h-[1px] w-12 md:w-24 bg-gradient-to-r from-transparent to-red-600"
+      >
+      </div>
       <p
-        class="text-red-700 dark:text-red-500 font-cinzel font-bold tracking-[0.2em] md:tracking-[0.3em] uppercase text-sm md:text-base flex items-center justify-center gap-3"
+        class="text-red-500 font-mono tracking-widest uppercase text-[10px] md:text-xs font-bold flex items-center gap-2"
       >
         <svg
-          class="w-6 h-6"
+          class="w-4 h-4"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -38,77 +41,119 @@
             d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
           ></path></svg
         >
-        ¡Atención! A partir de aquí hay spoilers
-        <svg
-          class="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          ><path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-          ></path></svg
-        >
+        Contiene Spoilers
       </p>
+      <div
+        class="h-[1px] w-12 md:w-24 bg-gradient-to-l from-transparent to-red-600"
+      >
+      </div>
     </div>
 
     <div
-      class="flex flex-wrap justify-center gap-3 md:gap-6 mb-16"
+      class="flex flex-wrap justify-center gap-2 md:gap-4 mb-16"
       data-aos="fade-up"
     >
       <button
-        class="tab-btn active px-6 py-2.5 md:px-10 md:py-3 rounded-full font-cinzel font-bold tracking-widest uppercase transition-all duration-300 border border-amber-600 dark:border-amber-500 bg-amber-500 text-stone-900 shadow-[0_0_15px_rgba(245,158,11,0.4)]"
+        class="tab-btn active px-6 py-2 rounded font-cinzel font-bold tracking-widest uppercase transition-all duration-300 text-amber-500 border-b-2 border-amber-500 bg-black/40 shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
         data-target="temp1"
       >
         Temporada 1
       </button>
       <button
-        class="tab-btn px-6 py-2.5 md:px-10 md:py-3 rounded-full font-cinzel font-bold tracking-widest uppercase transition-all duration-300 border border-stone-400 dark:border-stone-600 text-stone-600 dark:text-stone-400 hover:border-amber-600 dark:hover:border-amber-500 hover:text-amber-700 dark:hover:text-amber-500 bg-stone-200/60 dark:bg-stone-900/60 backdrop-blur-sm"
+        class="tab-btn px-6 py-2 rounded font-cinzel font-bold tracking-widest uppercase transition-all duration-300 text-stone-500 border-b-2 border-transparent hover:text-stone-300 hover:bg-black/20"
         data-target="temp2"
       >
         Temporada 2
       </button>
       <button
-        class="tab-btn px-6 py-2.5 md:px-10 md:py-3 rounded-full font-cinzel font-bold tracking-widest uppercase transition-all duration-300 border border-stone-400 dark:border-stone-600 text-stone-600 dark:text-stone-400 hover:border-amber-600 dark:hover:border-amber-500 hover:text-amber-700 dark:hover:text-amber-500 bg-stone-200/60 dark:bg-stone-900/60 backdrop-blur-sm"
+        class="tab-btn px-6 py-2 rounded font-cinzel font-bold tracking-widest uppercase transition-all duration-300 text-stone-500 border-b-2 border-transparent hover:text-stone-300 hover:bg-black/20"
         data-target="temp3"
       >
         Temporada 3
       </button>
     </div>
 
-    <div
-      class="relative bg-stone-100/80 dark:bg-stone-950/50 backdrop-blur-lg border border-stone-300 dark:border-stone-800 rounded-2xl p-6 md:p-12 shadow-2xl"
-    >
+    <div class="relative w-full">
       <div id="temp1" class="tab-content block animate-fade-in">
-        <h3
-          class="text-3xl md:text-5xl font-cinzel text-amber-700 dark:text-amber-500 font-bold text-center mb-12 uppercase tracking-wider"
-        >
-          El enigma de los viajes en el tiempo
-        </h3>
-        <div class="grid md:grid-cols-2 gap-10 items-center mb-16">
-          <div
-            class="order-2 md:order-1 space-y-4 text-stone-800 dark:text-stone-300 font-light leading-relaxed"
+        <div class="flex items-center gap-6 mb-12">
+          <h3
+            class="text-2xl md:text-4xl font-cinzel text-stone-100 font-bold uppercase tracking-widest whitespace-nowrap"
           >
-            <p>
-              En el año 2019 Michael Kahnwald decide quitarse la vida y deja una
-              carta dirigida a Ines, su madre.
-            </p>
-            <p>
-              Una noche, mientras Jonas anda con sus amigos Bartosz, Magnus y
-              Martha, el hermano pequeño de estos últimos, Mikkel, desaparece.
-            </p>
-          </div>
-          <div class="order-1 md:order-2">
-            <img
-              src="/resumen/temporada1/1.jpg"
-              class="rounded-xl shadow-lg border border-stone-300 dark:border-stone-700 w-full object-cover aspect-video hover:scale-[1.02] transition-transform duration-500 grayscale hover:grayscale-0"
-            />
+            El origen
+          </h3>
+          <div
+            class="h-[1px] flex-grow bg-gradient-to-r from-stone-700 to-transparent"
+          >
           </div>
         </div>
+
+        <div class="grid lg:grid-cols-12 gap-12 items-center mb-24">
+          <div
+            class="lg:col-span-5 space-y-6 text-stone-300 font-light leading-relaxed text-base md:text-lg"
+          >
+            <p>
+              En el año 2019, Michael Kahnwald decide quitarse la vida y deja
+              una misteriosa carta dirigida a Ines, su madre.
+            </p>
+            <p>
+              El pueblo de Winden se estremece con la desaparición de un joven
+              llamado Erik. Poco después, durante una noche en el bosque, <span
+                class="text-amber-500 font-medium"
+                >Mikkel Nielsen desaparece sin dejar rastro</span
+              >.
+            </p>
+            <p>
+              Jonas Kahnwald descubrirá que el motivo del suicidio de su padre
+              oculta un secreto imposible: Michael Kahnwald es en realidad
+              Mikkel, que viajó en el tiempo hasta 1986.
+            </p>
+          </div>
+          <div class="lg:col-span-7">
+            <div class="relative group rounded-md overflow-hidden shadow-2xl">
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10 pointer-events-none"
+              >
+              </div>
+              <img
+                src="/resumen/temporada1/1.jpg"
+                class="w-full object-cover aspect-video transform group-hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="grid lg:grid-cols-12 gap-12 items-center mb-24">
+          <div class="lg:col-span-7 order-2 lg:order-1">
+            <div class="relative group rounded-md overflow-hidden shadow-2xl">
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10 pointer-events-none"
+              >
+              </div>
+              <img
+                src="/resumen/temporada1/2.jpg"
+                class="w-full object-cover aspect-[21/9] transform group-hover:scale-105 transition-transform duration-700 grayscale hover:grayscale-0"
+              />
+            </div>
+          </div>
+          <div
+            class="lg:col-span-5 order-1 lg:order-2 space-y-6 text-stone-300 font-light leading-relaxed text-base md:text-lg"
+          >
+            <p>
+              Tres épocas colisionan: <span class="text-amber-500 font-medium"
+                >1953, 1986 y 2019</span
+              >.
+            </p>
+            <p>
+              Los secretos de las cuatro familias principales (Kahnwald,
+              Nielsen, Doppler y Tiedemann) quedan al descubierto gracias a los
+              viajes por las cuevas de Winden y la misteriosa figura del cura
+              Noah.
+            </p>
+          </div>
+        </div>
+
         <div
-          class="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl border border-stone-300 dark:border-stone-700 bg-black aspect-video"
+          class="max-w-5xl mx-auto rounded-md overflow-hidden shadow-2xl bg-black aspect-video border border-stone-800"
         >
           <iframe
             class="w-full h-full"
@@ -118,30 +163,71 @@
       </div>
 
       <div id="temp2" class="tab-content hidden animate-fade-in">
-        <h3
-          class="text-3xl md:text-5xl font-cinzel text-amber-700 dark:text-amber-500 font-bold text-center mb-12 uppercase tracking-wider"
-        >
-          Hacia el apocalipsis
-        </h3>
-        <div class="grid md:grid-cols-2 gap-10 items-center mb-16">
-          <div
-            class="space-y-4 text-stone-800 dark:text-stone-300 font-light leading-relaxed"
+        <div class="flex items-center gap-6 mb-12">
+          <h3
+            class="text-2xl md:text-4xl font-cinzel text-stone-100 font-bold uppercase tracking-widest whitespace-nowrap"
           >
-            <p>
-              Jonas se encuentra atrapado en el año 2052. Descubre lo que hay
-              detrás de una organización secreta llamada “Sic Mundus”, cuyo
-              cabecilla se llama Adam.
-            </p>
-          </div>
-          <div>
-            <img
-              src="/resumen/temporada2/1.jpg"
-              class="rounded-xl shadow-lg border border-stone-300 dark:border-stone-700 w-full object-cover aspect-video hover:scale-[1.02] transition-transform duration-500 grayscale hover:grayscale-0"
-            />
+            El apocalipsis
+          </h3>
+          <div
+            class="h-[1px] flex-grow bg-gradient-to-r from-stone-700 to-transparent"
+          >
           </div>
         </div>
+
+        <div class="grid lg:grid-cols-12 gap-12 items-center mb-24">
+          <div
+            class="lg:col-span-5 space-y-6 text-stone-300 font-light leading-relaxed text-base md:text-lg"
+          >
+            <p>
+              Jonas se encuentra atrapado en el año 2052, sobreviviendo en las
+              ruinas de un mundo arrasado por el apocalipsis de 2020.
+            </p>
+            <p>
+              En su intento de regresar y cambiarlo todo, acaba en 1921
+              descubriendo a la organización "Sic Mundus", liderada por <span
+                class="text-amber-500 font-medium"
+                >Adam, quien resulta ser su yo del futuro</span
+              >.
+            </p>
+          </div>
+          <div class="lg:col-span-7">
+            <div class="relative group rounded-md overflow-hidden shadow-2xl">
+              <img
+                src="/resumen/temporada2/1.jpg"
+                class="w-full object-cover aspect-video transform group-hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="grid lg:grid-cols-12 gap-12 items-center mb-24">
+          <div class="lg:col-span-7 order-2 lg:order-1">
+            <div class="relative group rounded-md overflow-hidden shadow-2xl">
+              <img
+                src="/resumen/temporada2/2.jpg"
+                class="w-full object-cover aspect-[21/9] transform group-hover:scale-105 transition-transform duration-700 grayscale hover:grayscale-0"
+              />
+            </div>
+          </div>
+          <div
+            class="lg:col-span-5 order-1 lg:order-2 space-y-6 text-stone-300 font-light leading-relaxed text-base md:text-lg"
+          >
+            <p>
+              El fin es inevitable. En los instantes previos a la destrucción de
+              Winden, Martha muere frente a Jonas.
+            </p>
+            <p>
+              Justo cuando todo parece perdido, <span
+                class="text-amber-500 font-medium">aparece otra Martha</span
+              >, revelando que la pregunta ya no es "de qué época eres", sino
+              "de qué mundo".
+            </p>
+          </div>
+        </div>
+
         <div
-          class="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl border border-stone-300 dark:border-stone-700 bg-black aspect-video"
+          class="max-w-5xl mx-auto rounded-md overflow-hidden shadow-2xl bg-black aspect-video border border-stone-800"
         >
           <iframe
             class="w-full h-full"
@@ -151,29 +237,69 @@
       </div>
 
       <div id="temp3" class="tab-content hidden animate-fade-in">
-        <h3
-          class="text-3xl md:text-5xl font-cinzel text-amber-700 dark:text-amber-500 font-bold text-center mb-12 uppercase tracking-wider"
-        >
-          Un nuevo mundo
-        </h3>
-        <div class="grid md:grid-cols-2 gap-10 items-center mb-16">
-          <div
-            class="order-2 md:order-1 space-y-4 text-stone-800 dark:text-stone-300 font-light leading-relaxed"
+        <div class="flex items-center gap-6 mb-12">
+          <h3
+            class="text-2xl md:text-4xl font-cinzel text-stone-100 font-bold uppercase tracking-widest whitespace-nowrap"
           >
-            <p>
-              Jonas viaja en 2019 a un nuevo Winden, es su pueblo pero se trata
-              de un mundo paralelo. En esta nueva realidad él no existe.
-            </p>
-          </div>
-          <div class="order-1 md:order-2">
-            <img
-              src="/resumen/temporada3/2.jpg"
-              class="rounded-xl shadow-lg border border-stone-300 dark:border-stone-700 w-full object-cover aspect-video hover:scale-[1.02] transition-transform duration-500 grayscale hover:grayscale-0"
-            />
+            El nudo
+          </h3>
+          <div
+            class="h-[1px] flex-grow bg-gradient-to-r from-stone-700 to-transparent"
+          >
           </div>
         </div>
+
+        <div class="grid lg:grid-cols-12 gap-12 items-center mb-24">
+          <div
+            class="lg:col-span-5 space-y-6 text-stone-300 font-light leading-relaxed text-base md:text-lg"
+          >
+            <p>
+              Jonas despierta en el año 2019 de un mundo paralelo. En esta
+              realidad <span class="text-amber-500 font-medium"
+                >él nunca nació</span
+              >, pero el ciclo de dolor y desapariciones es exactamente el
+              mismo.
+            </p>
+            <p>
+              Comprende que ambos mundos están entrelazados en una guerra
+              infinita entre Adam (la luz/oscuridad) y Eva (la Martha del otro
+              mundo).
+            </p>
+          </div>
+          <div class="lg:col-span-7">
+            <div class="relative group rounded-md overflow-hidden shadow-2xl">
+              <img
+                src="/resumen/temporada3/2.jpg"
+                class="w-full object-cover aspect-video transform group-hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="grid lg:grid-cols-12 gap-12 items-center mb-24">
+          <div class="lg:col-span-7 order-2 lg:order-1">
+            <div class="relative group rounded-md overflow-hidden shadow-2xl">
+              <img
+                src="/resumen/temporada3/1.jpg"
+                class="w-full object-cover aspect-[21/9] transform group-hover:scale-105 transition-transform duration-700 grayscale hover:grayscale-0"
+              />
+            </div>
+          </div>
+          <div
+            class="lg:col-span-5 order-1 lg:order-2 space-y-6 text-stone-300 font-light leading-relaxed text-base md:text-lg"
+          >
+            <p>Para romper el nudo, deben encontrar el "Mundo Origen".</p>
+            <p>
+              El relojero Tannhaus creó la máquina del tiempo para evitar la
+              muerte de su familia, dividiendo accidentalmente su mundo original
+              en dos realidades llenas de sufrimiento que deben ser borradas de
+              la existencia.
+            </p>
+          </div>
+        </div>
+
         <div
-          class="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl border border-stone-300 dark:border-stone-700 bg-black aspect-video"
+          class="max-w-5xl mx-auto rounded-md overflow-hidden shadow-2xl bg-black aspect-video border border-stone-800"
         >
           <iframe
             class="w-full h-full"
@@ -187,12 +313,12 @@
 
 <style>
   .animate-fade-in {
-    animation: fadeIn 0.4s ease-out forwards;
+    animation: fadeIn 0.6s ease-out forwards;
   }
   @keyframes fadeIn {
     from {
       opacity: 0;
-      transform: translateY(5px);
+      transform: translateY(15px);
     }
     to {
       opacity: 1;
@@ -208,44 +334,35 @@
 
     tabs.forEach((tab) => {
       tab.addEventListener('click', () => {
+        // Ocultar todos los contenidos
         contents.forEach((c) => {
           c.classList.remove('block');
           c.classList.add('hidden');
         });
+
+        // Resetear pestañas (inactivas)
         tabs.forEach((t) => {
           t.classList.remove(
-            'bg-amber-500',
-            'text-stone-900',
-            'border-amber-600',
-            'dark:border-amber-500',
-            'shadow-[0_0_15px_rgba(245,158,11,0.4)]',
+            'text-amber-500',
+            'border-amber-500',
+            'bg-black/40',
+            'shadow-[0_4px_20px_rgba(0,0,0,0.5)]',
           );
-          t.classList.add(
-            'bg-stone-200/60',
-            'dark:bg-stone-900/60',
-            'text-stone-600',
-            'dark:text-stone-400',
-            'border-stone-400',
-            'dark:border-stone-600',
-          );
+          t.classList.add('text-stone-500', 'border-transparent');
         });
+
+        // Mostrar contenido
         const targetId = tab.getAttribute('data-target');
         document.getElementById(targetId).classList.remove('hidden');
         document.getElementById(targetId).classList.add('block');
-        tab.classList.remove(
-          'bg-stone-200/60',
-          'dark:bg-stone-900/60',
-          'text-stone-600',
-          'dark:text-stone-400',
-          'border-stone-400',
-          'dark:border-stone-600',
-        );
+
+        // Activar pestaña
+        tab.classList.remove('text-stone-500', 'border-transparent');
         tab.classList.add(
-          'bg-amber-500',
-          'text-stone-900',
-          'border-amber-600',
-          'dark:border-amber-500',
-          'shadow-[0_0_15px_rgba(245,158,11,0.4)]',
+          'text-amber-500',
+          'border-amber-500',
+          'bg-black/40',
+          'shadow-[0_4px_20px_rgba(0,0,0,0.5)]',
         );
       });
     });

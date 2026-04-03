@@ -1,11 +1,11 @@
 ---
 // src/components/Header.astro
 const navLinks = [
-  { href: '/#inicio', label: 'Inicio' },
+  { href: '#inicio', label: 'Inicio' },
   { href: '#resumen', label: 'Resumen' },
-  { href: '/#ciclos', label: 'Viajes' },
-  { href: '/#personajes', label: 'Familias' },
-  { href: '/#teorias', label: 'Teorías' },
+  { href: '#ciclos', label: 'Viajes' },
+  { href: '#personajes', label: 'Familias' },
+  { href: '#teorias', label: 'Teorías' },
 ];
 ---
 
@@ -13,7 +13,6 @@ const navLinks = [
   id="netflix-header"
   class="fixed top-0 left-0 w-full z-50 transition-all duration-500"
 >
-  <!-- FILA 1: Logo + controles -->
   <div
     id="header-top-bar"
     class="w-full bg-gradient-to-b from-black/70 to-transparent transition-all duration-500"
@@ -21,7 +20,7 @@ const navLinks = [
     <div
       class="container mx-auto px-4 md:px-12 flex items-center justify-between py-2 md:py-3"
     >
-      <a href="/" class="flex-shrink-0">
+      <a href="#inicio" class="flex-shrink-0">
         <img
           src="/prueba.png"
           alt="Dark Logo"
@@ -30,43 +29,35 @@ const navLinks = [
       </a>
 
       <div class="flex items-center gap-2">
-        <!-- Botón tema -->
         <button
           id="themeToggle"
           aria-label="Cambiar tema"
-          class="p-2 rounded-full transition-all duration-300
-                 border border-stone-600 bg-black/40 text-amber-500
-                 hover:border-amber-500 hover:bg-black/60"
+          class="p-2 rounded-full transition-all duration-300 border border-stone-600 bg-black/40 text-amber-500 hover:border-amber-500 hover:bg-black/60"
         >
           <svg
             id="sunIcon"
             class="w-5 h-5 hidden dark:block"
             fill="currentColor"
             viewBox="0 0 20 20"
-          >
-            <path
+            ><path
               d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 17.95a1 1 0 01-1.414 0l-.707-.707a1 1 0 011.414-1.414l.707.707a1 1 0 010 1.414zm-.706-10.607a1 1 0 01-1.414 0l-.707-.707a1 1 0 011.414-1.414l.707.707a1 1 0 010 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z"
-            ></path>
-          </svg>
+            ></path></svg
+          >
           <svg
             id="moonIcon"
             class="w-5 h-5 block dark:hidden"
             fill="currentColor"
             viewBox="0 0 20 20"
-          >
-            <path
+            ><path
               d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
-            ></path>
-          </svg>
+            ></path></svg
+          >
         </button>
 
-        <!-- Botón hamburguesa — solo en móvil -->
         <button
           id="menuToggle"
           aria-label="Abrir menú"
-          class="md:hidden p-2 rounded-full transition-all duration-300
-                 border border-stone-600 bg-black/40 text-amber-500
-                 hover:border-amber-500 hover:bg-black/60"
+          class="md:hidden p-2 rounded-full transition-all duration-300 border border-stone-600 bg-black/40 text-amber-500 hover:border-amber-500 hover:bg-black/60"
         >
           <span
             id="menuIcon"
@@ -87,19 +78,18 @@ const navLinks = [
     </div>
   </div>
 
-  <!-- FILA 2: Nav desktop — solo md+ -->
   <div class="hidden md:flex w-full justify-center px-4 mt-1 pb-3">
     <nav>
       <ul
         class="inline-flex items-center space-x-1 bg-stone-900/70 backdrop-blur-md rounded-full p-1 border border-stone-600/40 shadow-lg"
       >
         {
-          navLinks.map((link, index) => (
+          navLinks.map((link) => (
             <li class="shrink-0">
               <a
                 href={link.href}
-                class={`px-5 py-2 md:px-6 md:py-2 rounded-full text-sm font-semibold transition-all duration-300 inline-block
-              ${index === 0 ? 'bg-stone-700 text-white shadow-sm' : 'text-stone-300 hover:text-white hover:bg-stone-700/60'}`}
+                data-nav-link
+                class="nav-item px-5 py-2 md:px-6 md:py-2 rounded-full text-sm font-semibold transition-all duration-300 inline-block text-stone-300 hover:text-white hover:bg-stone-700/60"
               >
                 {link.label}
               </a>
@@ -110,30 +100,20 @@ const navLinks = [
     </nav>
   </div>
 
-  <!-- Menú móvil -->
   <div
     id="mobileMenu"
     class="fixed inset-0 z-[200] pointer-events-none"
     aria-hidden="true"
   >
-    <!-- Overlay -->
     <div
       id="menuOverlay"
       class="absolute inset-0 bg-black/0 transition-all duration-500"
     >
     </div>
-
-    <!-- Panel — colores respetan el tema claro/oscuro -->
     <div
       id="menuPanel"
-      class="absolute top-0 right-0 h-full w-72 max-w-[85vw]
-             bg-stone-100/95 dark:bg-stone-950/95
-             backdrop-blur-xl
-             border-l border-stone-300 dark:border-stone-800
-             translate-x-full transition-transform duration-500 ease-in-out
-             flex flex-col"
+      class="absolute top-0 right-0 h-full w-72 max-w-[85vw] bg-stone-100/95 dark:bg-stone-950/95 backdrop-blur-xl border-l border-stone-300 dark:border-stone-800 translate-x-full transition-transform duration-500 ease-in-out flex flex-col"
     >
-      <!-- Cabecera del panel -->
       <div
         class="flex items-center justify-between px-6 py-5 border-b border-stone-300 dark:border-stone-800"
       >
@@ -144,41 +124,28 @@ const navLinks = [
         <button
           id="menuClose"
           aria-label="Cerrar menú"
-          class="p-1.5 rounded-full
-                 border border-stone-400 dark:border-stone-700
-                 text-stone-500 dark:text-stone-400
-                 hover:text-amber-600 dark:hover:text-amber-500
-                 hover:border-amber-600 dark:hover:border-amber-500
-                 transition-all"
+          class="p-1.5 rounded-full border border-stone-400 dark:border-stone-700 text-stone-500 dark:text-stone-400 hover:text-amber-600 dark:hover:text-amber-500 hover:border-amber-600 dark:hover:border-amber-500 transition-all"
         >
           <svg
             class="w-4 h-4"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
-          >
-            <path
+            ><path
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
+              d="M6 18L18 6M6 6l12 12"></path></svg
+          >
         </button>
       </div>
-
-      <!-- Links -->
       <nav class="flex flex-col flex-1 px-6 py-8 space-y-1">
         {
           navLinks.map((link, index) => (
             <a
               href={link.href}
               data-mobile-link
-              class={`mobile-nav-link group flex items-center gap-4 px-4 py-4 rounded-lg text-base font-cinzel tracking-widest uppercase transition-all duration-300
-            ${
-              index === 0
-                ? 'text-amber-700 dark:text-amber-500 bg-stone-200/80 dark:bg-stone-800/60'
-                : 'text-stone-500 dark:text-stone-400 hover:text-amber-700 dark:hover:text-amber-500 hover:bg-stone-200/60 dark:hover:bg-stone-800/40'
-            }`}
+              class="mobile-nav-link group flex items-center gap-4 px-4 py-4 rounded-lg text-base font-cinzel tracking-widest uppercase transition-all duration-300 text-stone-500 dark:text-stone-400 hover:text-amber-700 dark:hover:text-amber-500 hover:bg-stone-200/60 dark:hover:bg-stone-800/40"
               style={`transition-delay: ${index * 60}ms`}
             >
               <span class="w-4 h-px bg-amber-500/40 group-hover:bg-amber-500 group-hover:w-6 transition-all duration-300 shrink-0" />
@@ -187,15 +154,6 @@ const navLinks = [
           ))
         }
       </nav>
-
-      <!-- Pie -->
-      <div class="px-6 py-6 border-t border-stone-300 dark:border-stone-800">
-        <p
-          class="text-xs font-mono text-stone-400 dark:text-stone-600 tracking-widest text-center"
-        >
-          "Sic Mundus Creatus Est"
-        </p>
-      </div>
     </div>
   </div>
 </header>
@@ -208,7 +166,6 @@ const navLinks = [
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-
   #menuToggle.is-open .hamburger-line:nth-child(1) {
     transform: translateY(7px) rotate(45deg);
   }
@@ -232,7 +189,6 @@ const navLinks = [
     const menuPanel = document.getElementById('menuPanel');
     const mobileLinks = document.querySelectorAll('[data-mobile-link]');
 
-    // Toggle tema
     if (themeToggleBtn) {
       themeToggleBtn.addEventListener('click', () => {
         const isDark = document.documentElement.classList.toggle('dark');
@@ -240,7 +196,6 @@ const navLinks = [
       });
     }
 
-    // Scroll
     window.addEventListener('scroll', () => {
       if (window.scrollY > 10) {
         topBar.classList.remove(
@@ -259,7 +214,50 @@ const navLinks = [
       }
     });
 
-    // Menú hamburguesa
+    // --- NUEVO: SCRIPT PARA ACTUALIZAR EL MENÚ ACTIVO SEGÚN LA RUTA ---
+    function updateActiveNav() {
+      let currentHash = window.location.hash || '#inicio';
+      const desktopLinks = document.querySelectorAll('[data-nav-link]');
+      const mobLinks = document.querySelectorAll('.mobile-nav-link');
+
+      // Actualizar Desktop
+      desktopLinks.forEach((link) => {
+        if (link.getAttribute('href') === currentHash) {
+          link.classList.add('bg-stone-700', 'text-white', 'shadow-sm');
+          link.classList.remove('text-stone-300', 'hover:bg-stone-700/60');
+        } else {
+          link.classList.remove('bg-stone-700', 'text-white', 'shadow-sm');
+          link.classList.add('text-stone-300', 'hover:bg-stone-700/60');
+        }
+      });
+
+      // Actualizar Mobile
+      mobLinks.forEach((link) => {
+        if (link.getAttribute('href') === currentHash) {
+          link.classList.add(
+            'text-amber-700',
+            'dark:text-amber-500',
+            'bg-stone-200/80',
+            'dark:bg-stone-800/60',
+          );
+          link.classList.remove('text-stone-500', 'dark:text-stone-400');
+        } else {
+          link.classList.remove(
+            'text-amber-700',
+            'dark:text-amber-500',
+            'bg-stone-200/80',
+            'dark:bg-stone-800/60',
+          );
+          link.classList.add('text-stone-500', 'dark:text-stone-400');
+        }
+      });
+    }
+
+    // Ejecutamos al cargar y cada vez que cambie el "#" en la URL
+    window.addEventListener('hashchange', updateActiveNav);
+    updateActiveNav();
+    // ------------------------------------------------------------------
+
     function openMenu() {
       mobileMenu.setAttribute('aria-hidden', 'false');
       mobileMenu.classList.remove('pointer-events-none');
@@ -277,9 +275,7 @@ const navLinks = [
       menuPanel.classList.add('translate-x-full');
       menuToggle.classList.remove('is-open');
       document.body.style.overflow = '';
-      setTimeout(() => {
-        mobileMenu.classList.add('pointer-events-none');
-      }, 500);
+      setTimeout(() => mobileMenu.classList.add('pointer-events-none'), 500);
     }
 
     if (menuToggle) menuToggle.addEventListener('click', openMenu);
