@@ -5,16 +5,61 @@ import Hero from '../components/sections/Hero.astro';
 import Ratings from '../components/sections/Ratings.astro';
 import Timeline from '../components/sections/Timeline.astro';
 import Testimonials from '../components/sections/Testimonials.astro';
-import Synopsis from '../components/sections/Synopsis.astro';
-import Whatsapp from '../components/Whatsapp.astro'; // <-- 1. Importamos el componente
+import Whatsapp from '../components/Whatsapp.astro';
+import Resumen from '../components/Resumen.astro';
 ---
 
-<BaseLayout title="DARK">
-  <Hero />
-  <Ratings />
-  <Synopsis />
-  <Timeline />
-  <Testimonials />
+<BaseLayout title="DARK - Sic Mundus">
+  <div id="vista-inicio" class="block transition-opacity duration-500">
+    <Hero />
+    <Ratings />
+    <Timeline />
+    <Testimonials />
+  </div>
+
+  <div id="vista-resumen" class="hidden transition-opacity duration-500">
+    <Resumen />
+  </div>
 
   <Whatsapp />
 </BaseLayout>
+
+<script is:inline>
+  // Esta función decide qué vista mostrar dependiendo del enlace pulsado
+  function controlarVistas() {
+    const hash = window.location.hash;
+    const vistaInicio = document.getElementById('vista-inicio');
+    const vistaResumen = document.getElementById('vista-resumen');
+
+    // Si el enlace es #resumen, ocultamos Inicio y mostramos Resumen
+    if (hash === '#resumen') {
+      vistaInicio.classList.add('hidden');
+      vistaInicio.classList.remove('block');
+
+      vistaResumen.classList.remove('hidden');
+      vistaResumen.classList.add('block');
+
+      // Subimos el scroll arriba del todo al "cambiar" de página
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    // Si no es resumen, nos aseguramos de que se muestre Inicio
+    else {
+      vistaResumen.classList.add('hidden');
+      vistaResumen.classList.remove('block');
+
+      vistaInicio.classList.remove('hidden');
+      vistaInicio.classList.add('block');
+
+      // Si es #inicio, subimos al top. Si es #ciclos, el navegador bajará automáticamente.
+      if (hash === '' || hash === '#inicio') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+  }
+
+  // Ejecutar cuando se carga la página por primera vez
+  document.addEventListener('DOMContentLoaded', controlarVistas);
+
+  // Ejecutar CADA VEZ que el usuario hace clic en el menú y cambia el "#" de la URL
+  window.addEventListener('hashchange', controlarVistas);
+</script>

@@ -1,0 +1,253 @@
+---
+// src/components/sections/Resumen.astro
+---
+
+<div class="pt-32 pb-24 relative z-10 w-full">
+  <div class="container mx-auto px-6 max-w-6xl">
+    <div class="text-center space-y-6 mb-12" data-aos="fade-down">
+      <h2
+        class="text-5xl md:text-7xl font-cinzel text-amber-500 font-bold tracking-widest drop-shadow-lg uppercase"
+      >
+        Resumen
+      </h2>
+      <p
+        class="text-lg md:text-xl text-stone-900 dark:text-stone-300 font-light leading-relaxed max-w-3xl mx-auto"
+      >
+        Dark está compuesta por 26 episodios, divididos en tres temporadas. En
+        el recorrido de la serie se va fraguando un misterio que inicia desde el
+        capítulo piloto y continúa hasta el final de la tercera temporada.
+      </p>
+    </div>
+
+    <div
+      class="bg-red-100/80 dark:bg-red-950/30 border border-red-500/50 dark:border-red-600/50 backdrop-blur-md rounded-lg p-4 mb-16 text-center shadow-[0_0_20px_rgba(220,38,38,0.15)] mx-auto max-w-2xl"
+      data-aos="zoom-in"
+    >
+      <p
+        class="text-red-700 dark:text-red-500 font-cinzel font-bold tracking-[0.2em] md:tracking-[0.3em] uppercase text-sm md:text-base flex items-center justify-center gap-3"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          ><path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+          ></path></svg
+        >
+        ¡Atención! A partir de aquí hay spoilers
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          ><path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+          ></path></svg
+        >
+      </p>
+    </div>
+
+    <div
+      class="flex flex-wrap justify-center gap-3 md:gap-6 mb-16"
+      data-aos="fade-up"
+    >
+      <button
+        class="tab-btn active px-6 py-2.5 md:px-10 md:py-3 rounded-full font-cinzel font-bold tracking-widest uppercase transition-all duration-300 border border-amber-600 dark:border-amber-500 bg-amber-500 text-stone-900 shadow-[0_0_15px_rgba(245,158,11,0.4)]"
+        data-target="temp1"
+      >
+        Temporada 1
+      </button>
+      <button
+        class="tab-btn px-6 py-2.5 md:px-10 md:py-3 rounded-full font-cinzel font-bold tracking-widest uppercase transition-all duration-300 border border-stone-400 dark:border-stone-600 text-stone-600 dark:text-stone-400 hover:border-amber-600 dark:hover:border-amber-500 hover:text-amber-700 dark:hover:text-amber-500 bg-stone-200/60 dark:bg-stone-900/60 backdrop-blur-sm"
+        data-target="temp2"
+      >
+        Temporada 2
+      </button>
+      <button
+        class="tab-btn px-6 py-2.5 md:px-10 md:py-3 rounded-full font-cinzel font-bold tracking-widest uppercase transition-all duration-300 border border-stone-400 dark:border-stone-600 text-stone-600 dark:text-stone-400 hover:border-amber-600 dark:hover:border-amber-500 hover:text-amber-700 dark:hover:text-amber-500 bg-stone-200/60 dark:bg-stone-900/60 backdrop-blur-sm"
+        data-target="temp3"
+      >
+        Temporada 3
+      </button>
+    </div>
+
+    <div
+      class="relative bg-stone-100/80 dark:bg-stone-950/50 backdrop-blur-lg border border-stone-300 dark:border-stone-800 rounded-2xl p-6 md:p-12 shadow-2xl"
+    >
+      <div id="temp1" class="tab-content block animate-fade-in">
+        <h3
+          class="text-3xl md:text-5xl font-cinzel text-amber-700 dark:text-amber-500 font-bold text-center mb-12 uppercase tracking-wider"
+        >
+          El enigma de los viajes en el tiempo
+        </h3>
+        <div class="grid md:grid-cols-2 gap-10 items-center mb-16">
+          <div
+            class="order-2 md:order-1 space-y-4 text-stone-800 dark:text-stone-300 font-light leading-relaxed"
+          >
+            <p>
+              En el año 2019 Michael Kahnwald decide quitarse la vida y deja una
+              carta dirigida a Ines, su madre.
+            </p>
+            <p>
+              Una noche, mientras Jonas anda con sus amigos Bartosz, Magnus y
+              Martha, el hermano pequeño de estos últimos, Mikkel, desaparece.
+            </p>
+          </div>
+          <div class="order-1 md:order-2">
+            <img
+              src="/resumen/temporada1/1.jpg"
+              class="rounded-xl shadow-lg border border-stone-300 dark:border-stone-700 w-full object-cover aspect-video hover:scale-[1.02] transition-transform duration-500 grayscale hover:grayscale-0"
+            />
+          </div>
+        </div>
+        <div
+          class="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl border border-stone-300 dark:border-stone-700 bg-black aspect-video"
+        >
+          <iframe
+            class="w-full h-full"
+            src="https://www.youtube.com/embed/zmxw7NgsBH4?controls=1"
+            allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div id="temp2" class="tab-content hidden animate-fade-in">
+        <h3
+          class="text-3xl md:text-5xl font-cinzel text-amber-700 dark:text-amber-500 font-bold text-center mb-12 uppercase tracking-wider"
+        >
+          Hacia el apocalipsis
+        </h3>
+        <div class="grid md:grid-cols-2 gap-10 items-center mb-16">
+          <div
+            class="space-y-4 text-stone-800 dark:text-stone-300 font-light leading-relaxed"
+          >
+            <p>
+              Jonas se encuentra atrapado en el año 2052. Descubre lo que hay
+              detrás de una organización secreta llamada “Sic Mundus”, cuyo
+              cabecilla se llama Adam.
+            </p>
+          </div>
+          <div>
+            <img
+              src="/resumen/temporada2/1.jpg"
+              class="rounded-xl shadow-lg border border-stone-300 dark:border-stone-700 w-full object-cover aspect-video hover:scale-[1.02] transition-transform duration-500 grayscale hover:grayscale-0"
+            />
+          </div>
+        </div>
+        <div
+          class="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl border border-stone-300 dark:border-stone-700 bg-black aspect-video"
+        >
+          <iframe
+            class="w-full h-full"
+            src="https://www.youtube.com/embed/Nghb6pT0ghk?controls=1"
+            allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div id="temp3" class="tab-content hidden animate-fade-in">
+        <h3
+          class="text-3xl md:text-5xl font-cinzel text-amber-700 dark:text-amber-500 font-bold text-center mb-12 uppercase tracking-wider"
+        >
+          Un nuevo mundo
+        </h3>
+        <div class="grid md:grid-cols-2 gap-10 items-center mb-16">
+          <div
+            class="order-2 md:order-1 space-y-4 text-stone-800 dark:text-stone-300 font-light leading-relaxed"
+          >
+            <p>
+              Jonas viaja en 2019 a un nuevo Winden, es su pueblo pero se trata
+              de un mundo paralelo. En esta nueva realidad él no existe.
+            </p>
+          </div>
+          <div class="order-1 md:order-2">
+            <img
+              src="/resumen/temporada3/2.jpg"
+              class="rounded-xl shadow-lg border border-stone-300 dark:border-stone-700 w-full object-cover aspect-video hover:scale-[1.02] transition-transform duration-500 grayscale hover:grayscale-0"
+            />
+          </div>
+        </div>
+        <div
+          class="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl border border-stone-300 dark:border-stone-700 bg-black aspect-video"
+        >
+          <iframe
+            class="w-full h-full"
+            src="https://www.youtube.com/embed/z2wPBG-GSJ0?controls=1"
+            allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+  }
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        contents.forEach((c) => {
+          c.classList.remove('block');
+          c.classList.add('hidden');
+        });
+        tabs.forEach((t) => {
+          t.classList.remove(
+            'bg-amber-500',
+            'text-stone-900',
+            'border-amber-600',
+            'dark:border-amber-500',
+            'shadow-[0_0_15px_rgba(245,158,11,0.4)]',
+          );
+          t.classList.add(
+            'bg-stone-200/60',
+            'dark:bg-stone-900/60',
+            'text-stone-600',
+            'dark:text-stone-400',
+            'border-stone-400',
+            'dark:border-stone-600',
+          );
+        });
+        const targetId = tab.getAttribute('data-target');
+        document.getElementById(targetId).classList.remove('hidden');
+        document.getElementById(targetId).classList.add('block');
+        tab.classList.remove(
+          'bg-stone-200/60',
+          'dark:bg-stone-900/60',
+          'text-stone-600',
+          'dark:text-stone-400',
+          'border-stone-400',
+          'dark:border-stone-600',
+        );
+        tab.classList.add(
+          'bg-amber-500',
+          'text-stone-900',
+          'border-amber-600',
+          'dark:border-amber-500',
+          'shadow-[0_0_15px_rgba(245,158,11,0.4)]',
+        );
+      });
+    });
+  });
+</script>
