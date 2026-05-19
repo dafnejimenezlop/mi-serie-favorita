@@ -3,7 +3,7 @@
 ---
 
 <div class="pt-40 md:pt-48 pb-24 relative z-10 w-full min-h-screen">
-  <div class="container mx-auto px-6 max-w-7xl">
+  <div class="container mx-auto px-4 md:px-6 max-w-7xl">
     <div class="text-center space-y-6 mb-12" data-aos="fade-down">
       <h2
         class="text-4xl md:text-6xl font-cinzel text-amber-600 dark:text-amber-500 font-bold tracking-[0.2em] drop-shadow-lg dark:drop-shadow-2xl uppercase"
@@ -19,7 +19,7 @@
     </div>
 
     <div
-      class="flex items-center justify-center gap-4 mb-16 opacity-80"
+      class="flex items-center justify-center gap-4 mb-12 md:mb-16 opacity-80"
       data-aos="zoom-in"
     >
       <div
@@ -27,7 +27,7 @@
       >
       </div>
       <p
-        class="text-red-600 dark:text-red-500 font-mono tracking-widest uppercase text-sm md:text-md font-bold flex items-center gap-2"
+        class="text-red-600 dark:text-red-500 font-mono tracking-widest uppercase text-[10px] md:text-xs font-bold flex items-center gap-2"
       >
         <svg
           class="w-4 h-4"
@@ -50,34 +50,37 @@
     </div>
 
     <div
-      class="flex flex-wrap justify-center gap-2 md:gap-4 mb-16"
+      class="grid grid-cols-3 md:flex md:flex-wrap justify-center gap-2 md:gap-4 mb-12 md:mb-16 w-full max-w-2xl mx-auto"
       data-aos="fade-up"
     >
       <button
-        class="tab-btn active px-6 py-3 rounded-t-lg font-cinzel font-bold tracking-widest uppercase transition-all duration-300 text-white border-b-2 border-amber-600 dark:border-amber-500 bg-stone-800 dark:bg-[#0a0a0a] shadow-lg"
+        class="tab-btn active px-1 py-3 md:px-6 md:py-3 rounded-lg md:rounded-t-lg font-cinzel font-bold tracking-wider md:tracking-widest uppercase text-[10px] md:text-base transition-all duration-300 text-white border-b-2 border-amber-600 dark:border-amber-500 bg-stone-800 dark:bg-[#0a0a0a] shadow-lg"
         data-target="temp1"
       >
-        Temporada 1
+        <span class="block md:hidden">Temp. 1</span>
+        <span class="hidden md:block">Temporada 1</span>
       </button>
       <button
-        class="tab-btn px-6 py-3 rounded-t-lg font-cinzel font-bold tracking-widest uppercase transition-all duration-300 text-stone-500 border-b-2 border-transparent hover:text-stone-700 dark:hover:text-stone-300 hover:bg-stone-300/40 dark:hover:bg-stone-900/40"
+        class="tab-btn px-1 py-3 md:px-6 md:py-3 rounded-lg md:rounded-t-lg font-cinzel font-bold tracking-wider md:tracking-widest uppercase text-[10px] md:text-base transition-all duration-300 text-stone-500 border-b-2 border-transparent hover:text-stone-700 dark:hover:text-stone-300 hover:bg-stone-300/40 dark:hover:bg-stone-900/40"
         data-target="temp2"
       >
-        Temporada 2
+        <span class="block md:hidden">Temp. 2</span>
+        <span class="hidden md:block">Temporada 2</span>
       </button>
       <button
-        class="tab-btn px-6 py-3 rounded-t-lg font-cinzel font-bold tracking-widest uppercase transition-all duration-300 text-stone-500 border-b-2 border-transparent hover:text-stone-700 dark:hover:text-stone-300 hover:bg-stone-300/40 dark:hover:bg-stone-900/40"
+        class="tab-btn px-1 py-3 md:px-6 md:py-3 rounded-lg md:rounded-t-lg font-cinzel font-bold tracking-wider md:tracking-widest uppercase text-[10px] md:text-base transition-all duration-300 text-stone-500 border-b-2 border-transparent hover:text-stone-700 dark:hover:text-stone-300 hover:bg-stone-300/40 dark:hover:bg-stone-900/40"
         data-target="temp3"
       >
-        Temporada 3
+        <span class="block md:hidden">Temp. 3</span>
+        <span class="hidden md:block">Temporada 3</span>
       </button>
     </div>
 
     <div class="relative w-full">
       <div id="temp1" class="tab-content block animate-fade-in">
-        <div class="flex items-center gap-6 mb-12">
+        <div class="flex items-center gap-6 mb-8 md:mb-12">
           <h3
-            class="text-2xl md:text-4xl font-cinzel text-stone-800 dark:text-stone-100 font-bold uppercase tracking-widest whitespace-nowrap"
+            class="text-xl md:text-4xl font-cinzel text-stone-800 dark:text-stone-100 font-bold uppercase tracking-widest whitespace-nowrap"
           >
             El enigma
           </h3>
@@ -88,20 +91,29 @@
         </div>
 
         <div
-          class="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-700 dark:border-stone-800/60 bg-stone-800 dark:bg-[#0a0a0a] mb-12 group"
+          class="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-700 dark:border-stone-800/60 bg-stone-800 dark:bg-[#0a0a0a] mb-12 group flex flex-col lg:block lg:min-h-[450px]"
         >
-          <div class="absolute inset-0 md:left-1/3 overflow-hidden z-0">
+          <div
+            class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:left-1/4 overflow-hidden z-0"
+          >
             <img
               src="/resumen/temporada1/1.jpg"
-              class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000 opacity-60 md:opacity-100"
+              class="w-full h-full object-cover object-top lg:object-[80%_center] transform group-hover:scale-105 transition-transform duration-1000 opacity-80 lg:opacity-100"
             />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-stone-800 dark:from-[#0a0a0a] via-stone-800/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+            >
+            </div>
           </div>
+
           <div
-            class="absolute inset-0 md:left-1/3 bg-gradient-to-t md:bg-gradient-to-r from-stone-800 via-stone-800/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
+            class="hidden lg:block absolute inset-0 lg:left-1/4 bg-gradient-to-r from-stone-800 via-stone-800/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
           >
           </div>
 
-          <div class="relative z-10 p-8 md:p-16 md:w-2/3 space-y-6">
+          <div
+            class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] space-y-4 md:space-y-6 flex flex-col justify-center lg:min-h-[450px]"
+          >
             <p
               class="text-stone-300 font-light leading-relaxed text-sm md:text-base"
             >
@@ -131,20 +143,29 @@
         </div>
 
         <div
-          class="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-700 dark:border-stone-800/60 bg-stone-800 dark:bg-[#0a0a0a] mb-16 group"
+          class="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-700 dark:border-stone-800/60 bg-stone-800 dark:bg-[#0a0a0a] mb-12 group flex flex-col lg:block lg:min-h-[450px]"
         >
-          <div class="absolute inset-0 md:w-2/3 overflow-hidden z-0">
+          <div
+            class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:w-3/4 overflow-hidden z-0"
+          >
             <img
               src="/resumen/temporada1/2.jpg"
-              class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000 grayscale group-hover:grayscale-0 opacity-50 md:opacity-80"
+              class="w-full h-full object-cover object-top lg:object-[20%_center] transform group-hover:scale-105 transition-transform duration-1000 grayscale group-hover:grayscale-0 opacity-80 lg:opacity-80"
             />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-stone-800 dark:from-[#0a0a0a] via-stone-800/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+            >
+            </div>
           </div>
+
           <div
-            class="absolute inset-0 md:w-2/3 bg-gradient-to-t md:bg-gradient-to-l from-stone-800 via-stone-800/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
+            class="hidden lg:block absolute inset-0 lg:w-3/4 bg-gradient-to-l from-stone-800 via-stone-800/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
           >
           </div>
 
-          <div class="relative z-10 p-8 md:p-16 md:w-2/3 md:ml-auto space-y-6">
+          <div
+            class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] lg:ml-auto space-y-4 md:space-y-6 flex flex-col justify-center lg:min-h-[450px]"
+          >
             <p
               class="text-stone-300 font-light leading-relaxed text-sm md:text-base"
             >
@@ -190,9 +211,9 @@
       </div>
 
       <div id="temp2" class="tab-content hidden animate-fade-in">
-        <div class="flex items-center gap-6 mb-12">
+        <div class="flex items-center gap-6 mb-8 md:mb-12">
           <h3
-            class="text-2xl md:text-4xl font-cinzel text-stone-800 dark:text-stone-100 font-bold uppercase tracking-widest whitespace-nowrap"
+            class="text-xl md:text-4xl font-cinzel text-stone-800 dark:text-stone-100 font-bold uppercase tracking-widest whitespace-nowrap"
           >
             Hacia el apocalipsis
           </h3>
@@ -203,20 +224,29 @@
         </div>
 
         <div
-          class="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-700 dark:border-stone-800/60 bg-stone-800 dark:bg-[#0a0a0a] mb-12 group"
+          class="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-700 dark:border-stone-800/60 bg-stone-800 dark:bg-[#0a0a0a] mb-12 group flex flex-col lg:block lg:min-h-[450px]"
         >
-          <div class="absolute inset-0 md:left-1/3 overflow-hidden z-0">
+          <div
+            class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:left-1/4 overflow-hidden z-0"
+          >
             <img
               src="/resumen/temporada2/1.jpg"
-              class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000 opacity-60 md:opacity-100"
+              class="w-full h-full object-cover object-top lg:object-[80%_center] transform group-hover:scale-105 transition-transform duration-1000 opacity-80 lg:opacity-100"
             />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-stone-800 dark:from-[#0a0a0a] via-stone-800/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+            >
+            </div>
           </div>
+
           <div
-            class="absolute inset-0 md:left-1/3 bg-gradient-to-t md:bg-gradient-to-r from-stone-800 via-stone-800/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
+            class="hidden lg:block absolute inset-0 lg:left-1/4 bg-gradient-to-r from-stone-800 via-stone-800/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
           >
           </div>
 
-          <div class="relative z-10 p-8 md:p-16 md:w-2/3 space-y-6">
+          <div
+            class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] space-y-4 md:space-y-6 flex flex-col justify-center lg:min-h-[450px]"
+          >
             <p
               class="text-stone-300 font-light leading-relaxed text-sm md:text-base"
             >
@@ -246,20 +276,29 @@
         </div>
 
         <div
-          class="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-700 dark:border-stone-800/60 bg-stone-800 dark:bg-[#0a0a0a] mb-16 group"
+          class="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-700 dark:border-stone-800/60 bg-stone-800 dark:bg-[#0a0a0a] mb-12 group flex flex-col lg:block lg:min-h-[450px]"
         >
-          <div class="absolute inset-0 md:w-2/3 overflow-hidden z-0">
+          <div
+            class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:w-3/4 overflow-hidden z-0"
+          >
             <img
               src="/resumen/temporada2/2.jpg"
-              class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000 opacity-50 md:opacity-80 grayscale group-hover:grayscale-0"
+              class="w-full h-full object-cover object-top lg:object-[20%_center] transform group-hover:scale-105 transition-transform duration-1000 grayscale group-hover:grayscale-0 opacity-80 lg:opacity-80"
             />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-stone-800 dark:from-[#0a0a0a] via-stone-800/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+            >
+            </div>
           </div>
+
           <div
-            class="absolute inset-0 md:w-2/3 bg-gradient-to-t md:bg-gradient-to-l from-stone-800 via-stone-800/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
+            class="hidden lg:block absolute inset-0 lg:w-3/4 bg-gradient-to-l from-stone-800 via-stone-800/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
           >
           </div>
 
-          <div class="relative z-10 p-8 md:p-16 md:w-2/3 md:ml-auto space-y-6">
+          <div
+            class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] lg:ml-auto space-y-4 md:space-y-6 flex flex-col justify-center lg:min-h-[450px]"
+          >
             <p
               class="text-stone-300 font-light leading-relaxed text-sm md:text-base"
             >
@@ -298,9 +337,9 @@
       </div>
 
       <div id="temp3" class="tab-content hidden animate-fade-in">
-        <div class="flex items-center gap-6 mb-12">
+        <div class="flex items-center gap-6 mb-8 md:mb-12">
           <h3
-            class="text-2xl md:text-4xl font-cinzel text-stone-800 dark:text-stone-100 font-bold uppercase tracking-widest whitespace-nowrap"
+            class="text-xl md:text-4xl font-cinzel text-stone-800 dark:text-stone-100 font-bold uppercase tracking-widest whitespace-nowrap"
           >
             Un nuevo mundo
           </h3>
@@ -311,20 +350,29 @@
         </div>
 
         <div
-          class="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-700 dark:border-stone-800/60 bg-stone-800 dark:bg-[#0a0a0a] mb-12 group"
+          class="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-700 dark:border-stone-800/60 bg-stone-800 dark:bg-[#0a0a0a] mb-12 group flex flex-col lg:block lg:min-h-[450px]"
         >
-          <div class="absolute inset-0 md:left-1/3 overflow-hidden z-0">
+          <div
+            class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:left-1/4 overflow-hidden z-0"
+          >
             <img
               src="/resumen/temporada3/2.jpg"
-              class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000 opacity-60 md:opacity-100"
+              class="w-full h-full object-cover object-top lg:object-[80%_center] transform group-hover:scale-105 transition-transform duration-1000 opacity-80 lg:opacity-100"
             />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-stone-800 dark:from-[#0a0a0a] via-stone-800/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+            >
+            </div>
           </div>
+
           <div
-            class="absolute inset-0 md:left-1/3 bg-gradient-to-t md:bg-gradient-to-r from-stone-800 via-stone-800/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
+            class="hidden lg:block absolute inset-0 lg:left-1/4 bg-gradient-to-r from-stone-800 via-stone-800/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
           >
           </div>
 
-          <div class="relative z-10 p-8 md:p-16 md:w-2/3 space-y-6">
+          <div
+            class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] space-y-4 md:space-y-6 flex flex-col justify-center lg:min-h-[450px]"
+          >
             <p
               class="text-stone-300 font-light leading-relaxed text-sm md:text-base"
             >
@@ -353,20 +401,29 @@
         </div>
 
         <div
-          class="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-700 dark:border-stone-800/60 bg-stone-800 dark:bg-[#0a0a0a] mb-16 group"
+          class="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-700 dark:border-stone-800/60 bg-stone-800 dark:bg-[#0a0a0a] mb-12 group flex flex-col lg:block lg:min-h-[450px]"
         >
-          <div class="absolute inset-0 md:w-2/3 overflow-hidden z-0">
+          <div
+            class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:w-3/4 overflow-hidden z-0"
+          >
             <img
               src="/resumen/temporada3/1.jpg"
-              class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000 opacity-50 md:opacity-80 grayscale group-hover:grayscale-0"
+              class="w-full h-full object-cover object-top lg:object-[20%_center] transform group-hover:scale-105 transition-transform duration-1000 grayscale group-hover:grayscale-0 opacity-80 lg:opacity-80"
             />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-stone-800 dark:from-[#0a0a0a] via-stone-800/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+            >
+            </div>
           </div>
+
           <div
-            class="absolute inset-0 md:w-2/3 bg-gradient-to-t md:bg-gradient-to-l from-stone-800 via-stone-800/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
+            class="hidden lg:block absolute inset-0 lg:w-3/4 bg-gradient-to-l from-stone-800 via-stone-800/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
           >
           </div>
 
-          <div class="relative z-10 p-8 md:p-16 md:w-2/3 md:ml-auto space-y-6">
+          <div
+            class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] lg:ml-auto space-y-4 md:space-y-6 flex flex-col justify-center lg:min-h-[450px]"
+          >
             <p
               class="text-stone-300 font-light leading-relaxed text-sm md:text-base"
             >
@@ -435,7 +492,6 @@
         c.classList.add('hidden');
       });
 
-      // Apagamos todas las pestañas (Diseño inactivo)
       tabs.forEach((t) => {
         t.classList.remove(
           'text-white',
@@ -448,7 +504,6 @@
         t.classList.add('text-stone-500', 'border-transparent');
       });
 
-      // Encendemos la pestaña clickeada
       const targetContent = document.getElementById(tabTargetId);
       const targetTab = document.querySelector(
         `.tab-btn[data-target="${tabTargetId}"]`,
