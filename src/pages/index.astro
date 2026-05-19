@@ -7,6 +7,7 @@ import Timeline from '../components/sections/Timeline.astro';
 import Testimonials from '../components/sections/Testimonials.astro';
 import Whatsapp from '../components/Whatsapp.astro';
 import Resumen from '../components/Resumen.astro';
+import Aclaraciones from '../components/Aclaraciones.astro';
 ---
 
 <BaseLayout title="DARK - Sic Mundus">
@@ -21,40 +22,56 @@ import Resumen from '../components/Resumen.astro';
     <Resumen />
   </div>
 
+  <div id="vista-aclaraciones" class="hidden transition-opacity duration-500">
+    <Aclaraciones />
+  </div>
+
   <Whatsapp />
 </BaseLayout>
 
 <script is:inline>
   function controlarVistas() {
-    const hash = window.location.hash;
-    const vistaInicio = document.getElementById('vista-inicio');
-    const vistaResumen = document.getElementById('vista-resumen');
+    const hash = window.location.hash || '#inicio';
+    const vistas = ['vista-inicio', 'vista-resumen', 'vista-aclaraciones'];
 
-    if (hash === '#resumen') {
-      vistaInicio.classList.add('hidden');
-      vistaInicio.classList.remove('block');
-      vistaResumen.classList.remove('hidden');
-      vistaResumen.classList.add('block');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Decidir cuál es la vista activa
+    let vistaActiva = 'vista-inicio';
+    if (hash === '#resumen') vistaActiva = 'vista-resumen';
+    if (hash === '#aclaraciones') vistaActiva = 'vista-aclaraciones';
 
-      // Magia: Forzar a AOS a que actualice las animaciones al cambiar de vista
-      setTimeout(() => {
-        if (typeof AOS !== 'undefined') AOS.refresh();
-      }, 50);
-    } else {
-      vistaResumen.classList.add('hidden');
-      vistaResumen.classList.remove('block');
-      vistaInicio.classList.remove('hidden');
-      vistaInicio.classList.add('block');
-
-      if (hash === '' || hash === '#inicio') {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Mostrar solo la vista activa y ocultar el resto
+    vistas.forEach((v) => {
+      const el = document.getElementById(v);
+      if (el) {
+        if (v === vistaActiva) {
+          el.classList.remove('hidden');
+          el.classList.add('block');
+        } else {
+          el.classList.add('hidden');
+          el.classList.remove('block');
+        }
       }
+    });
 
-      // Magia: Forzar a AOS a que actualice las animaciones
-      setTimeout(() => {
-        if (typeof AOS !== 'undefined') AOS.refresh();
-      }, 50);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Forzar a AOS a que actualice las animaciones al cambiar
+    setTimeout(() => {
+      if (typeof AOS !== 'undefined') AOS.refresh();
+    }, 50);
+
+    // Resetear las pestañas a la primera cuando entras en cada sección
+    if (
+      vistaActiva === 'vista-resumen' &&
+      typeof window.resetResumenTabs === 'function'
+    ) {
+      window.resetResumenTabs();
+    }
+    if (
+      vistaActiva === 'vista-aclaraciones' &&
+      typeof window.resetAclaracionesTabs === 'function'
+    ) {
+      window.resetAclaracionesTabs();
     }
   }
 

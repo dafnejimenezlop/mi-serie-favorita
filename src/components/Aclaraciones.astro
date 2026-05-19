@@ -1,0 +1,494 @@
+---
+// src/components/Aclaraciones.astro
+---
+
+<div class="pt-40 md:pt-48 pb-24 relative z-10 w-full min-h-screen">
+  <div class="container mx-auto px-4 md:px-6 max-w-7xl">
+    <div class="text-center space-y-6 mb-12" data-aos="fade-down">
+      <h2
+        class="text-4xl md:text-6xl font-cinzel text-amber-600 dark:text-amber-500 font-bold tracking-[0.2em] drop-shadow-lg dark:drop-shadow-2xl uppercase"
+      >
+        Aclaraciones
+      </h2>
+      <p
+        class="text-base md:text-lg text-stone-700 dark:text-stone-300 font-light leading-relaxed max-w-2xl mx-auto tracking-wide"
+      >
+        Conceptos científicos, mitología oculta y las claves para desentrañar el
+        nudo de los tres mundos de Winden.
+      </p>
+    </div>
+
+    <div
+      class="grid grid-cols-3 md:flex md:flex-wrap justify-center gap-2 md:gap-4 mb-12 md:mb-16 w-full max-w-3xl mx-auto"
+      data-aos="fade-up"
+    >
+      <button
+        class="tab-btn-aclara active px-1 py-3 md:px-6 md:py-3 rounded-lg md:rounded-t-lg font-cinzel font-bold tracking-wider md:tracking-widest uppercase text-[10px] md:text-base transition-all duration-300 text-stone-900 dark:text-white border-b-2 border-amber-600 dark:border-amber-500 bg-stone-300/80 dark:bg-stone-800/80 shadow-lg"
+        data-target="aclara-explicacion"
+      >
+        Explicación
+      </button>
+      <button
+        class="tab-btn-aclara px-1 py-3 md:px-6 md:py-3 rounded-lg md:rounded-t-lg font-cinzel font-bold tracking-wider md:tracking-widest uppercase text-[10px] md:text-base transition-all duration-300 text-stone-500 border-b-2 border-transparent hover:text-stone-700 dark:hover:text-stone-300 hover:bg-stone-300/40 dark:hover:bg-stone-900/40"
+        data-target="aclara-simbologia"
+      >
+        Simbología
+      </button>
+      <button
+        class="tab-btn-aclara px-1 py-3 md:px-6 md:py-3 rounded-lg md:rounded-t-lg font-cinzel font-bold tracking-wider md:tracking-widest uppercase text-[10px] md:text-base transition-all duration-300 text-stone-500 border-b-2 border-transparent hover:text-stone-700 dark:hover:text-stone-300 hover:bg-stone-300/40 dark:hover:bg-stone-900/40"
+        data-target="aclara-final"
+      >
+        El Final
+      </button>
+    </div>
+
+    <div class="relative w-full">
+      <div
+        id="aclara-explicacion"
+        class="tab-content-aclara block animate-fade-in"
+      >
+        <div
+          class="text-center max-w-3xl mx-auto mb-16 text-stone-800 dark:text-stone-300 font-light leading-relaxed italic"
+        >
+          <p>
+            ¿De dónde venimos? ¿Hacia dónde vamos? ¿Es posible cambiar el
+            transcurso de los acontecimientos o todo se mueve hacia un destino
+            invariable? Para encontrar las respuestas, debemos aferrarnos a
+            teorías científicas, posturas filosóficas y a la mitología.
+          </p>
+        </div>
+
+        <div
+          class="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-300 dark:border-stone-800/60 bg-stone-200/90 dark:bg-[#0a0a0a] mb-12 group flex flex-col lg:block lg:min-h-[450px]"
+        >
+          <div
+            class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:left-1/4 overflow-hidden z-0 mask-right"
+          >
+            <img
+              src="/Aclaraciones/Explicacion/1.jpg"
+              class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-1000 opacity-60 md:opacity-100 mix-blend-multiply dark:mix-blend-normal"
+            />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-stone-200 dark:from-[#0a0a0a] via-stone-200/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+            >
+            </div>
+          </div>
+          <div
+            class="hidden lg:block absolute inset-0 lg:left-1/4 bg-gradient-to-r from-stone-200 via-stone-200/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
+          >
+          </div>
+
+          <div
+            class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] space-y-4 flex flex-col justify-center lg:min-h-[450px]"
+          >
+            <h3
+              class="text-2xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-2"
+            >
+              El puente de Einstein-Rosen
+            </h3>
+            <p
+              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+            >
+              Una de las bases de la serie es la posibilidad de viajar a través
+              del tiempo mediante los agujeros de gusano. Einstein y Rosen
+              formularon que dos universos pudieran estar conectados y fuera
+              posible viajar en el espacio-tiempo.
+            </p>
+            <p
+              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+            >
+              Así, la estructura de la serie se desarrolla en diferentes líneas
+              narrativas (1921, 1953, 1986, 2019, 2052). El tiempo no se
+              entiende como algo lineal, sino circular.
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-300 dark:border-stone-800/60 bg-stone-200/90 dark:bg-[#0a0a0a] mb-12 group flex flex-col lg:block lg:min-h-[450px]"
+        >
+          <div
+            class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:w-3/4 overflow-hidden z-0 mask-left"
+          >
+            <img
+              src="/Aclaraciones/Explicacion/2.jpg"
+              class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-1000 grayscale group-hover:grayscale-0 opacity-50 lg:opacity-80 mix-blend-multiply dark:mix-blend-normal"
+            />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-stone-200 dark:from-[#0a0a0a] via-stone-200/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+            >
+            </div>
+          </div>
+          <div
+            class="hidden lg:block absolute inset-0 lg:w-3/4 bg-gradient-to-l from-stone-200 via-stone-200/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
+          >
+          </div>
+
+          <div
+            class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] lg:ml-auto space-y-4 flex flex-col justify-center lg:min-h-[450px]"
+          >
+            <h3
+              class="text-2xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-2"
+            >
+              El Eterno Retorno
+            </h3>
+            <p
+              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+            >
+              Si pudieras revivir algo que ya has vivido, ¿volverías a hacer lo
+              mismo? La serie toma la idea de Nietzsche en <em
+                >"Así habló Zaratustra"</em
+              >: el tiempo es circular y los acontecimientos siguen las leyes de
+              la causalidad.
+            </p>
+            <p
+              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+            >
+              No se pueden alterar ni cambiar los hechos. Como dijo Noah: <em
+                >"Mi yo adulto quería decirme algo pero no podía, porque si
+                supieras lo que sé ahora no harías lo que debes hacer para
+                llegar a este momento"</em
+              >.
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-300 dark:border-stone-800/60 bg-stone-200/90 dark:bg-[#0a0a0a] mb-12 group flex flex-col lg:block lg:min-h-[450px]"
+        >
+          <div
+            class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:left-1/4 overflow-hidden z-0 mask-right"
+          >
+            <img
+              src="/Aclaraciones/Explicacion/3.jpg"
+              class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-1000 opacity-60 md:opacity-100 mix-blend-multiply dark:mix-blend-normal"
+            />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-stone-200 dark:from-[#0a0a0a] via-stone-200/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+            >
+            </div>
+          </div>
+          <div
+            class="hidden lg:block absolute inset-0 lg:left-1/4 bg-gradient-to-r from-stone-200 via-stone-200/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
+          >
+          </div>
+
+          <div
+            class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] space-y-4 flex flex-col justify-center lg:min-h-[450px]"
+          >
+            <h3
+              class="text-2xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-2"
+            >
+              Ariadna, Teseo y el Minotauro
+            </h3>
+            <p
+              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+            >
+              El mito griego aparece profundamente representado. Teseo se
+              adentra en el laberinto para matar al Minotauro, y Ariadna le
+              ayuda a salir usando un ovillo de hilo rojo.
+            </p>
+            <p
+              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+            >
+              En Dark, las cuevas de Winden son el laberinto, Jonas y otros
+              personajes asumen el rol de Teseo, y el hilo rojo es la guía
+              literal a través de los túneles del tiempo.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div
+        id="aclara-simbologia"
+        class="tab-content-aclara hidden animate-fade-in"
+      >
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+          <div
+            class="bg-stone-100 dark:bg-stone-900 border border-stone-300 dark:border-stone-800 rounded-xl p-8 hover:border-amber-500 transition-colors duration-500 group shadow-lg"
+          >
+            <img
+              src="/Aclaraciones/Simbologia/2.jpg"
+              class="w-full h-48 object-cover rounded-lg mb-6 opacity-80 group-hover:opacity-100 transition-opacity"
+            />
+            <h3
+              class="text-2xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-4"
+            >
+              El número 33
+            </h3>
+            <p class="text-stone-700 dark:text-stone-400 font-light text-sm">
+              Este número alude a la edad de Cristo o a la numerología del
+              equilibrio. En la serie, hace alusión al tiempo que tarda la
+              órbita de la luna en concordar con el sol. El bucle se repite cada
+              33 años, porque el universo entero vuelve exactamente a la misma
+              posición.
+            </p>
+          </div>
+
+          <div
+            class="bg-stone-100 dark:bg-stone-900 border border-stone-300 dark:border-stone-800 rounded-xl p-8 hover:border-amber-500 transition-colors duration-500 group shadow-lg"
+          >
+            <img
+              src="/Aclaraciones/Simbologia/1.jpg"
+              class="w-full h-48 object-cover rounded-lg mb-6 opacity-80 group-hover:opacity-100 transition-opacity"
+            />
+            <h3
+              class="text-2xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-4"
+            >
+              La Triqueta
+            </h3>
+            <p class="text-stone-700 dark:text-stone-400 font-light text-sm">
+              Aparece en el libro, en la puerta de la cueva y tatuado. De origen
+              celta, simboliza la vida, muerte y reencarnación. Dark lo utiliza
+              para explicar el nudo infinito de los 3 periodos (1953, 1986 y
+              2019) y los tres mundos conectados.
+            </p>
+          </div>
+
+          <div
+            class="bg-stone-100 dark:bg-stone-900 border border-stone-300 dark:border-stone-800 rounded-xl p-8 hover:border-amber-500 transition-colors duration-500 group shadow-lg"
+          >
+            <img
+              src="/Aclaraciones/Simbologia/3.jpg"
+              class="w-full h-48 object-cover rounded-lg mb-6 opacity-80 group-hover:opacity-100 transition-opacity"
+            />
+            <h3
+              class="text-2xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-4"
+            >
+              La Tabla de Esmeralda
+            </h3>
+            <p class="text-stone-700 dark:text-stone-400 font-light text-sm">
+              Asignado a Hermes Trismegisto, trata sobre la esencia de la
+              materia. "Lo que está abajo es como lo que está arriba", una
+              alusión al tiempo cíclico: el principio es el final y el final es
+              el principio.
+            </p>
+          </div>
+
+          <div
+            class="bg-stone-100 dark:bg-stone-900 border border-stone-300 dark:border-stone-800 rounded-xl p-8 hover:border-amber-500 transition-colors duration-500 group shadow-lg"
+          >
+            <img
+              src="/Aclaraciones/Simbologia/4.png"
+              class="w-full h-48 object-cover object-top rounded-lg mb-6 opacity-80 group-hover:opacity-100 transition-opacity"
+            />
+            <h3
+              class="text-2xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-4"
+            >
+              Sic Mundus Creatus Est
+            </h3>
+            <p class="text-stone-700 dark:text-stone-400 font-light text-sm">
+              "Y así se creó el mundo". Escrito en las puertas de la cueva y da
+              nombre a la organización de viajeros de 1921 liderada por Adam,
+              que pretende librar una guerra contra el tiempo para dar paso a un
+              nuevo ciclo.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div id="aclara-final" class="tab-content-aclara hidden animate-fade-in">
+        <div
+          class="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-300 dark:border-stone-800/60 bg-stone-200/90 dark:bg-[#0a0a0a] mb-12 group flex flex-col lg:block lg:min-h-[450px]"
+        >
+          <div
+            class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:left-1/4 overflow-hidden z-0 mask-right"
+          >
+            <img
+              src="/Aclaraciones/Final/11.jpg"
+              class="w-full h-full object-cover object-[80%_center] transform group-hover:scale-105 transition-transform duration-1000 opacity-60 md:opacity-100 mix-blend-multiply dark:mix-blend-normal"
+            />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-stone-200 dark:from-[#0a0a0a] via-stone-200/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+            >
+            </div>
+          </div>
+          <div
+            class="hidden lg:block absolute inset-0 lg:left-1/4 bg-gradient-to-r from-stone-200 via-stone-200/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
+          >
+          </div>
+
+          <div
+            class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] space-y-4 flex flex-col justify-center lg:min-h-[450px]"
+          >
+            <h3
+              class="text-2xl md:text-4xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-4"
+            >
+              Los Tres Mundos
+            </h3>
+            <p
+              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+            >
+              El final de la serie tiene como punto de partida el determinismo.
+              Adam y Eva representan el bando de la oscuridad y la luz. Uno
+              tiene la misión de destruir el ciclo, la otra de preservarlo.
+            </p>
+            <p
+              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base italic border-l-2 border-amber-500 pl-4 my-4"
+            >
+              "Nuestro pensamiento se rige por dualidades. Negro o blanco. Tu
+              mundo o el de Eva. Pero es un error, nada está completo sin una
+              tercera dimensión." - Claudia.
+            </p>
+            <p
+              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+            >
+              Claudia revela la existencia del <strong>Mundo Origen</strong>.
+              Tannhaus, desde el mundo original, creó un prototipo de máquina
+              del tiempo para impedir la muerte de su familia, dividiendo su
+              mundo y creando las dos realidades de Jonas y Martha.
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-300 dark:border-stone-800/60 bg-stone-200/90 dark:bg-[#0a0a0a] mb-12 group flex flex-col lg:block lg:min-h-[450px]"
+        >
+          <div
+            class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:w-3/4 overflow-hidden z-0 mask-left"
+          >
+            <img
+              src="/Aclaraciones/Final/3.jpg"
+              class="w-full h-full object-cover object-[20%_center] transform group-hover:scale-105 transition-transform duration-1000 grayscale group-hover:grayscale-0 opacity-50 lg:opacity-80 mix-blend-multiply dark:mix-blend-normal"
+            />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-stone-200 dark:from-[#0a0a0a] via-stone-200/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+            >
+            </div>
+          </div>
+          <div
+            class="hidden lg:block absolute inset-0 lg:w-3/4 bg-gradient-to-l from-stone-200 via-stone-200/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
+          >
+          </div>
+
+          <div
+            class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] lg:ml-auto space-y-4 flex flex-col justify-center lg:min-h-[450px]"
+          >
+            <h3
+              class="text-2xl md:text-4xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-4"
+            >
+              El Devenir
+            </h3>
+            <p
+              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+            >
+              La última misión de Jonas y Martha es viajar al Mundo Origen e
+              impedir el accidente de la familia de Tannhaus. Al salvarlos,
+              Tannhaus nunca construye la máquina.
+            </p>
+            <p
+              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+            >
+              Al evitar la invención, los mundos de Jonas y Martha dejan de
+              existir. Los jóvenes se desintegran pacíficamente en luz, ya que
+              nunca llegaron a nacer en la realidad verdadera.
+            </p>
+            <p
+              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+            >
+              Sin embargo, la escena final, en la que Hannah (en el mundo
+              origen) está embarazada y decide llamar a su hijo Jonas por una
+              intuición, sugiere que ciertos ecos del nudo permanecen en la
+              eternidad.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .animate-fade-in {
+    animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(15px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .mask-right,
+  .mask-left {
+    -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+  }
+
+  @media (min-width: 1024px) {
+    .mask-right {
+      -webkit-mask-image: linear-gradient(
+        to right,
+        black 40%,
+        transparent 100%
+      );
+      mask-image: linear-gradient(to right, black 40%, transparent 100%);
+    }
+    .mask-left {
+      -webkit-mask-image: linear-gradient(to left, black 40%, transparent 100%);
+      mask-image: linear-gradient(to left, black 40%, transparent 100%);
+    }
+  }
+</style>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const tabsAclara = document.querySelectorAll('.tab-btn-aclara');
+    const contentsAclara = document.querySelectorAll('.tab-content-aclara');
+
+    function activateAclaraTab(tabTargetId) {
+      contentsAclara.forEach((c) => {
+        c.classList.remove('block');
+        c.classList.add('hidden');
+      });
+
+      tabsAclara.forEach((t) => {
+        t.classList.remove(
+          'text-stone-900',
+          'dark:text-white',
+          'border-amber-600',
+          'dark:border-amber-500',
+          'bg-stone-300/80',
+          'dark:bg-stone-800/80',
+          'shadow-lg',
+        );
+        t.classList.add('text-stone-500', 'border-transparent');
+      });
+
+      const targetContent = document.getElementById(tabTargetId);
+      const targetTab = document.querySelector(
+        `.tab-btn-aclara[data-target="${tabTargetId}"]`,
+      );
+
+      if (targetContent && targetTab) {
+        targetContent.classList.remove('hidden');
+        targetContent.classList.add('block');
+
+        targetTab.classList.remove('text-stone-500', 'border-transparent');
+        targetTab.classList.add(
+          'text-stone-900',
+          'dark:text-white',
+          'border-amber-600',
+          'dark:border-amber-500',
+          'bg-stone-300/80',
+          'dark:bg-stone-800/80',
+          'shadow-lg',
+        );
+      }
+    }
+
+    tabsAclara.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        activateAclaraTab(tab.getAttribute('data-target'));
+      });
+    });
+
+    // Exponemos para resetear cuando se cambie la vista desde index.astro
+    window.resetAclaracionesTabs = () =>
+      activateAclaraTab('aclara-explicacion');
+  });
+</script>
