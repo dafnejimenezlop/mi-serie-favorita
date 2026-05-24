@@ -8,6 +8,7 @@ import Testimonials from '../components/sections/Testimonials.astro';
 import Whatsapp from '../components/Whatsapp.astro';
 import Resumen from '../components/Resumen.astro';
 import Aclaraciones from '../components/Aclaraciones.astro';
+import Familias from '../components/Familias.astro';
 ---
 
 <BaseLayout title="DARK - Sic Mundus">
@@ -26,18 +27,28 @@ import Aclaraciones from '../components/Aclaraciones.astro';
     <Aclaraciones />
   </div>
 
+  <div id="vista-personajes" class="hidden transition-opacity duration-500">
+    <Familias />
+  </div>
+
   <Whatsapp />
 </BaseLayout>
 
 <script is:inline>
   function controlarVistas() {
     const hash = window.location.hash || '#inicio';
-    const vistas = ['vista-inicio', 'vista-resumen', 'vista-aclaraciones'];
+    const vistas = [
+      'vista-inicio',
+      'vista-resumen',
+      'vista-aclaraciones',
+      'vista-personajes',
+    ];
 
     // Decidir cuál es la vista activa
     let vistaActiva = 'vista-inicio';
     if (hash === '#resumen') vistaActiva = 'vista-resumen';
     if (hash === '#aclaraciones') vistaActiva = 'vista-aclaraciones';
+    if (hash === '#personajes') vistaActiva = 'vista-personajes';
 
     // Mostrar solo la vista activa y ocultar el resto
     vistas.forEach((v) => {
@@ -72,6 +83,12 @@ import Aclaraciones from '../components/Aclaraciones.astro';
       typeof window.resetAclaracionesTabs === 'function'
     ) {
       window.resetAclaracionesTabs();
+    }
+    if (
+      vistaActiva === 'vista-personajes' &&
+      typeof window.resetPersonajesTabs === 'function'
+    ) {
+      window.resetPersonajesTabs();
     }
   }
 
