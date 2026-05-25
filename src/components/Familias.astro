@@ -6,6 +6,8 @@ const familiasData = [
   {
     id: 'kahnwald',
     name: 'Kahnwald',
+    subtitle: 'El tiempo como condena',
+    accent: '#c8a96e',
     cover: '/Familias/Familia1/principal.jpg',
     generations: [
       [
@@ -144,6 +146,8 @@ const familiasData = [
   {
     id: 'nielsen',
     name: 'Nielsen',
+    subtitle: 'La locura y la pérdida',
+    accent: '#7eb8d4',
     cover: '/Familias/Familia2/inicio.jpg',
     generations: [
       [
@@ -296,6 +300,8 @@ const familiasData = [
   {
     id: 'doppler',
     name: 'Doppler',
+    subtitle: 'El secreto y la traición',
+    accent: '#a87c4f',
     cover: '/Familias/Familia3/inicio.jpg',
     generations: [
       [
@@ -463,6 +469,8 @@ const familiasData = [
   {
     id: 'tiedemann',
     name: 'Tiedemann',
+    subtitle: 'El poder y su precio',
+    accent: '#8fbc8f',
     cover: '/Familias/Familia4/inicio.jpg',
     generations: [
       [
@@ -617,6 +625,8 @@ const familiasData = [
   {
     id: 'adicionales',
     name: 'Adicionales',
+    subtitle: 'Fuera del tiempo',
+    accent: '#b8a0c8',
     cover: '/Familias/Familia5/inicio.jpg',
     generations: [
       [
@@ -731,6 +741,139 @@ const familiasData = [
     background-size: 0% 35%;
     transition: background-size 1.2s cubic-bezier(0.25, 1, 0.5, 1);
     padding-bottom: 2px;
+  }
+
+  /* EFECTO TYPEWRITER EN HIGHLIGHTS */
+  /* Cursor parpadeante de máquina de escribir */
+  @keyframes blink-cursor {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+  .tw-cursor::after {
+    content: '|';
+    color: rgba(245, 158, 11, 0.8);
+    animation: blink-cursor 0.6s step-end infinite;
+    margin-left: 1px;
+    font-weight: 300;
+  }
+  /* Cursor de rebobinar — color rojizo */
+  .tw-cursor-rev::after {
+    content: '◂';
+    color: rgba(200, 80, 60, 0.7);
+    animation: blink-cursor 0.35s step-end infinite;
+    margin-left: 1px;
+    font-size: 0.7em;
+    vertical-align: middle;
+  }
+
+  /* ZOOM/PAN TREE */
+  #tree-pan-area {
+    user-select: none;
+  }
+  #tree-zoom-container {
+    transition: transform 0.08s ease-out;
+  }
+  #tree-zoom-container.smooth-reset {
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  /* El cursor triqueta se gestiona 100% por inline style en JS */
+
+  /* NODO ÁRBOL: halo de luz al hover */
+  .tree-node-wrap {
+    position: relative;
+  }
+  .tree-node-wrap::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 4px;
+    background: radial-gradient(
+      circle,
+      rgba(245, 158, 11, 0) 0%,
+      transparent 70%
+    );
+    transition: background 0.4s ease;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .tree-node-wrap:hover::before {
+    background: radial-gradient(
+      circle,
+      rgba(245, 158, 11, 0.35) 0%,
+      transparent 70%
+    );
+  }
+
+  /* TOOLTIP del nodo */
+  .tree-tooltip {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%) translateY(6px);
+    background: rgba(10, 10, 10, 0.95);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    color: #d4af72;
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    white-space: nowrap;
+    border-radius: 2px;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      opacity 0.25s ease,
+      transform 0.25s ease;
+    z-index: 100;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.15);
+  }
+  .tree-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 4px solid transparent;
+    border-top-color: rgba(245, 158, 11, 0.3);
+  }
+  .tree-node-wrap:hover .tree-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* LÍNEAS DE GENERACIÓN CON PULSO */
+  @keyframes line-pulse {
+    0% {
+      background-position: 0% 0%;
+    }
+    100% {
+      background-position: 0% 100%;
+    }
+  }
+  .gen-connector-line {
+    width: 1px;
+    min-width: 1px;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(245, 158, 11, 0.5) 20%,
+      rgba(245, 158, 11, 0.75) 50%,
+      rgba(245, 158, 11, 0.5) 80%,
+      transparent 100%
+    );
+    background-size: 100% 300%;
+    background-position: 0% 0%;
+    animation: line-pulse 2.5s ease-in-out infinite;
+    box-shadow: 0 0 4px rgba(245, 158, 11, 0.25);
+    display: block;
   }
 
   /* EFECTOS AL ENTRAR EN PANTALLA (.in-view) */
@@ -938,6 +1081,7 @@ const familiasData = [
         familiasData.map((familia) => (
           <div
             class="family-card relative overflow-hidden rounded-xl cursor-pointer bg-stone-900 border border-stone-800 shadow-2xl flex-1 group"
+            style={`--family-accent: ${familia.accent};`}
             onclick={`openTreeViewer('${familia.id}')`}
           >
             <img
@@ -945,10 +1089,24 @@ const familiasData = [
               class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-100 transition-opacity duration-700 mix-blend-luminosity grayscale group-hover:grayscale-0"
             />
             <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
-            <div class="absolute bottom-6 left-6 right-6 lg:left-auto lg:right-auto lg:w-full lg:top-1/2 lg:-translate-y-1/2 lg:text-center lg:rotate-[-90deg] transition-all duration-700 origin-center group-hover:rotate-0 group-hover:bottom-12 group-hover:top-auto group-hover:translate-y-0">
-              <h3 class="font-cinzel text-2xl lg:text-4xl font-bold text-white tracking-[0.2em] uppercase drop-shadow-[0_0_10px_rgba(0,0,0,0.8)] whitespace-nowrap">
+            {/* Línea de acento lateral — visible solo en hover */}
+            <div
+              class="absolute left-0 top-0 bottom-0 w-[3px] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+              style={`background: linear-gradient(to bottom, transparent, ${familia.accent}, transparent);`}
+            />
+            <div class="absolute bottom-6 left-6 right-6 lg:left-auto lg:right-auto lg:w-full lg:top-1/2 lg:-translate-y-1/2 lg:text-center lg:rotate-[-90deg] transition-all duration-700 origin-center group-hover:rotate-0 group-hover:bottom-8 group-hover:top-auto group-hover:translate-y-0">
+              <h3
+                class="font-cinzel text-2xl lg:text-4xl font-bold text-white tracking-[0.2em] uppercase drop-shadow-[0_0_10px_rgba(0,0,0,0.8)] whitespace-nowrap transition-all duration-500"
+                style={`text-shadow: 0 0 20px ${familia.accent}40;`}
+              >
                 {familia.name}
               </h3>
+              <p
+                class="font-mono text-[10px] tracking-[0.2em] uppercase mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-200 whitespace-nowrap"
+                style={`color: ${familia.accent};`}
+              >
+                {familia.subtitle}
+              </p>
             </div>
           </div>
         ))
@@ -1017,29 +1175,106 @@ const familiasData = [
     </div>
   </button>
 
+  <!-- Título flotante arriba -->
   <div
-    class="container mx-auto px-4 w-full h-[100dvh] overflow-y-auto custom-scrollbar flex flex-col items-center justify-start py-20 relative z-10"
+    class="absolute top-6 left-1/2 -translate-x-1/2 z-[160] text-center pointer-events-none"
   >
-    <div class="text-center mb-8 shrink-0">
-      <p
-        class="text-stone-500 font-mono text-[10px] tracking-[0.4em] uppercase mb-2"
-      >
-        Árbol Genealógico
-      </p>
-      <h2
-        id="tree-family-name"
-        class="font-cinzel text-4xl md:text-5xl text-white font-bold tracking-[0.2em] uppercase drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]"
-      >
-        Familia
-      </h2>
-    </div>
-    <div
-      id="tree-nodes-container"
-      class="flex flex-col items-center gap-4 md:gap-8 relative w-full shrink-0 pb-20"
+    <p
+      class="text-stone-500 font-mono text-[10px] tracking-[0.4em] uppercase mb-1"
     >
+      Árbol Genealógico
+    </p>
+    <h2
+      id="tree-family-name"
+      class="font-cinzel text-3xl md:text-4xl text-white font-bold tracking-[0.2em] uppercase drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]"
+    >
+      Familia
+    </h2>
+  </div>
+
+  <!-- Controles de zoom -->
+  <div class="fixed bottom-8 right-8 z-[160] flex flex-col gap-2">
+    <button
+      onclick="zoomIn()"
+      class="w-10 h-10 rounded-full border border-stone-600 hover:border-amber-500 flex items-center justify-center bg-black/70 backdrop-blur-sm text-stone-400 hover:text-amber-500 transition-all shadow-xl text-lg font-light"
+      title="Acercar">+</button
+    >
+    <button
+      onclick="zoomReset()"
+      class="w-10 h-10 rounded-full border border-stone-600 hover:border-amber-500 flex items-center justify-center bg-black/70 backdrop-blur-sm text-stone-400 hover:text-amber-500 transition-all shadow-xl"
+      title="Restablecer"
+    >
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+        ><path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
+        ></path></svg
+      >
+    </button>
+    <button
+      onclick="zoomOut()"
+      class="w-10 h-10 rounded-full border border-stone-600 hover:border-amber-500 flex items-center justify-center bg-black/70 backdrop-blur-sm text-stone-400 hover:text-amber-500 transition-all shadow-xl text-lg font-light"
+      title="Alejar">−</button
+    >
+  </div>
+
+  <!-- Hint arrastrar -->
+  <div
+    id="drag-hint"
+    class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[160] pointer-events-none"
+  >
+    <p
+      class="text-stone-600 font-mono text-[9px] tracking-[0.3em] uppercase flex items-center gap-2"
+    >
+      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+        ><path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11"
+        ></path></svg
+      >
+      Arrastra para mover · Rueda para zoom
+    </p>
+  </div>
+
+  <!-- Contenedor zoomeable/paneable -->
+  <div
+    id="tree-pan-area"
+    class="absolute inset-0 cursor-grab active:cursor-grabbing"
+    style="overflow: hidden;"
+  >
+    <div
+      id="tree-zoom-container"
+      class="absolute"
+      style="transform-origin: center center; will-change: transform;"
+    >
+      <div
+        id="tree-nodes-container"
+        class="flex flex-col items-center gap-4 md:gap-8 relative p-20"
+      >
+      </div>
     </div>
   </div>
 </div>
+
+<!-- Cursor triqueta — fuera de cualquier contenedor con overflow o transform -->
+<svg
+  id="tree-cursor"
+  viewBox="0 0 100 100"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  style="position:fixed;top:0;left:0;width:28px;height:28px;pointer-events:none;z-index:9999;opacity:0;transform:translate(-50%,-50%);transition:opacity 0.25s ease, transform 0.1s ease;"
+>
+  <circle cx="50" cy="33" r="22" stroke="rgba(245,158,11,0.85)" stroke-width="3"
+  ></circle>
+  <circle cx="34" cy="62" r="22" stroke="rgba(245,158,11,0.85)" stroke-width="3"
+  ></circle>
+  <circle cx="66" cy="62" r="22" stroke="rgba(245,158,11,0.85)" stroke-width="3"
+  ></circle>
+</svg>
 
 <div
   id="cinematic-viewer"
@@ -1184,20 +1419,26 @@ const familiasData = [
 
     familia.generations.forEach((gen, gIndex) => {
       const row = document.createElement('div');
-      // flex-wrap para móviles
       row.className =
         'flex flex-wrap justify-center gap-6 md:gap-12 relative z-10 w-full px-4';
       gen.forEach((char) => {
+        // Obtener la línea de tiempo del primer stage para el tooltip
+        const timelineLabel =
+          char.stages && char.stages[0] ? char.stages[0].timeline : '';
+
         const node = document.createElement('div');
         node.className =
-          'flex flex-col items-center gap-2 cursor-pointer group hover:scale-110 transition-transform duration-500 relative pointer-events-auto';
+          'tree-node-wrap flex flex-col items-center gap-2 cursor-none group hover:scale-110 transition-transform duration-500 relative pointer-events-auto';
+        node.setAttribute('data-tree-node', '1');
         node.onclick = () => openCinematicViewer(char.id);
         node.innerHTML = `
-          <div class="relative w-16 h-16 md:w-20 md:h-20 rounded-sm overflow-hidden border border-stone-800 group-hover:border-amber-500 shadow-2xl transition-all">
+          ${timelineLabel ? `<div class="tree-tooltip">${timelineLabel}</div>` : ''}
+          <div class="relative w-16 h-16 md:w-20 md:h-20 rounded-sm overflow-hidden border border-stone-800 group-hover:border-amber-500/70 shadow-2xl transition-all duration-500 z-10">
             <img src="${char.avatar}" class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+            <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style="box-shadow: inset 0 0 20px rgba(245,158,11,0.2);"></div>
           </div>
-          <p class="font-cinzel text-stone-400 group-hover:text-amber-500 tracking-widest uppercase text-[9px] md:text-[10px] transition-colors text-center w-20 md:w-24">
+          <p class="font-cinzel text-stone-400 group-hover:text-amber-400 tracking-widest uppercase text-[9px] md:text-[10px] transition-colors text-center w-20 md:w-24 z-10">
             ${char.name}
           </p>`;
         row.appendChild(node);
@@ -1208,7 +1449,7 @@ const familiasData = [
         const lineWrap = document.createElement('div');
         lineWrap.className =
           'w-full flex justify-center py-2 pointer-events-none';
-        lineWrap.innerHTML = `<div class="w-[1px] h-8 md:h-12 bg-stone-500 opacity-50 shrink-0"></div>`;
+        lineWrap.innerHTML = `<div class="gen-connector-line h-8 md:h-12 shrink-0"></div>`;
         container.appendChild(lineWrap);
       }
     });
@@ -1227,11 +1468,189 @@ const familiasData = [
     openCinematicViewer(charId);
   };
 
+  // ============================
+  // CURSOR TRIQUETA EN EL ÁRBOL
+  // ============================
+  const treeCursor = document.getElementById('tree-cursor');
+  const treePanEl = document.getElementById('tree-pan-area');
+
+  treePanEl.addEventListener('mouseenter', () => {
+    if (treeCursor) treeCursor.style.opacity = '1';
+  });
+  treePanEl.addEventListener('mouseleave', () => {
+    if (treeCursor) treeCursor.style.opacity = '0';
+  });
+
   document.getElementById('tree-viewer').addEventListener('mousemove', (e) => {
+    // Mover cursor triqueta
+    if (treeCursor) {
+      treeCursor.style.left = e.clientX + 'px';
+      treeCursor.style.top = e.clientY + 'px';
+    }
+
+    // Glow del ratón
     const x = (e.clientX / window.innerWidth) * 100;
     const y = (e.clientY / window.innerHeight) * 100;
     document.getElementById('mouse-glow').style.background =
       `radial-gradient(circle 450px at ${x}% ${y}%, rgba(245, 158, 11, 0.15), transparent 70%)`;
+  });
+
+  // ============================
+  // ZOOM / PAN LOGIC
+  // ============================
+  let treeScale = 1;
+  let treePanX = 0;
+  let treePanY = 0;
+  let isDragging = false;
+  let dragStartX = 0;
+  let dragStartY = 0;
+  let dragOriginPanX = 0;
+  let dragOriginPanY = 0;
+
+  const MIN_SCALE = 0.3;
+  const MAX_SCALE = 2.5;
+  const ZOOM_STEP = 0.15;
+
+  function applyTreeTransform(smooth = false) {
+    const zc = document.getElementById('tree-zoom-container');
+    if (!zc) return;
+    if (smooth) {
+      zc.classList.add('smooth-reset');
+      setTimeout(() => zc.classList.remove('smooth-reset'), 420);
+    }
+    zc.style.transform = `translate(${treePanX}px, ${treePanY}px) scale(${treeScale})`;
+  }
+
+  function centerTree() {
+    const panArea = document.getElementById('tree-pan-area');
+    const container = document.getElementById('tree-nodes-container');
+    if (!panArea || !container) return;
+    const areaW = panArea.offsetWidth;
+    const areaH = panArea.offsetHeight;
+    const contW = container.offsetWidth;
+    const contH = container.offsetHeight;
+    // Escala inicial para que quepa todo
+    const scaleX = (areaW * 0.9) / contW;
+    const scaleY = (areaH * 0.85) / contH;
+    treeScale = Math.min(scaleX, scaleY, 1);
+    treeScale = Math.max(treeScale, MIN_SCALE);
+    treePanX = (areaW - contW * treeScale) / 2;
+    treePanY = (areaH - contH * treeScale) / 2;
+    applyTreeTransform(true);
+  }
+
+  window.zoomIn = () => {
+    treeScale = Math.min(treeScale + ZOOM_STEP, MAX_SCALE);
+    applyTreeTransform();
+  };
+  window.zoomOut = () => {
+    treeScale = Math.max(treeScale - ZOOM_STEP, MIN_SCALE);
+    applyTreeTransform();
+  };
+  window.zoomReset = () => {
+    centerTree();
+  };
+
+  // Rueda del ratón → zoom centrado en el cursor
+  document.getElementById('tree-pan-area').addEventListener(
+    'wheel',
+    (e) => {
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? -ZOOM_STEP : ZOOM_STEP;
+      const newScale = Math.min(
+        Math.max(treeScale + delta, MIN_SCALE),
+        MAX_SCALE,
+      );
+
+      // Zoom relativo al punto del cursor
+      const rect = document
+        .getElementById('tree-pan-area')
+        .getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+
+      treePanX = mouseX - (mouseX - treePanX) * (newScale / treeScale);
+      treePanY = mouseY - (mouseY - treePanY) * (newScale / treeScale);
+      treeScale = newScale;
+      applyTreeTransform();
+    },
+    { passive: false },
+  );
+
+  // Touch pinch zoom
+  let lastTouchDist = null;
+  document.getElementById('tree-pan-area').addEventListener(
+    'touchstart',
+    (e) => {
+      if (e.touches.length === 2) {
+        lastTouchDist = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY,
+        );
+      } else if (e.touches.length === 1) {
+        isDragging = true;
+        dragStartX = e.touches[0].clientX;
+        dragStartY = e.touches[0].clientY;
+        dragOriginPanX = treePanX;
+        dragOriginPanY = treePanY;
+      }
+    },
+    { passive: true },
+  );
+
+  document.getElementById('tree-pan-area').addEventListener(
+    'touchmove',
+    (e) => {
+      if (e.touches.length === 2 && lastTouchDist !== null) {
+        e.preventDefault();
+        const dist = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY,
+        );
+        const delta = (dist - lastTouchDist) * 0.005;
+        treeScale = Math.min(Math.max(treeScale + delta, MIN_SCALE), MAX_SCALE);
+        lastTouchDist = dist;
+        applyTreeTransform();
+      } else if (e.touches.length === 1 && isDragging) {
+        treePanX = dragOriginPanX + (e.touches[0].clientX - dragStartX);
+        treePanY = dragOriginPanY + (e.touches[0].clientY - dragStartY);
+        applyTreeTransform();
+      }
+    },
+    { passive: false },
+  );
+
+  document.getElementById('tree-pan-area').addEventListener('touchend', () => {
+    isDragging = false;
+    lastTouchDist = null;
+  });
+
+  // Arrastrar con ratón
+  document
+    .getElementById('tree-pan-area')
+    .addEventListener('mousedown', (e) => {
+      if (e.target.closest('[data-tree-node]')) return;
+      isDragging = true;
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      dragOriginPanX = treePanX;
+      dragOriginPanY = treePanY;
+      if (treeCursor)
+        treeCursor.style.transform = 'translate(-50%, -50%) scale(0.8)';
+      e.preventDefault();
+    });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    treePanX = dragOriginPanX + (e.clientX - dragStartX);
+    treePanY = dragOriginPanY + (e.clientY - dragStartY);
+    applyTreeTransform();
+  });
+
+  document.addEventListener('mouseup', () => {
+    isDragging = false;
+    if (treeCursor)
+      treeCursor.style.transform = 'translate(-50%, -50%) scale(1)';
   });
 
   window.openTreeViewer = (familiaId) => {
@@ -1250,7 +1669,11 @@ const familiasData = [
     document.getElementById('familias-main-view').classList.add('hidden');
     const treeViewer = document.getElementById('tree-viewer');
     treeViewer.classList.remove('hidden');
-    setTimeout(() => treeViewer.classList.remove('opacity-0'), 50);
+    setTimeout(() => {
+      treeViewer.classList.remove('opacity-0');
+      // Centrar árbol después de que sea visible y tenga dimensiones
+      setTimeout(centerTree, 100);
+    }, 50);
 
     if (audioEl && !isAudioPlaying) {
       audioEl
@@ -1394,7 +1817,110 @@ const familiasData = [
     }, 700);
   };
 
-  // OBSERVER DEL SCROLL (Reactivación de imagen fix)
+  // ============================
+  // TYPEWRITER EN MAGIC-HIGHLIGHTS — BIDIRECCIONAL
+  // ============================
+
+  // Web Audio API — dos sonidos: escribir (agudo) y rebobinar (grave)
+  let audioCtx = null;
+  function getAudioCtx() {
+    if (!audioCtx)
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    return audioCtx;
+  }
+
+  function playTypeClick(reverse = false) {
+    try {
+      const ctx = getAudioCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      if (reverse) {
+        // Rebobinar: más grave, más breve, ligero pitch-down
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(320 + Math.random() * 80, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(180, ctx.currentTime + 0.03);
+        gain.gain.setValueAtTime(0.018, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.035);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.035);
+      } else {
+        // Escribir: agudo, metálico, tipo máquina de escribir
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(
+          900 + Math.random() * 200,
+          ctx.currentTime,
+        );
+        gain.gain.setValueAtTime(0.022, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.04);
+      }
+    } catch (e) {}
+  }
+
+  // Mapa de intervalos activos por elemento (para cancelar si se sale antes de terminar)
+  const twIntervals = new WeakMap();
+
+  function stopTypewriter(el) {
+    const running = twIntervals.get(el);
+    if (running) {
+      clearInterval(running);
+      twIntervals.delete(el);
+    }
+    el.classList.remove('tw-cursor', 'tw-cursor-rev');
+  }
+
+  function typewriterHighlight(el, reverse = false) {
+    // Cancelar cualquier animación previa
+    stopTypewriter(el);
+
+    const fullText = el.dataset.twFull || el.textContent;
+    // Guardar el texto completo la primera vez
+    if (!el.dataset.twFull) el.dataset.twFull = fullText;
+
+    const totalChars = fullText.length;
+    const delay = reverse ? 22 : 38; // rebobinar más rápido
+
+    if (reverse) {
+      // Empezar desde el texto actual hacia atrás
+      let currentLen = el.textContent.length || totalChars;
+      el.classList.add('tw-cursor-rev');
+
+      const interval = setInterval(() => {
+        currentLen--;
+        el.textContent = fullText.slice(0, Math.max(0, currentLen));
+        if (currentLen % 2 === 0) playTypeClick(true);
+        if (currentLen <= 0) {
+          clearInterval(interval);
+          twIntervals.delete(el);
+          el.classList.remove('tw-cursor-rev');
+        }
+      }, delay);
+      twIntervals.set(el, interval);
+    } else {
+      // Escribir de 0 al total
+      let i = el.textContent.length; // continuar desde donde está si ya tenía algo
+      el.textContent = fullText.slice(0, i);
+      el.classList.add('tw-cursor');
+
+      const interval = setInterval(() => {
+        el.textContent = fullText.slice(0, i + 1);
+        if (i % 2 === 0) playTypeClick(false);
+        i++;
+        if (i >= totalChars) {
+          clearInterval(interval);
+          twIntervals.delete(el);
+          el.classList.remove('tw-cursor');
+        }
+      }, delay);
+      twIntervals.set(el, interval);
+    }
+  }
+
+  // OBSERVER DEL SCROLL (bidireccional con typewriter)
   function initCinematicScroll() {
     const scenes = document.querySelectorAll('.scroll-scene');
     const bgImage = document.getElementById('cinematic-bg');
@@ -1406,8 +1932,17 @@ const familiasData = [
           if (entry.isIntersecting) {
             entry.target.classList.add('in-view');
 
-            const newImgSrc = entry.target.getAttribute('data-image');
+            // Typewriter HACIA ADELANTE al entrar en pantalla
+            const highlights =
+              entry.target.querySelectorAll('.magic-highlight');
+            highlights.forEach((hl, idx) => {
+              setTimeout(
+                () => typewriterHighlight(hl, false),
+                1400 + idx * 220,
+              );
+            });
 
+            const newImgSrc = entry.target.getAttribute('data-image');
             if (newImgSrc === 'none') {
               bgImage.style.opacity = '0';
               bgImage.dataset.current = 'none';
@@ -1419,10 +1954,20 @@ const familiasData = [
                 bgImage.dataset.current = newImgSrc;
               }, 600);
             } else if (newImgSrc && bgImage.dataset.current === newImgSrc) {
-              bgImage.style.opacity = '1'; // Fix: Si subimos desde el final, forzamos que vuelva a aparecer
+              bgImage.style.opacity = '1';
             }
           } else {
             entry.target.classList.remove('in-view');
+
+            // Typewriter REBOBINAR al salir de pantalla
+            const highlights =
+              entry.target.querySelectorAll('.magic-highlight');
+            highlights.forEach((hl) => {
+              // Solo rebobinar si ya tiene texto escrito
+              if (hl.textContent.length > 0) {
+                typewriterHighlight(hl, true);
+              }
+            });
           }
         });
       },
