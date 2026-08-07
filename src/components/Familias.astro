@@ -1406,7 +1406,7 @@ const familiasData = [
     closeTreeViewer();
   };
 
-  // DIBUJAR ÁRBOL (Flex-wrap por si hay muchos)
+  // DIBUJAR ÁRBOL con líneas SVG reales (pareja + descendencia)
   function drawTree(familiaId) {
     const familia = familiasData.find((f) => f.id === familiaId);
     if (!familia || !familia.generations || !familia.generations.length)
@@ -1417,43 +1417,252 @@ const familiasData = [
     const container = document.getElementById('tree-nodes-container');
     container.innerHTML = '';
 
+    // SVG overlay para las líneas (se dibuja después de que el DOM tenga dimensiones)
+    const svgOverlay = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'svg',
+    );
+    svgOverlay.id = 'tree-svg-lines';
+    svgOverlay.style.cssText =
+      'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:1;';
+    container.style.position = 'relative';
+
+    // Guardar referencias a cada row de nodos
+    const rowEls = [];
+
     familia.generations.forEach((gen, gIndex) => {
       const row = document.createElement('div');
       row.className =
-        'flex flex-wrap justify-center gap-6 md:gap-12 relative z-10 w-full px-4';
+        'flex flex-wrap justify-center gap-8 md:gap-16 relative z-10 w-full px-4';
+      row.dataset.genIndex = gIndex;
+
       gen.forEach((char) => {
-        // Obtener la línea de tiempo del primer stage para el tooltip
         const timelineLabel =
           char.stages && char.stages[0] ? char.stages[0].timeline : '';
-
         const node = document.createElement('div');
         node.className =
-          'tree-node-wrap flex flex-col items-center gap-2 cursor-none group hover:scale-110 transition-transform duration-500 relative pointer-events-auto';
+          'tree-node-wrap flex flex-col items-center gap-2 cursor-pointer group hover:scale-105 transition-transform duration-500 relative pointer-events-auto';
         node.setAttribute('data-tree-node', '1');
+        node.setAttribute('data-char-id', char.id);
         node.onclick = () => openCinematicViewer(char.id);
         node.innerHTML = `
           ${timelineLabel ? `<div class="tree-tooltip">${timelineLabel}</div>` : ''}
-          <div class="relative w-16 h-16 md:w-20 md:h-20 rounded-sm overflow-hidden border border-stone-800 group-hover:border-amber-500/70 shadow-2xl transition-all duration-500 z-10">
+          <div class="relative w-16 h-16 md:w-20 md:h-20 rounded-sm overflow-hidden border border-stone-700 group-hover:border-amber-500/70 shadow-2xl transition-all duration-500 z-10">
             <img src="${char.avatar}" class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
-            <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style="box-shadow: inset 0 0 20px rgba(245,158,11,0.2);"></div>
           </div>
           <p class="font-cinzel text-stone-400 group-hover:text-amber-400 tracking-widest uppercase text-[9px] md:text-[10px] transition-colors text-center w-20 md:w-24 z-10">
             ${char.name}
           </p>`;
         row.appendChild(node);
       });
-      container.appendChild(row);
 
+      // Espaciado entre generaciones — suficiente para ver las líneas SVG
+      row.style.marginBottom =
+        gIndex < familia.generations.length - 1 ? '110px' : '0';
+
+      container.appendChild(row);
+      rowEls.push(row);
+    });
+
+    container.appendChild(svgOverlay);
+
+    // Dibujar líneas SVG tras layout — esperamos más para que flexbox haya calculado todo
+    setTimeout(() => {
+      drawTreeLines(familia, rowEls, svgOverlay, container);
+    }, 80);
+
+    return true;
+  }
+
+  // Función separada para calcular y dibujar las líneas SVG
+  function drawTreeLines(familia, rowEls, svg, container) {
+    // Usar offsetWidth/offsetHeight del contenedor SIN transformar
+    const W = container.offsetWidth;
+    const H = container.offsetHeight;
+
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.style.width = W + 'px';
+    svg.style.height = H + 'px';
+
+    // Helper: centro X e Y de un nodo relativo al container, usando offsetLeft/offsetTop
+    function nodeCenter(node) {
+      let el = node;
+      let x = 0,
+        y = 0;
+      while (el && el !== container) {
+        x += el.offsetLeft;
+        y += el.offsetTop;
+        el = el.offsetParent;
+      }
+      const img = node.querySelector('img');
+      const imgH = img ? img.offsetHeight : node.offsetHeight;
+      const imgTop = img ? img.offsetTop : 0;
+      return {
+        cx: x + node.offsetWidth / 2,
+        top: y + imgTop,
+        bottom: y + imgTop + imgH,
+        mid: y + imgTop + imgH / 2,
+      };
+    }
+
+    // Definir gradientes y animaciones
+    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+    defs.innerHTML = `
+      <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"   stop-color="rgba(245,158,11,0.1)" />
+        <stop offset="40%"  stop-color="rgba(245,158,11,0.7)" />
+        <stop offset="60%"  stop-color="rgba(245,158,11,0.9)" />
+        <stop offset="100%" stop-color="rgba(245,158,11,0.1)" />
+      </linearGradient>
+      <linearGradient id="lineGradH" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%"   stop-color="rgba(245,158,11,0)" />
+        <stop offset="30%"  stop-color="rgba(245,158,11,0.6)" />
+        <stop offset="70%"  stop-color="rgba(245,158,11,0.6)" />
+        <stop offset="100%" stop-color="rgba(245,158,11,0)" />
+      </linearGradient>
+      <filter id="glowLine" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="1.5" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <style>
+        @keyframes svgDraw { from { stroke-dashoffset: 1000; } to { stroke-dashoffset: 0; } }
+        .tree-line { animation: svgDraw 1.2s cubic-bezier(.4,0,.2,1) forwards; }
+      </style>
+    `;
+    svg.appendChild(defs);
+
+    // Función para crear una línea o path animado
+    function makeLine(x1, y1, x2, y2, grad, delay = 0) {
+      const len = Math.hypot(x2 - x1, y2 - y1) + 2;
+      const el = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      el.setAttribute('x1', x1);
+      el.setAttribute('y1', y1);
+      el.setAttribute('x2', x2);
+      el.setAttribute('y2', y2);
+      el.setAttribute('stroke', grad);
+      el.setAttribute('stroke-width', '1.5');
+      el.setAttribute('filter', 'url(#glowLine)');
+      el.setAttribute('stroke-dasharray', len);
+      el.setAttribute('stroke-dashoffset', len);
+      el.setAttribute('class', 'tree-line');
+      el.style.animationDelay = delay + 'ms';
+      return el;
+    }
+
+    function makePath(d, delay = 0) {
+      const el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      el.setAttribute('d', d);
+      el.setAttribute('stroke', 'url(#lineGrad)');
+      el.setAttribute('stroke-width', '1.5');
+      el.setAttribute('fill', 'none');
+      el.setAttribute('filter', 'url(#glowLine)');
+      el.setAttribute('stroke-dasharray', '1000');
+      el.setAttribute('stroke-dashoffset', '1000');
+      el.setAttribute('class', 'tree-line');
+      el.style.animationDelay = delay + 'ms';
+      return el;
+    }
+
+    function makeDiamond(cx, cy) {
+      const el = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'polygon',
+      );
+      el.setAttribute(
+        'points',
+        `${cx},${cy - 6} ${cx + 6},${cy} ${cx},${cy + 6} ${cx - 6},${cy}`,
+      );
+      el.setAttribute('fill', 'rgba(245,158,11,0.85)');
+      el.setAttribute('filter', 'url(#glowLine)');
+      return el;
+    }
+
+    function makeArrow(cx, y) {
+      const el = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'polygon',
+      );
+      el.setAttribute(
+        'points',
+        `${cx - 4},${y - 8} ${cx + 4},${y - 8} ${cx},${y}`,
+      );
+      el.setAttribute('fill', 'rgba(245,158,11,0.6)');
+      return el;
+    }
+
+    familia.generations.forEach((gen, gIndex) => {
+      if (gIndex >= rowEls.length) return;
+      const row = rowEls[gIndex];
+      const nodes = Array.from(row.querySelectorAll('[data-tree-node]'));
+      const centers = nodes.map((n) => nodeCenter(n));
+
+      // Línea horizontal + rombo entre pareja
+      if (centers.length === 2) {
+        const [c1, c2] = centers;
+        const y = c1.mid;
+        const midX = (c1.cx + c2.cx) / 2;
+        svg.appendChild(makeLine(c1.cx, y, c2.cx, y, 'url(#lineGradH)', 0));
+        svg.appendChild(makeDiamond(midX, y));
+      }
+
+      // Conector hacia siguiente generación
       if (gIndex < familia.generations.length - 1) {
-        const lineWrap = document.createElement('div');
-        lineWrap.className =
-          'w-full flex justify-center py-2 pointer-events-none';
-        lineWrap.innerHTML = `<div class="gen-connector-line h-8 md:h-12 shrink-0"></div>`;
-        container.appendChild(lineWrap);
+        const nextRow = rowEls[gIndex + 1];
+        const nextNodes = Array.from(
+          nextRow.querySelectorAll('[data-tree-node]'),
+        );
+        const nextCenters = nextNodes.map((n) => nodeCenter(n));
+
+        // Punto de salida: centro del grupo actual (bajo los avatares)
+        let fromX, fromY;
+        if (centers.length === 1) {
+          fromX = centers[0].cx;
+          fromY = centers[0].bottom;
+        } else {
+          fromX = (centers[0].cx + centers[centers.length - 1].cx) / 2;
+          fromY = centers[0].bottom;
+        }
+
+        if (nextCenters.length === 1) {
+          // Línea en L o recta hacia hijo único
+          const toX = nextCenters[0].cx;
+          const toY = nextCenters[0].top;
+          const midY = fromY + (toY - fromY) * 0.5;
+          const d =
+            Math.abs(fromX - toX) < 4
+              ? `M ${fromX} ${fromY} L ${toX} ${toY}`
+              : `M ${fromX} ${fromY} L ${fromX} ${midY} L ${toX} ${midY} L ${toX} ${toY}`;
+          svg.appendChild(makePath(d, 200));
+          svg.appendChild(makeArrow(toX, toY));
+        } else {
+          // Múltiples hijos: T
+          const midY = fromY + (nextCenters[0].top - fromY) * 0.5;
+          const leftX = Math.min(...nextCenters.map((n) => n.cx));
+          const rightX = Math.max(...nextCenters.map((n) => n.cx));
+
+          svg.appendChild(
+            makeLine(fromX, fromY, fromX, midY, 'rgba(245,158,11,0.7)', 200),
+          );
+          svg.appendChild(
+            makeLine(leftX, midY, rightX, midY, 'url(#lineGradH)', 400),
+          );
+          nextCenters.forEach((nc, i) => {
+            svg.appendChild(
+              makeLine(
+                nc.cx,
+                midY,
+                nc.cx,
+                nc.top,
+                'rgba(245,158,11,0.7)',
+                500 + i * 80,
+              ),
+            );
+            svg.appendChild(makeArrow(nc.cx, nc.top));
+          });
+        }
       }
     });
-    return true;
   }
 
   // SALTO DESDE SIDEBAR A PERSONAJE (Arregla el bug de la X re-dibujando silensiosamente)
@@ -1473,21 +1682,37 @@ const familiasData = [
   // ============================
   const treeCursor = document.getElementById('tree-cursor');
   const treePanEl = document.getElementById('tree-pan-area');
+  const treeViewerEl = document.getElementById('tree-viewer');
 
-  treePanEl.addEventListener('mouseenter', () => {
-    if (treeCursor) treeCursor.style.opacity = '1';
+  // Seguimiento del cursor a nivel documento — así nunca se pierde
+  document.addEventListener('pointermove', (e) => {
+    if (!treeCursor) return;
+    treeCursor.style.left = e.clientX + 'px';
+    treeCursor.style.top = e.clientY + 'px';
+
+    // Mostrar triqueta solo si el tree-viewer está activo y el ratón está en el pan-area
+    const treeVisible =
+      !treeViewerEl.classList.contains('hidden') &&
+      !treeViewerEl.classList.contains('opacity-0');
+    if (!treeVisible) {
+      treeCursor.style.opacity = '0';
+      return;
+    }
+    const rect = treePanEl.getBoundingClientRect();
+    const inside =
+      e.clientX >= rect.left &&
+      e.clientX <= rect.right &&
+      e.clientY >= rect.top &&
+      e.clientY <= rect.bottom;
+    treeCursor.style.opacity = inside ? '1' : '0';
   });
-  treePanEl.addEventListener('mouseleave', () => {
+
+  // Asegurarse de que al cerrar el tree-viewer el cursor desaparece
+  document.addEventListener('pointerleave', () => {
     if (treeCursor) treeCursor.style.opacity = '0';
   });
 
   document.getElementById('tree-viewer').addEventListener('mousemove', (e) => {
-    // Mover cursor triqueta
-    if (treeCursor) {
-      treeCursor.style.left = e.clientX + 'px';
-      treeCursor.style.top = e.clientY + 'px';
-    }
-
     // Glow del ratón
     const x = (e.clientX / window.innerWidth) * 100;
     const y = (e.clientY / window.innerHeight) * 100;
@@ -1524,18 +1749,27 @@ const familiasData = [
   function centerTree() {
     const panArea = document.getElementById('tree-pan-area');
     const container = document.getElementById('tree-nodes-container');
-    if (!panArea || !container) return;
+    const zoomContainer = document.getElementById('tree-zoom-container');
+    if (!panArea || !container || !zoomContainer) return;
+
     const areaW = panArea.offsetWidth;
     const areaH = panArea.offsetHeight;
     const contW = container.offsetWidth;
     const contH = container.offsetHeight;
-    // Escala inicial para que quepa todo
-    const scaleX = (areaW * 0.9) / contW;
-    const scaleY = (areaH * 0.85) / contH;
+
+    if (contW === 0 || contH === 0) return;
+
+    // Escala para que quepa todo con margen
+    const scaleX = (areaW * 0.88) / contW;
+    const scaleY = (areaH * 0.82) / contH;
     treeScale = Math.min(scaleX, scaleY, 1);
     treeScale = Math.max(treeScale, MIN_SCALE);
+
+    // Centrar: el zoom-container empieza en top:0 left:0 del pan-area
+    // necesitamos que el punto de anclaje sea el centro del contenido escalado
     treePanX = (areaW - contW * treeScale) / 2;
     treePanY = (areaH - contH * treeScale) / 2;
+
     applyTreeTransform(true);
   }
 
@@ -1671,8 +1905,8 @@ const familiasData = [
     treeViewer.classList.remove('hidden');
     setTimeout(() => {
       treeViewer.classList.remove('opacity-0');
-      // Centrar árbol después de que sea visible y tenga dimensiones
-      setTimeout(centerTree, 100);
+      // Esperar a que el DOM esté pintado + las líneas SVG calculadas antes de centrar
+      setTimeout(centerTree, 250);
     }, 50);
 
     if (audioEl && !isAudioPlaying) {
@@ -1684,6 +1918,7 @@ const familiasData = [
   };
 
   window.closeTreeViewer = () => {
+    if (treeCursor) treeCursor.style.opacity = '0';
     const treeViewer = document.getElementById('tree-viewer');
     treeViewer.classList.add('opacity-0');
 
