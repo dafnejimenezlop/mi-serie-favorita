@@ -1,677 +1,13 @@
 ---
 // src/components/Familias.astro
 
-const familiasData = [
-  // ================= KAHNWALD =================
-  {
-    id: 'kahnwald',
-    name: 'Kahnwald',
-    subtitle: 'El tiempo como condena',
-    accent: '#c8a96e',
-    cover: '/Familias/Familia1/principal.jpg',
-    generations: [
-      [
-        {
-          id: 'ines',
-          name: 'Ines Kahnwald',
-          avatar: '/Familias/Familia1/ines.jpg',
-          stages: [
-            {
-              title: 'Ines Kahnwald',
-              timeline: '1953',
-              text: 'Interpretada por Lena Urzendowsky. En su juventud, Ines es una chica amable e ingenua que comienza a interesarse por la enfermería, soñando con <span class="magic-highlight">un futuro tranquilo</span> en el pueblo de Winden.',
-              img: '/Familias/Familia1/ines.jpg',
-            },
-            {
-              title: 'La Enfermera',
-              timeline: '1986',
-              text: 'Trabaja en el hospital de Winden. Conoce a un desorientado niño que dice venir del futuro y llamarse <span class="magic-highlight">Mikkel Nielsen</span>. Tras encariñarse profundamente con él, decide adoptarlo para evitar que lo envíen a un orfanato.',
-              img: '/Familias/Familia1/ines.jpg',
-            },
-            {
-              title: 'El Engaño',
-              timeline: '2019',
-              text: 'Se revela que Ines drogaba a <span class="magic-highlight">Michael</span> con pastillas para dormir para mantenerlo sumiso y evitar que intentara huir de vuelta a las cuevas. Tras el trágico suicidio de su hijo adoptivo, es ella quien <span class="magic-highlight">esconde la carta de despedida</span>.',
-              img: '/Familias/Familia1/ines.jpg',
-            },
-          ],
-        },
-      ],
-      [
-        {
-          id: 'mikkel',
-          name: 'Michael / Mikkel',
-          avatar: '/Familias/Familia1/mikkel.jpg',
-          stages: [
-            {
-              title: 'Mikkel Nielsen',
-              timeline: '2019',
-              text: 'Hijo menor de Ulrich y Katharina. Un niño fascinado por la magia y por su ídolo <span class="magic-highlight">Harry Houdini</span>. Una noche, explorando las cuevas de Winden con sus hermanos y Jonas, <span class="magic-highlight">desaparece misteriosamente sin dejar rastro</span>.',
-              img: '/Familias/Familia1/mikkel.jpg',
-            },
-            {
-              title: 'Perdido en el tiempo',
-              timeline: '1986',
-              text: 'Aparece aterrorizado 33 años en el pasado. Tras no encontrar a su familia y sufrir un accidente, es ingresado en el hospital. La enfermera <span class="magic-highlight">Ines Kahnwald</span> se hace cargo de él, creciendo bajo su nueva identidad.',
-              img: '/Familias/Familia1/mikkel.jpg',
-            },
-            {
-              title: 'Michael Kahnwald',
-              timeline: '2019',
-              text: 'Convertido en un artista solitario y melancólico, casado con Hannah y padre de Jonas. Es el <span class="magic-highlight">detonante absoluto del nudo</span>: el 21 de junio se suicida ahorcándose en su estudio, dejando el famoso sobre con la advertencia: "No abrir antes del 4 de Noviembre".',
-              img: '/Familias/Familia1/mikkel.jpg',
-            },
-            {
-              title: 'Mundo de Eva',
-              timeline: 'Inexistente',
-              text: 'En el mundo paralelo de Eva, Jonas no existe para guiarlo a la cueva. Por lo tanto, nunca viaja al pasado y <span class="magic-highlight">sigue siendo el niño Mikkel</span>, evitando la creación de la rama Kahnwald.',
-              img: '/Familias/Familia1/mikkel.jpg',
-            },
-          ],
-        },
-        {
-          id: 'hannah',
-          name: 'Hannah Krüger',
-          avatar: '/Familias/Familia1/hanna.png',
-          stages: [
-            {
-              title: 'Hannah Krüger',
-              timeline: '1986',
-              text: 'Desde niña desarrolla una obsesión enfermiza y tóxica por <span class="magic-highlight">Ulrich Nielsen</span>. Guiada por los celos al verle con Katharina, llega al punto de mentir a la policía acusando a Ulrich de violación.',
-              img: '/Familias/Familia1/hanna.png',
-            },
-            {
-              title: 'La Traición',
-              timeline: '2019',
-              text: 'Viuda de Michael y madre de Jonas. Trabaja como masajista y mantiene una <span class="magic-highlight">aventura clandestina con Ulrich</span>, chantajeando además a Aleksander Tiedemann para encubrir sus actos.',
-              img: '/Familias/Familia1/hanna.png',
-            },
-            {
-              title: 'Viaje a 1954',
-              timeline: '1954',
-              text: 'Roba la máquina del tiempo y viaja al pasado buscando a Ulrich en el manicomio, solo para regodearse y <span class="magic-highlight">abandonarlo a su suerte</span>. Allí conoce a Egon Tiedemann, con quien engendra a su hija Silja.',
-              img: '/Familias/Familia1/hanna.png',
-            },
-            {
-              title: 'Mundo de Eva',
-              timeline: 'El Matrimonio',
-              text: 'En esta realidad alternativa su deseo adolescente se cumple: <span class="magic-highlight">está casada con Ulrich</span> y espera un hijo. Sin embargo, el karma actúa y sufre sospechando de su infidelidad con Charlotte.',
-              img: '/Familias/Familia1/hanna.png',
-            },
-          ],
-        },
-      ],
-      [
-        {
-          id: 'jonas',
-          name: 'Jonas Kahnwald',
-          avatar: '/Familias/Familia1/jonas.jpg',
-          stages: [
-            {
-              title: 'El Protagonista',
-              timeline: '2019',
-              text: 'El icónico chico del <span class="magic-highlight">chubasquero amarillo</span>. Trata de recuperarse de la muerte de su padre mientras está profundamente enamorado de <span class="magic-highlight">Martha Nielsen</span>. Al descubrir que ella es técnicamente su tía, su realidad colapsa.',
-              img: '/Familias/Familia1/jonas.jpg',
-            },
-            {
-              title: 'El Forastero',
-              timeline: '2052',
-              text: 'Tras quedar atrapado en el futuro post-apocalíptico, se endurece y se convierte en un <span class="magic-highlight">viajero solitario</span>. Intenta destruir el agujero de gusano, ignorando que es precisamente su intento de destruirlo lo que <span class="magic-highlight">crea el portal</span>.',
-              img: '/Aclaraciones/Final/11.jpg',
-            },
-            {
-              title: 'Adam',
-              timeline: '1921',
-              text: 'Con el rostro desfigurado por los incontables viajes temporales, Jonas pierde toda esperanza. Funda la orden <span class="magic-highlight">Sic Mundus</span>. Su objetivo muta drásticamente: ya no quiere salvar su mundo, sino aniquilar la existencia misma.',
-              img: '/Aclaraciones/Final/11.jpg',
-            },
-            {
-              title: 'Mundo de Eva',
-              timeline: 'La Inexistencia',
-              text: 'Al no viajar Mikkel en el mundo de Eva, <span class="magic-highlight">Jonas nunca nace</span> en esta realidad. Sin embargo, su ausencia no detiene el ineludible apocalipsis.',
-              img: '/Aclaraciones/Final/3.jpg',
-            },
-            {
-              title: 'El Origen',
-              timeline: 'La Luz',
-              text: 'En un acto de sacrificio final, acepta que él y Martha son "el error" de la matriz. Viajan al Mundo Origen, salvan a la familia Tannhaus y <span class="magic-highlight">se desvanecen lentamente</span> en polvo de estrellas.',
-              img: '/Aclaraciones/Final/11.jpg',
-            },
-          ],
-        },
-      ],
-    ],
-  },
-  // ================= NIELSEN =================
-  {
-    id: 'nielsen',
-    name: 'Nielsen',
-    subtitle: 'La locura y la pérdida',
-    accent: '#7eb8d4',
-    cover: '/Familias/Familia2/inicio.jpg',
-    generations: [
-      [
-        {
-          id: 'tronte',
-          name: 'Tronte Nielsen',
-          avatar: '/Familias/Familia2/11.jpg',
-          stages: [
-            {
-              title: 'El Niño Marcado',
-              timeline: '1953',
-              text: 'Hijo de Agnes Nielsen y El Desconocido. Llega a Winden tras pasar años en un orfanato. Muestra <span class="magic-highlight">terribles quemaduras</span> en los brazos, ocultando un pasado de abusos.',
-              img: '/Familias/Familia2/11.jpg',
-            },
-            {
-              title: 'El Periodista',
-              timeline: '1986',
-              text: 'Casado con Jana, su familia se rompe en mil pedazos cuando <span class="magic-highlight">su hijo Mads desaparece</span>. Mantiene una aventura en secreto con Claudia Tiedemann.',
-              img: '/Familias/Familia2/11.jpg',
-            },
-            {
-              title: 'El Búnker',
-              timeline: '2020',
-              text: 'Guiado por la Claudia del futuro, se ve obligado a mover el cadáver de su propio hijo por el bosque. Más tarde, toma la dura decisión de <span class="magic-highlight">asfixiar a Regina Tiedemann</span> para liberarla de su sufrimiento.',
-              img: '/Familias/Familia2/11.jpg',
-            },
-          ],
-        },
-        {
-          id: 'jana',
-          name: 'Jana Nielsen',
-          avatar: '/Familias/Familia2/12.jpg',
-          stages: [
-            {
-              title: 'Jana Nielsen',
-              timeline: '1986',
-              text: 'Madre de Ulrich y Mads. La repentina desaparición de su hijo pequeño la consume, sumiéndola en una profunda depresión de la que <span class="magic-highlight">nunca se recupera</span>.',
-              img: '/Familias/Familia2/12.jpg',
-            },
-            {
-              title: 'La Testigo',
-              timeline: '2019',
-              text: 'Aún guarda la esperanza de que Mads siga vivo. Asegura haber visto a un <span class="magic-highlight">"hombre con una cabeza enorme"</span> (Helge) y a un sacerdote, afirmando obsesivamente que "todo está conectado".',
-              img: '/Familias/Familia2/12.jpg',
-            },
-          ],
-        },
-      ],
-      [
-        {
-          id: 'ulrich',
-          name: 'Ulrich Nielsen',
-          avatar: '/Familias/Familia2/1.jpg',
-          stages: [
-            {
-              title: 'Ulrich Nielsen',
-              timeline: '1986',
-              text: 'Un joven rebelde obsesionado con el punk y la frase <span class="magic-highlight">"No Future"</span>. Su vida despreocupada se detiene en seco tras la desaparición de su hermano Mads.',
-              img: '/Familias/Familia2/1.jpg',
-            },
-            {
-              title: 'El Comisario',
-              timeline: '2019',
-              text: 'Oficial de policía casado con Katharina, pero mantiene una aventura con <span class="magic-highlight">Hannah</span>. Cuando su hijo Mikkel desaparece, su desesperación lo consume.',
-              img: '/Familias/Familia2/1.jpg',
-            },
-            {
-              title: 'El Prisionero',
-              timeline: '1953 - 1987',
-              text: 'Ataca brutalmente al niño Helge Doppler para "cambiar el futuro". Es arrestado por Egon Tiedemann y pasa <span class="magic-highlight">34 años encerrado en un psiquiátrico</span> como "El Asesino de Niños".',
-              img: '/Familias/Familia2/1.jpg',
-            },
-          ],
-        },
-        {
-          id: 'katharina',
-          name: 'Katharina',
-          avatar: '/Familias/Familia2/2.jpg',
-          stages: [
-            {
-              title: 'Katharina Albers',
-              timeline: '1986',
-              text: 'Una adolescente agresiva que sufre horribles abusos físicos por parte de su propia madre, Helene, lo que la lleva a hacer bullying a otros compañeros como Regina.',
-              img: '/Familias/Familia2/2.jpg',
-            },
-            {
-              title: 'La Directora',
-              timeline: '2019',
-              text: 'Madre protectora de Magnus, Martha y Mikkel. Tras descubrir los viajes temporales y la infidelidad de Ulrich, su único objetivo es <span class="magic-highlight">recuperar a su familia</span>.',
-              img: '/Familias/Familia2/2.jpg',
-            },
-            {
-              title: 'Muerte en el Lago',
-              timeline: '1987',
-              text: 'Viaja al pasado para rescatar a Ulrich del manicomio. Trágicamente, se cruza con su propia madre joven, quien la <span class="magic-highlight">asesina a golpes con una piedra</span> y hunde su cuerpo en el lago.',
-              img: '/Familias/Familia2/2.jpg',
-            },
-          ],
-        },
-      ],
-      [
-        {
-          id: 'magnus',
-          name: 'Magnus Nielsen',
-          avatar: '/Familias/Familia2/6.jpg',
-          stages: [
-            {
-              title: 'Magnus Nielsen',
-              timeline: '2019',
-              text: 'El hermano mayor. Oculta su vulnerabilidad bajo una fachada rebelde. Se enamora perdidamente de <span class="magic-highlight">Franziska Doppler</span>, con quien forma un vínculo inquebrantable.',
-              img: '/Familias/Familia2/6.jpg',
-            },
-            {
-              title: 'Sic Mundus',
-              timeline: '1888 - 1921',
-              text: 'Viaja al siglo XIX huyendo del apocalipsis. Crece resentido pero fiel a Jonas, convirtiéndose finalmente en uno de los fundadores de Sic Mundus junto a su amada Franziska.',
-              img: '/Familias/Familia2/6.jpg',
-            },
-          ],
-        },
-        {
-          id: 'martha',
-          name: 'Martha / Eva',
-          avatar: '/Familias/Familia2/5.jpg',
-          stages: [
-            {
-              title: 'Martha Nielsen',
-              timeline: '2019',
-              text: 'Hija mediana de Katharina y Ulrich. Siente una conexión irrompible con Jonas. En el mundo de Adam, es asesinada por él mismo para forzar el ciclo.',
-              img: '/Familias/Familia2/5.jpg',
-            },
-            {
-              title: 'Mundo de Eva',
-              timeline: 'La Sustituta',
-              text: 'En su mundo paralelo, Jonas no existe. Al encontrar a un Jonas del otro universo, entiende la verdad del nudo.',
-              img: '/Familias/Familia2/5.jpg',
-            },
-            {
-              title: 'Eva',
-              timeline: 'Líder de Erit Lux',
-              text: 'Su yo anciana se opone frontalmente a Adam. Su único objetivo es <span class="magic-highlight">preservar el nudo infinito</span> para asegurar que su hijo, El Desconocido, siga naciendo eternamente.',
-              img: '/Familias/Familia2/5.jpg',
-            },
-          ],
-        },
-      ],
-    ],
-  },
-  // ================= DOPPLER =================
-  {
-    id: 'doppler',
-    name: 'Doppler',
-    subtitle: 'El secreto y la traición',
-    accent: '#a87c4f',
-    cover: '/Familias/Familia3/inicio.jpg',
-    generations: [
-      [
-        {
-          id: 'bernd',
-          name: 'Bernd Doppler',
-          avatar: '/Familias/Familia3/inicio.jpg',
-          stages: [
-            {
-              title: 'Bernd Doppler',
-              timeline: '1953 - 1986',
-              text: 'Fundador y primer director de la <span class="magic-highlight">Central Nuclear de Winden</span>. Su máxima preocupación es encubrir un misterioso accidente y los residuos radioactivos amarillos escondidos en las cuevas.',
-              img: '/Familias/Familia3/inicio.jpg',
-            },
-            {
-              title: 'El Secreto Final',
-              timeline: 'Mundo Origen',
-              text: 'Al final de la serie, una sutil fotografía revela que Bernd es, sorprendentemente, el padre biológico de <span class="magic-highlight">Regina Tiedemann</span> junto a Claudia.',
-              img: '/Familias/Familia3/inicio.jpg',
-            },
-          ],
-        },
-        {
-          id: 'greta',
-          name: 'Greta Doppler',
-          avatar: '/Familias/Familia3/inicio.jpg',
-          stages: [
-            {
-              title: 'Greta Doppler',
-              timeline: '1953',
-              text: 'Esposa de Bernd Doppler y madre de Helge. Lo educa con férrea disciplina religiosa y constantes abusos físicos. Llega a confesarle a Noah que cree que Helge <span class="magic-highlight">"no fue concebido con amor"</span>.',
-              img: '/Familias/Familia3/inicio.jpg',
-            },
-          ],
-        },
-      ],
-      [
-        {
-          id: 'helge',
-          name: 'Helge Doppler',
-          avatar: '/Familias/Familia3/9.jpg',
-          stages: [
-            {
-              title: 'El Niño Atacado',
-              timeline: '1953',
-              text: 'Un niño solitario con una colección de piñas del bosque. Ulrich Nielsen lo ataca con una piedra dejándolo al borde de la muerte y causándole graves deformidades en el rostro.',
-              img: '/Familias/Familia3/9.jpg',
-            },
-            {
-              title: 'El Secuaz',
-              timeline: '1986',
-              text: 'Manipulado y convertido en el sirviente de Noah. Es quien secuestra a los niños y limpia el <span class="magic-highlight">espeluznante búnker con papel pintado infantil</span>.',
-              img: '/Familias/Familia3/9.jpg',
-            },
-            {
-              title: 'Tick Tock',
-              timeline: '2019',
-              text: 'Encerrado en un geriátrico, perdiendo la cabeza, solo repite: <span class="magic-highlight">"Tick, tack... Va a volver a pasar"</span>. Intenta suicidarse chocando su coche de frente contra su propia versión de 1986.',
-              img: '/Familias/Familia3/9.jpg',
-            },
-          ],
-        },
-      ],
-      [
-        {
-          id: 'peter',
-          name: 'Peter Doppler',
-          avatar: '/Familias/Familia3/4.jpg',
-          stages: [
-            {
-              title: 'Peter Doppler',
-              timeline: '2019',
-              text: 'Psicólogo atormentado que reprime su homosexualidad. Es el primero en encontrar el cadáver de Mads cayendo de la nada en el búnker, viéndose obligado a <span class="magic-highlight">encubrir la verdad</span>.',
-              img: '/Familias/Familia3/4.jpg',
-            },
-            {
-              title: 'El Sacrificio',
-              timeline: '2020',
-              text: 'Sobrevive al apocalipsis. Mientras busca suministros, muere heroicamente asesinado por un saqueador al interponerse para <span class="magic-highlight">proteger a su hija Elisabeth</span>.',
-              img: '/Familias/Familia3/4.jpg',
-            },
-            {
-              title: 'Mundo de Eva',
-              timeline: 'El Párroco',
-              text: 'En el mundo paralelo, la vida de Peter toma un camino muy diferente: se convierte en el párroco de la iglesia de Winden, pero sigue manteniendo sus inclinaciones reprimidas.',
-              img: '/Familias/Familia3/4.jpg',
-            },
-          ],
-        },
-        {
-          id: 'charlotte',
-          name: 'Charlotte Doppler',
-          avatar: '/Familias/Familia3/1.jpg',
-          stages: [
-            {
-              title: 'Charlotte Doppler',
-              timeline: '1986 - 2019',
-              text: 'Jefa de policía metódica, obsesionada con los pájaros muertos. Fue criada por el relojero <span class="magic-highlight">H.G. Tannhaus</span> sin conocer su verdadero origen familiar.',
-              img: '/Familias/Familia3/1.jpg',
-            },
-            {
-              title: 'La Gran Paradoja',
-              timeline: '2020',
-              text: 'Descubre el secreto más retorcido del árbol de Winden: sus padres son el asesino Noah y <span class="magic-highlight">su propia hija, Elisabeth Doppler</span>.',
-              img: '/Familias/Familia3/1.jpg',
-            },
-          ],
-        },
-      ],
-      [
-        {
-          id: 'franziska',
-          name: 'Franziska',
-          avatar: '/Familias/Familia3/6.jpg',
-          stages: [
-            {
-              title: 'Franziska Doppler',
-              timeline: '2019',
-              text: 'Hija mayor de Peter y Charlotte. Gimnasta rítmica y rebelde que esconde fajos de billetes en las vías del tren. Se enamora perdidamente de <span class="magic-highlight">Magnus Nielsen</span>.',
-              img: '/Familias/Familia3/6.jpg',
-            },
-            {
-              title: 'La Devota',
-              timeline: '1921',
-              text: 'Tras huir del apocalipsis al pasado, envejece apoyando incondicionalmente a la causa destructiva de Adam en la oscura guarida de Sic Mundus.',
-              img: '/Familias/Familia3/6.jpg',
-            },
-            {
-              title: 'Mundo de Eva',
-              timeline: 'El Silencio',
-              text: 'En el mundo de Eva, el destino juega a la inversa: Franziska es sordomuda en lugar de su hermana Elisabeth.',
-              img: '/Familias/Familia3/6.jpg',
-            },
-          ],
-        },
-        {
-          id: 'elisabeth',
-          name: 'Elisabeth Doppler',
-          avatar: '/Familias/Familia3/7.jpg',
-          stages: [
-            {
-              title: 'Elisabeth Doppler',
-              timeline: '2019',
-              text: 'La hija menor de Charlotte y Peter. Sordomuda e inteligente. Conoce al misterioso Noah en el bosque, quien en lugar de secuestrarla le regala un reloj de bolsillo dorado.',
-              img: '/Familias/Familia3/7.jpg',
-            },
-            {
-              title: 'La Superviviente',
-              timeline: '2053',
-              text: 'Se convierte en una figura militar, fría y despiadada, que lidera a los pocos supervivientes en un culto alrededor de la profecía del paraíso prometido.',
-              img: '/Familias/Familia3/7.jpg',
-            },
-            {
-              title: 'El Bucle del Origen',
-              timeline: 'El Nudo',
-              text: 'Conoce al joven Noah tras el apocalipsis. Se enamoran y tienen una bebé: <span class="magic-highlight">Charlotte</span>. La niña es secuestrada y entregada al relojero, cerrando la paradoja madre-hija.',
-              img: '/Familias/Familia3/7.jpg',
-            },
-          ],
-        },
-      ],
-    ],
-  },
-  // ================= TIEDEMANN =================
-  {
-    id: 'tiedemann',
-    name: 'Tiedemann',
-    subtitle: 'El poder y su precio',
-    accent: '#8fbc8f',
-    cover: '/Familias/Familia4/inicio.jpg',
-    generations: [
-      [
-        {
-          id: 'egon',
-          name: 'Egon Tiedemann',
-          avatar: '/Familias/Familia4/10.jpg',
-          stages: [
-            {
-              title: 'El Oficial Ciego',
-              timeline: '1953',
-              text: 'Jefe de policía recto y alcohólico. Arresta al Ulrich del futuro convencido de que es un asesino en serie infanticida. Ignora por completo que <span class="magic-highlight">su mujer le está siendo infiel</span>.',
-              img: '/Familias/Familia4/10.jpg',
-            },
-            {
-              title: 'El Inspector',
-              timeline: '1986',
-              text: 'Obsesionado con la desaparición de Mads y la maldad de Ulrich Nielsen. Pasa a su jubilación desarrollando cáncer y problemas de alcoholismo, pero finalmente descubre el secreto de los viajes en el tiempo.',
-              img: '/Familias/Familia4/10.jpg',
-            },
-            {
-              title: 'La Muerte Trágica',
-              timeline: '1987',
-              text: 'Intenta revelar al mundo el agujero de gusano. En un forcejeo físico con su propia hija Claudia, sufre una caída fatal, dándose cuenta mientras muere que su hija es la culpable ("El Demonio Blanco").',
-              img: '/Familias/Familia4/10.jpg',
-            },
-          ],
-        },
-        {
-          id: 'doris',
-          name: 'Doris Tiedemann',
-          avatar: '/Familias/Familia4/13.jpg',
-          stages: [
-            {
-              title: 'Doris Tiedemann',
-              timeline: '1953',
-              text: 'Casada con Egon, asfixiada por la rutina de una ama de casa de los años 50. Su vida cambia cuando alquila una habitación a la elegante y misteriosa <span class="magic-highlight">Agnes Nielsen</span>.',
-              img: '/Familias/Familia4/13.jpg',
-            },
-            {
-              title: 'Amor Prohibido',
-              timeline: '1954',
-              text: 'Se enamora profundamente de Agnes, manteniendo una aventura prohibida hasta que Egon lo descubre y ella toma la decisión de abandonar a su marido.',
-              img: '/Familias/Familia4/13.jpg',
-            },
-          ],
-        },
-      ],
-      [
-        {
-          id: 'claudia',
-          name: 'Claudia Tiedemann',
-          avatar: '/Familias/Familia4/8.jpg',
-          stages: [
-            {
-              title: 'La Directora',
-              timeline: '1986',
-              text: 'Una mujer inteligente y fría. Se convierte en la primera mujer directora de la planta nuclear de Winden. Descubre los incidentes radioactivos y, más tarde, el libro de viajes en el tiempo.',
-              img: '/Familias/Familia4/8.jpg',
-            },
-            {
-              title: 'El Demonio Blanco',
-              timeline: '2020',
-              text: 'Abandona su vida para estudiar la "Partícula de Dios". Entiende la batalla entre la luz (Eva) y la sombra (Adam) y comienza a viajar entre mundos con su fiel perro Gretchen.',
-              img: '/Familias/Familia4/8.jpg',
-            },
-            {
-              title: 'La Verdad Absoluta',
-              timeline: 'El Origen',
-              text: 'Descubre la pieza faltante del puzle. Ni el mundo de Adam ni el de Eva deberían existir. Su único objetivo de vida ha sido <span class="magic-highlight">salvar a su hija Regina</span> del cáncer terminal, lo cual solo es posible destruyendo los dos universos paralelos.',
-              img: '/Familias/Familia4/8.jpg',
-            },
-          ],
-        },
-      ],
-      [
-        {
-          id: 'regina',
-          name: 'Regina Tiedemann',
-          avatar: '/Familias/Familia4/1.1.jpg',
-          stages: [
-            {
-              title: 'El Bullying',
-              timeline: '1986',
-              text: 'Una joven solitaria aterrorizada por los abusos de Ulrich y Katharina, quienes la atan a un árbol en el bosque. Es salvada y consolada por un misterioso joven con pasaporte falso: Aleksander.',
-              img: '/Familias/Familia4/1.1.jpg',
-            },
-            {
-              title: 'La Enfermedad',
-              timeline: '2019',
-              text: 'Dueña del único hotel de Winden. Desarrolla cáncer de mama avanzado que merma su esperanza de vida. Su madre la aísla en el búnker para salvarla del Apocalipsis.',
-              img: '/Familias/Familia4/1.1.jpg',
-            },
-            {
-              title: 'La Causa Final',
-              timeline: 'Mundo Origen',
-              text: 'En el mundo puro (Mundo de Origen), los accidentes radioactivos provocados por la planta nuclear nunca existieron, por lo que ella nunca desarrolló cáncer y <span class="magic-highlight">vive felizmente</span> junto a sus amigos.',
-              img: '/Familias/Familia4/1.1.jpg',
-            },
-          ],
-        },
-        {
-          id: 'aleksander',
-          name: 'Aleksander Tiedemann',
-          avatar: '/Familias/Familia4/2.jpg',
-          stages: [
-            {
-              title: 'Boris Niewald',
-              timeline: '1986',
-              text: 'Llega herido y armado a Winden huyendo de un crimen en Marburg. Oculta su identidad asumiendo el pasaporte de una de sus víctimas: <span class="magic-highlight">Aleksander Köhler</span>.',
-              img: '/Familias/Familia4/2.jpg',
-            },
-            {
-              title: 'El Director',
-              timeline: '2019',
-              text: 'Ascendió en la planta nuclear ocultando los barriles amarillos para Claudia Tiedemann. Al igual que su mentora, trata de mantener en silencio los secretos tóxicos de Winden.',
-              img: '/Familias/Familia4/2.jpg',
-            },
-          ],
-        },
-      ],
-      [
-        {
-          id: 'bartosz',
-          name: 'Bartosz Tiedemann',
-          avatar: '/Familias/Familia4/6.jpg',
-          stages: [
-            {
-              title: 'El Peón',
-              timeline: '2019',
-              text: 'Hijo de Regina y Aleksander. Tras la desaparición de Jonas y las desgracias del pueblo, cae en las redes manipuladoras de Noah, quien le convence de trabajar para Sic Mundus.',
-              img: '/Familias/Familia4/6.jpg',
-            },
-            {
-              title: 'El Exiliado',
-              timeline: '1890',
-              text: 'Queda atrapado en el pasado trabajando en la excavación del túnel de Sic Mundus. Conoce a Silja y descubre horrorizado que <span class="magic-highlight">él mismo engendró a Noah</span> y a Agnes.',
-              img: '/Familias/Familia4/6.jpg',
-            },
-            {
-              title: 'La Muerte Irónica',
-              timeline: '1921',
-              text: 'En una trágica ironía del destino, un anciano y desencantado Bartosz es <span class="magic-highlight">asesinado a pico por su propio hijo</span>, el joven Noah, demostrando su devoción a Adam.',
-              img: '/Familias/Familia4/6.jpg',
-            },
-          ],
-        },
-      ],
-    ],
-  },
-  // ================= ADICIONALES =================
-  {
-    id: 'adicionales',
-    name: 'Adicionales',
-    subtitle: 'Fuera del tiempo',
-    accent: '#b8a0c8',
-    cover: '/Familias/Familia5/inicio.jpg',
-    generations: [
-      [
-        {
-          id: 'tannhaus',
-          name: 'H.G. Tannhaus',
-          avatar: '/Familias/Familia5/inicio.png',
-          stages: [
-            {
-              title: 'El Relojero',
-              timeline: '1953 - 1986',
-              text: 'El excéntrico relojero de Winden y autor del libro "Un Viaje a Través del Tiempo". Repara los dispositivos extraños de los viajeros y acaba construyendo la mismísima máquina del tiempo de latón.',
-              img: '/Familias/Familia5/inicio.png',
-            },
-            {
-              title: 'El Creador Trágico',
-              timeline: 'Mundo Origen',
-              text: 'En el Mundo Origen, pierde a su hijo Marek, su nuera y su nieta en un accidente en 1971. El dolor lo lleva a construir la primera máquina. Al activarla, destruye su universo y <span class="magic-highlight">crea el bucle de Jonas y Martha</span>.',
-              img: '/Familias/Familia5/inicio.png',
-            },
-          ],
-        },
-        {
-          id: 'desconocido',
-          name: 'El Desconocido',
-          avatar: '/Familias/Familia5/desconocido.jpg',
-          stages: [
-            {
-              title: 'La Anomalía',
-              timeline: 'Eternidad',
-              text: 'Fruto del amor imposible entre Jonas y Martha de dos mundos distintos. Se mueve eternamente sincronizado con sus versiones de niño, adulto y anciano. Jamás se le da un nombre.',
-              img: '/Familias/Familia5/desconocido.jpg',
-            },
-            {
-              title: 'El Arquitecto del Dolor',
-              timeline: 'El Bucle',
-              text: 'Su labio leporino lo delata. Extorsiona y asesina para asegurar los planos de la central nuclear. Es el encargado de <span class="magic-highlight">escribir la libreta de cuero</span> garantizando que el ciclo de desgracias se repita.',
-              img: '/Familias/Familia5/desconocido.jpg',
-            },
-          ],
-        },
-      ],
-    ],
-  },
-];
+import { familiasData, relationshipData } from '../data/familias';
+import { validateRelationships } from '../utils/familyTree';
+
+const relationshipValidation = validateRelationships(
+  familiasData,
+  relationshipData,
+);
 ---
 
 <style is:global>
@@ -774,6 +110,11 @@ const familiasData = [
   /* ZOOM/PAN TREE */
   #tree-pan-area {
     user-select: none;
+    cursor: none;
+  }
+  #tree-viewer,
+  #tree-viewer * {
+    cursor: none !important;
   }
   #tree-zoom-container {
     transition: transform 0.08s ease-out;
@@ -849,6 +190,88 @@ const familiasData = [
     transform: translateX(-50%) translateY(0);
   }
 
+  .complete-tree-grid {
+    width: 2600px;
+    height: 1500px;
+    min-width: 2600px;
+    min-height: 1500px;
+    position: relative;
+    padding: 0;
+  }
+
+  .family-tree-canvas {
+    width: 980px;
+    height: 920px;
+    min-width: 980px;
+    min-height: 920px;
+    position: relative;
+    padding: 0;
+  }
+
+  /* Árbol Completo redisñado: mapa único sin bloques separados por familia —
+     las etiquetas de familia son texto flotante sin caja/borde. */
+  .complete-family-label {
+    --family-accent: #d97706;
+    position: absolute;
+    z-index: 2;
+    margin: 0;
+    color: color-mix(in srgb, var(--family-accent), white 18%);
+    font-family: 'Cinzel', serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    text-shadow: 0 0 12px rgba(0, 0, 0, 0.8);
+    opacity: 0.55;
+    pointer-events: none;
+    white-space: nowrap;
+    transform: translateY(-100%);
+  }
+
+  /* Nodo/conector central: Jonas + Martha + símbolo de infinito */
+  .complete-tree-infinity {
+    font-family: 'Cinzel', serif;
+    fill: rgba(245, 158, 11, 0.85);
+    text-anchor: middle;
+    dominant-baseline: middle;
+  }
+
+  /* Resaltado de linaje al pasar el cursor (Task 11) */
+  .complete-tree-node.is-dimmed,
+  #tree-svg-lines .tree-line.is-dimmed,
+  #tree-svg-lines polygon.is-dimmed {
+    opacity: 0.12;
+    transition: opacity 0.35s ease;
+  }
+  .complete-tree-node:not(.is-dimmed),
+  #tree-svg-lines .tree-line:not(.is-dimmed),
+  #tree-svg-lines polygon:not(.is-dimmed) {
+    transition: opacity 0.35s ease;
+  }
+  .complete-tree-node.is-active .tree-node-wrap > div {
+    border-color: rgba(245, 158, 11, 0.9);
+    box-shadow: 0 0 30px rgba(245, 158, 11, 0.4);
+  }
+
+  .complete-tree-node {
+    position: absolute;
+    z-index: 10;
+    transform: translate(-50%, -50%);
+  }
+
+  .family-tree-node {
+    position: absolute;
+    z-index: 10;
+    transform: translate(-50%, -50%);
+  }
+
+  .complete-tree-node[data-core='1'] .tree-node-wrap > div {
+    border-color: rgba(245, 158, 11, 0.75);
+    box-shadow:
+      0 0 26px rgba(245, 158, 11, 0.28),
+      0 0 2px rgba(255, 255, 255, 0.35);
+  }
+
   /* LÍNEAS DE GENERACIÓN CON PULSO */
   @keyframes line-pulse {
     0% {
@@ -905,6 +328,223 @@ const familiasData = [
   .scroll-scene.in-view .timeline-dot {
     opacity: 1;
     transform: scale(1);
+  }
+
+  #cinematic-bg {
+    --tilt-x: 0deg;
+    --tilt-y: 0deg;
+    --scan-y: 52%;
+    --drift-x: 0px;
+    --drift-y: 0px;
+  }
+
+  #cinematic-bg {
+    --scroll-y: 0px;
+  }
+
+  #cinematic-bg.temporal-bg {
+    transform:
+      translate(var(--drift-x), calc(var(--drift-y) + var(--scroll-y)))
+      rotateX(var(--tilt-y))
+      rotateY(var(--tilt-x))
+      scale(1.08);
+    filter: url(#cinematic-ripple) grayscale(0.25) contrast(1.08) brightness(0.92) saturate(1);
+  }
+
+  .cinematic-temporal-overlay {
+    background:
+      linear-gradient(
+        to bottom,
+        transparent calc(var(--scan-y) - 8%),
+        rgba(245, 158, 11, 0.16) var(--scan-y),
+        transparent calc(var(--scan-y) + 8%)
+      ),
+      repeating-linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.045) 0,
+        rgba(255, 255, 255, 0.045) 1px,
+        transparent 1px,
+        transparent 7px
+      );
+    mix-blend-mode: screen;
+    opacity: 0.18;
+  }
+
+  /* Sin caja/fondo opaco detrás del texto — el texto se apoya solo en el
+     degradado global de la imagen (ver #cinematic-viewer) y en su propio
+     text-shadow, al estilo Netflix, en vez de una tarjeta negra sólida. */
+  .cinematic-panel {
+    border-left: 1px solid rgba(245, 158, 11, 0.25);
+    padding: 1.5rem 1.65rem;
+  }
+
+  .cinematic-panel h2,
+  .cinematic-panel p {
+    text-shadow:
+      0 2px 10px rgba(0, 0, 0, 0.9),
+      0 0 32px rgba(0, 0, 0, 0.7);
+  }
+
+  .cinematic-insight {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 0.9s ease 0.55s,
+      transform 0.9s ease 0.55s;
+  }
+
+  .scroll-scene.in-view .cinematic-insight {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .next-panel-cue {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity 0.8s ease 0.8s,
+      transform 0.8s ease 0.8s;
+  }
+
+  .scroll-scene.in-view .next-panel-cue {
+    opacity: 0.85;
+    transform: translateY(0);
+  }
+
+  @keyframes cue-pulse {
+    0%,
+    100% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.45);
+    }
+    50% {
+      transform: scale(1.35);
+      box-shadow: 0 0 0 6px rgba(245, 158, 11, 0);
+    }
+  }
+
+  .next-panel-cue-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: rgb(245, 158, 11);
+    animation: cue-pulse 1.8s ease-in-out infinite;
+  }
+
+  .next-panel-cue-line {
+    width: 1px;
+    height: 22px;
+    background: linear-gradient(
+      to bottom,
+      rgba(245, 158, 11, 0.55),
+      rgba(245, 158, 11, 0)
+    );
+  }
+
+  .temporal-image-wrap {
+    --tilt-x: 0deg;
+    --tilt-y: 0deg;
+    --scan-y: 52%;
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border: 1px solid rgba(245, 158, 11, 0.18);
+    background: rgba(0, 0, 0, 0.55);
+    perspective: 900px;
+    transform: translateY(26px) scale(0.96);
+    opacity: 0;
+    transition:
+      opacity 0.9s ease,
+      transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1),
+      border-color 0.35s ease;
+  }
+
+  .scroll-scene.in-view .temporal-image-wrap {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .temporal-image-wrap:nth-child(2) {
+    transition-delay: 120ms;
+  }
+
+  .temporal-image-wrap:nth-child(3) {
+    transition-delay: 240ms;
+  }
+
+  .temporal-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.05) brightness(0.72);
+    transform: rotateX(var(--tilt-y)) rotateY(var(--tilt-x)) scale(1.04);
+    transition:
+      transform 0.18s ease,
+      filter 0.35s ease,
+      opacity 0.35s ease;
+  }
+
+  .temporal-image-wrap::before,
+  .temporal-image-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+
+  .temporal-image-wrap::before {
+    background:
+      linear-gradient(
+        to bottom,
+        transparent calc(var(--scan-y) - 8%),
+        rgba(245, 158, 11, 0.28) var(--scan-y),
+        transparent calc(var(--scan-y) + 8%)
+      ),
+      repeating-linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.06) 0,
+        rgba(255, 255, 255, 0.06) 1px,
+        transparent 1px,
+        transparent 6px
+      );
+    mix-blend-mode: screen;
+  }
+
+  .temporal-image-wrap::after {
+    border: 1px solid rgba(245, 158, 11, 0.38);
+    box-shadow:
+      inset 0 0 28px rgba(245, 158, 11, 0.16),
+      0 0 24px rgba(245, 158, 11, 0.14);
+  }
+
+  .temporal-image-wrap.is-interacting {
+    border-color: rgba(245, 158, 11, 0.55);
+  }
+
+  .temporal-image-wrap.is-interacting .temporal-image {
+    filter: grayscale(0.2) contrast(1.18) brightness(0.92) saturate(1.1);
+  }
+
+  .temporal-image-wrap.is-interacting::before,
+  .temporal-image-wrap.is-interacting::after {
+    opacity: 1;
+  }
+
+  @media (max-width: 767px) {
+    .temporal-gallery {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      max-width: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .temporal-image-wrap,
+    .temporal-image {
+      transition: none;
+      transform: none;
+    }
   }
 
   .timeline-line {
@@ -1042,8 +682,26 @@ const familiasData = [
           stroke-width="2"
           d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
         ></path></svg
-      >
+    >
       Ver Familias
+    </button>
+    <button
+      onclick="openCompleteTreeViewer()"
+      class="w-full mt-3 py-3 bg-black/60 border border-amber-700/50 hover:border-amber-500 text-amber-500/80 hover:text-amber-300 rounded font-cinzel tracking-widest text-sm uppercase transition-all flex items-center justify-center gap-2 group"
+    >
+      <svg
+        class="w-4 h-4 transform group-hover:scale-110 transition-transform"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        ><path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.8"
+          d="M12 3v5m0 0H7m5 0h5M7 8v5m10-5v5M7 13h10M7 13v5m10-5v5M4 18h6m4 0h6"
+        ></path></svg
+      >
+      Arbol Completo
     </button>
   </div>
   <div id="sidebar-content" class="p-6 flex flex-col gap-8"></div>
@@ -1314,16 +972,43 @@ const familiasData = [
     </div>
   </button>
 
+  <svg width="0" height="0" style="position:absolute;overflow:hidden">
+    <filter
+      id="cinematic-ripple"
+      x="-20%"
+      y="-20%"
+      width="140%"
+      height="140%"
+    >
+      <feTurbulence
+        type="turbulence"
+        baseFrequency="0.012 0.02"
+        numOctaves="2"
+        seed="7"
+        result="cinematic-ripple-turbulence"
+      ></feTurbulence>
+      <feDisplacementMap
+        id="cinematic-ripple-displace"
+        in="SourceGraphic"
+        in2="cinematic-ripple-turbulence"
+        scale="0"
+        xChannelSelector="R"
+        yChannelSelector="G"
+      ></feDisplacementMap>
+    </filter>
+  </svg>
+
   <div
     class="fixed inset-0 w-full h-full z-0 overflow-hidden pointer-events-none"
   >
     <img
       id="cinematic-bg"
       src=""
-      class="w-full h-full object-cover object-[70%_center] opacity-100 scale-100 transition-all duration-[1s] ease-out"
+      class="temporal-bg w-full h-full object-cover object-[70%_center] opacity-100 scale-100 transition-all duration-[1s] ease-out"
     />
+    <div class="cinematic-temporal-overlay absolute inset-0"></div>
     <div
-      class="absolute inset-0 bg-gradient-to-t from-[#020202] via-[#020202]/80 to-transparent md:bg-gradient-to-r md:from-[#020202] md:via-[#020202]/80 md:to-transparent"
+      class="absolute inset-0 bg-gradient-to-t from-[#020202]/92 via-[#020202]/45 to-transparent md:bg-gradient-to-r md:from-[#020202]/88 md:via-[#020202]/42 md:to-transparent"
     >
     </div>
   </div>
@@ -1335,9 +1020,38 @@ const familiasData = [
   </div>
 </div>
 
-<script is:inline define:vars={{ familiasData }}>
+<script is:inline define:vars={{ familiasData, relationshipData, relationshipValidation }}>
   let currentFamilyId = '';
+  let currentTreeMode = 'family';
   let observer = null;
+  // Se incrementa en cada drawTree()/drawCompleteTree(). El callback
+  // asíncrono de scheduleTreeLinesDraw comprueba que su token siga siendo
+  // el más reciente antes de tocar el DOM — si el usuario cambia de árbol
+  // (o de familia) mientras las imágenes del árbol anterior aún estaban
+  // decodificando, ese dibujo obsoleto no debe pisar al árbol actual.
+  let treeDrawToken = 0;
+  // Calculado una vez por vista cinemática — usado por el tilt de ratón,
+  // el parallax de scroll y el efecto ripple para respetar la preferencia
+  // de movimiento reducido del visitante.
+  let cinematicReducedMotion = false;
+  const hasFinePointer = () =>
+    window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  // Última dirección de scroll detectada en la vista cinemática — 'down' o
+  // 'up' — usada para decidir hacia dónde "emerge" la imagen de la siguiente
+  // etapa (efecto agua).
+  let cinematicScrollDirection = 'down';
+  // scrollTop registrado en el último evento de scroll dentro del visor
+  // cinemático. Vive fuera del listener (que solo se une una vez) para que
+  // pueda resetearse cada vez que se abre un personaje distinto — si no,
+  // el primer scroll tras cambiar de personaje comparaba contra el scrollTop
+  // del personaje anterior y calculaba una dirección incorrecta.
+  let cinematicLastScrollTop = 0;
+  // Se incrementa cada vez que se pide un cambio de imagen de fondo en la
+  // vista cinemática. El setTimeout que aplica el cambio comprueba que su
+  // token siga siendo el más reciente antes de tocar el DOM — si el usuario
+  // ya cruzó varias escenas mientras el primer cambio esperaba su fade-out,
+  // ese cambio queda obsoleto y no debe "ganarle" al más reciente.
+  let cinematicBgToken = 0;
   const audioEl = document.getElementById('dark-ambient-audio');
   if (audioEl) audioEl.volume = 0.4;
 
@@ -1346,23 +1060,332 @@ const familiasData = [
   const btnAudio = document.getElementById('btn-audio-toggle');
   const audioBars = document.getElementById('audio-bars');
   const audioMutedIcon = document.getElementById('audio-muted-icon');
+  let resumeAudioOnFocus = false;
+
+  if (
+    relationshipValidation.missingEndpoints.length ||
+    relationshipValidation.duplicateIds.length ||
+    relationshipValidation.unknownTypes.length
+  ) {
+    console.warn('Family tree relationship validation issues', relationshipValidation);
+  }
+
+  function isSidebarOpen() {
+    return !document
+      .getElementById('netflix-sidebar')
+      .classList.contains('-translate-x-full');
+  }
+
+  function closeSidebarIfOpen() {
+    if (isSidebarOpen()) toggleSidebar();
+  }
+
+  function getFamilyRelationships(familyId) {
+    return relationshipData.filter((relationship) => relationship.familyId === familyId);
+  }
+
+  function relationshipKey(relationship) {
+    if (relationship.type === 'couple') {
+      return [
+        relationship.type,
+        ...[relationship.from, relationship.to].sort(),
+      ].join(':');
+    }
+
+    return [relationship.type, relationship.from, relationship.to].join(':');
+  }
+
+  function getCompleteRelationships() {
+    const seen = new Set();
+
+    return relationshipData.filter((relationship) => {
+      const key = relationshipKey(relationship);
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
+  // Mismo algoritmo que computeLineage() en src/utils/familyTree.ts —
+  // duplicado aquí porque este script es is:inline (no puede usar import),
+  // igual que el resto de helpers de relaciones en este archivo.
+  function computeLineage(characterId, relationships) {
+    const lineage = new Set([characterId]);
+    const queue = [characterId];
+
+    while (queue.length > 0) {
+      const current = queue.shift();
+
+      relationships.forEach((relationship) => {
+        let neighbor = null;
+        if (relationship.from === current) neighbor = relationship.to;
+        else if (relationship.to === current) neighbor = relationship.from;
+
+        if (neighbor && !lineage.has(neighbor)) {
+          lineage.add(neighbor);
+          queue.push(neighbor);
+        }
+      });
+    }
+
+    return lineage;
+  }
+
+  function findCharacterFamily(characterId) {
+    for (const family of familiasData) {
+      const character = family.generations
+        .flat()
+        .find((item) => item.id === characterId);
+      if (character) return { family, character };
+    }
+
+    return null;
+  }
+
+  const familyLayouts = {
+    kahnwald: {
+      width: 880,
+      height: 820,
+      nodes: {
+        ines: { x: 440, y: 120 },
+        mikkel: { x: 350, y: 345 },
+        hannah: { x: 530, y: 345 },
+        jonas: { x: 440, y: 610 },
+      },
+    },
+    nielsen: {
+      width: 900,
+      height: 820,
+      nodes: {
+        tronte: { x: 350, y: 120 },
+        jana: { x: 550, y: 120 },
+        ulrich: { x: 350, y: 355 },
+        katharina: { x: 550, y: 355 },
+        magnus: { x: 300, y: 620 },
+        martha: { x: 600, y: 620 },
+      },
+    },
+    doppler: {
+      width: 900,
+      height: 900,
+      nodes: {
+        bernd: { x: 350, y: 105 },
+        greta: { x: 550, y: 105 },
+        helge: { x: 450, y: 310 },
+        peter: { x: 350, y: 530 },
+        charlotte: { x: 550, y: 530 },
+        franziska: { x: 350, y: 755 },
+        elisabeth: { x: 550, y: 755 },
+      },
+    },
+    tiedemann: {
+      width: 900,
+      height: 900,
+      nodes: {
+        egon: { x: 350, y: 105 },
+        doris: { x: 550, y: 105 },
+        claudia: { x: 450, y: 310 },
+        regina: { x: 350, y: 530 },
+        aleksander: { x: 550, y: 530 },
+        bartosz: { x: 450, y: 755 },
+      },
+    },
+    adicionales: {
+      width: 760,
+      height: 460,
+      nodes: {
+        tannhaus: { x: 270, y: 210 },
+        desconocido: { x: 490, y: 210 },
+      },
+    },
+  };
+
+  // Layout compacto en "V": generaciones alineadas horizontalmente entre
+  // familias contemporáneas, convergiendo hacia Jonas + Martha en el centro
+  // inferior (con el símbolo de infinito entre ambos), y Tannhaus/Desconocido
+  // como vértices simbólicos arriba/abajo de todo el árbol — mismo mecanismo
+  // de coordenadas manuales que antes, solo redistribuido.
+  const completeLayout = {
+    width: 2200,
+    height: 1230,
+    center: { x: 1100, y: 840 },
+    nodes: {
+      // ===== Tiedemann (columna izquierda, converge hacia el centro) =====
+      egon: { x: 250, y: 150 },
+      doris: { x: 430, y: 150 },
+      claudia: { x: 400, y: 380 },
+      regina: { x: 470, y: 610 },
+      aleksander: { x: 650, y: 610 },
+      bartosz: { x: 610, y: 840 },
+
+      // ===== Nielsen + Kahnwald (columna central) =====
+      tronte: { x: 830, y: 150 },
+      jana: { x: 1010, y: 150 },
+      ulrich: { x: 830, y: 380 },
+      katharina: { x: 1010, y: 380 },
+      ines: { x: 680, y: 380 },
+      mikkel: { x: 760, y: 610 },
+      hannah: { x: 930, y: 610 },
+      // Antes en x:1350 (casi pegado a la columna Doppler): el conector desde
+      // Ulrich/Katharina cruzaba todo el mapa en horizontal y parecía una
+      // línea suelta junto a Peter Doppler. Reubicado junto a sus hermanos.
+      magnus: { x: 1120, y: 610 },
+
+      jonas: { x: 1000, y: 840, core: true },
+      martha: { x: 1200, y: 840, core: true },
+      desconocido: { x: 1100, y: 1050, core: true },
+      // Tannhaus: figura "fuera del tiempo", sin línea de sangre directa —
+      // colocado en el hueco vacío entre el bloque Nielsen/Kahnwald y el
+      // bloque Doppler, en vez de amontonado junto a El Desconocido o
+      // flotando aislado arriba del todo.
+      tannhaus: { x: 1450, y: 380 },
+
+      // ===== Doppler (columna derecha, converge hacia el centro — espejo de Tiedemann) =====
+      bernd: { x: 1750, y: 150 },
+      greta: { x: 1930, y: 150 },
+      helge: { x: 1800, y: 380 },
+      peter: { x: 1730, y: 610 },
+      charlotte: { x: 1910, y: 610 },
+      franziska: { x: 1770, y: 840 },
+      elisabeth: { x: 1950, y: 840 },
+    },
+    // Etiquetas de familia flotantes (sin caja/borde) — ya no se dibujan
+    // 5 bloques separados, solo un nombre tenue cerca de cada grupo.
+    labels: [
+      { familyId: 'tiedemann', x: 250, y: 95 },
+      { familyId: 'nielsen', x: 830, y: 95 },
+      { familyId: 'kahnwald', x: 680, y: 325 },
+      { familyId: 'doppler', x: 1750, y: 95 },
+      { familyId: 'adicionales', x: 1100, y: 985 },
+    ],
+  };
+
+  const sceneImagePools = {
+    kahnwald: [
+      '/Familias/Familia1/jonas.jpg',
+      '/Familias/Familia1/mikkel.jpg',
+      '/Familias/Familia1/hanna.png',
+      '/Familias/Familia1/1.jpg',
+      '/Familias/Familia1/2.jpg',
+      '/Familias/Familia1/3.jpg',
+      '/Aclaraciones/Final/11.jpg',
+      '/Aclaraciones/Final/3.jpg',
+    ],
+    nielsen: [
+      '/Familias/Familia2/1.jpg',
+      '/Familias/Familia2/2.jpg',
+      '/Familias/Familia2/5.jpg',
+      '/Familias/Familia2/6.jpg',
+      '/Familias/Familia2/10.jpg',
+      '/Familias/Familia2/14.jpg',
+      '/Familias/Familia2/16.jpg',
+    ],
+    doppler: [
+      '/Familias/Familia3/1.jpg',
+      '/Familias/Familia3/4.jpg',
+      '/Familias/Familia3/6.jpg',
+      '/Familias/Familia3/7.jpg',
+      '/Familias/Familia3/8.jpg',
+      '/Familias/Familia3/9.jpg',
+      '/Familias/Familia3/12.jpg',
+    ],
+    tiedemann: [
+      '/Familias/Familia4/1.1.jpg',
+      '/Familias/Familia4/2.jpg',
+      '/Familias/Familia4/6.jpg',
+      '/Familias/Familia4/8.jpg',
+      '/Familias/Familia4/10.jpg',
+      '/Familias/Familia4/11.jpg',
+      '/Familias/Familia4/13.jpg',
+    ],
+    adicionales: [
+      '/Familias/Familia5/inicio.png',
+      '/Familias/Familia5/desconocido.jpg',
+      '/Familias/Familia5/1.jpg',
+      '/Familias/Familia5/2.jpg',
+      '/Aclaraciones/Final/4.jpg',
+    ],
+  };
 
   // Lógica Botón Audio Elegante (Bars vs Mute Icon)
   if (btnAudio) {
     btnAudio.addEventListener('click', () => {
       if (!audioEl) return;
       if (isAudioPlaying) {
-        audioEl.pause();
-        audioBars.classList.add('hidden');
-        audioMutedIcon.classList.remove('hidden');
+        resumeAudioOnFocus = false;
+        pauseSectionAudio();
       } else {
-        audioEl.play().catch((e) => console.log(e));
-        audioBars.classList.remove('hidden');
-        audioMutedIcon.classList.add('hidden');
+        playSectionAudio();
       }
-      isAudioPlaying = !isAudioPlaying;
     });
   }
+
+  function isImmersiveViewActive() {
+    const treeViewer = document.getElementById('tree-viewer');
+    const cineViewer = document.getElementById('cinematic-viewer');
+    return (
+      !treeViewer.classList.contains('hidden') ||
+      !cineViewer.classList.contains('hidden')
+    );
+  }
+
+  function syncAudioButton() {
+    if (!audioBars || !audioMutedIcon) return;
+    if (isAudioPlaying) {
+      audioBars.classList.remove('hidden');
+      audioMutedIcon.classList.add('hidden');
+    } else {
+      audioBars.classList.add('hidden');
+      audioMutedIcon.classList.remove('hidden');
+    }
+  }
+
+  function pauseSectionAudio({ remember = false } = {}) {
+    if (!audioEl) return;
+    if (remember) {
+      resumeAudioOnFocus =
+        resumeAudioOnFocus || (isAudioPlaying && isImmersiveViewActive());
+    }
+    audioEl.pause();
+    isAudioPlaying = false;
+    syncAudioButton();
+  }
+
+  function playSectionAudio() {
+    if (!audioEl || document.hidden || !isImmersiveViewActive()) return;
+    audioEl
+      .play()
+      .then(() => {
+        isAudioPlaying = true;
+        syncAudioButton();
+      })
+      .catch((e) => console.log(e));
+  }
+
+  function resumeSectionAudioIfNeeded() {
+    if (!resumeAudioOnFocus || !isImmersiveViewActive()) return;
+    resumeAudioOnFocus = false;
+    playSectionAudio();
+    setTimeout(playSectionAudio, 250);
+    setTimeout(playSectionAudio, 900);
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      pauseSectionAudio({ remember: true });
+      return;
+    }
+
+    resumeSectionAudioIfNeeded();
+  });
+
+  window.addEventListener('blur', () => {
+    pauseSectionAudio({ remember: true });
+  });
+
+  window.addEventListener('focus', () => {
+    resumeSectionAudioIfNeeded();
+  });
 
   function buildSidebar() {
     const sidebarContent = document.getElementById('sidebar-content');
@@ -1401,83 +1424,31 @@ const familiasData = [
   };
 
   window.goToFamiliasOverview = () => {
-    toggleSidebar();
-    closeCinematicViewer();
-    closeTreeViewer();
+    window.resetPersonajesTabs();
+  };
+
+  window.resetPersonajesTabs = () => {
+    if (observer) observer.disconnect();
+    currentFamilyId = '';
+    currentTreeMode = 'family';
+    document.getElementById('cinematic-viewer').classList.add('hidden', 'opacity-0');
+    document.getElementById('tree-viewer').classList.add('hidden', 'opacity-0');
+    document.getElementById('familias-main-view').classList.remove('hidden');
+    document.body.classList.remove('hide-global-ui');
+    closeSidebarIfOpen();
+    if (treeCursor) treeCursor.style.opacity = '0';
+    if (btnAudio) {
+      btnAudio.classList.remove('flex');
+      btnAudio.classList.add('hidden');
+    }
+    resumeAudioOnFocus = false;
+    pauseSectionAudio();
   };
 
   // DIBUJAR ÁRBOL con líneas SVG reales (pareja + descendencia)
-  function drawTree(familiaId) {
-    const familia = familiasData.find((f) => f.id === familiaId);
-    if (!familia || !familia.generations || !familia.generations.length)
-      return false;
-
-    currentFamilyId = familiaId;
-    document.getElementById('tree-family-name').innerText = familia.name;
-    const container = document.getElementById('tree-nodes-container');
-    container.innerHTML = '';
-
-    // SVG overlay para las líneas (se dibuja después de que el DOM tenga dimensiones)
-    const svgOverlay = document.createElementNS(
-      'http://www.w3.org/2000/svg',
-      'svg',
-    );
-    svgOverlay.id = 'tree-svg-lines';
-    svgOverlay.style.cssText =
-      'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:1;';
-    container.style.position = 'relative';
-
-    // Guardar referencias a cada row de nodos
-    const rowEls = [];
-
-    familia.generations.forEach((gen, gIndex) => {
-      const row = document.createElement('div');
-      row.className =
-        'flex flex-wrap justify-center gap-8 md:gap-16 relative z-10 w-full px-4';
-      row.dataset.genIndex = gIndex;
-
-      gen.forEach((char) => {
-        const timelineLabel =
-          char.stages && char.stages[0] ? char.stages[0].timeline : '';
-        const node = document.createElement('div');
-        node.className =
-          'tree-node-wrap flex flex-col items-center gap-2 cursor-pointer group hover:scale-105 transition-transform duration-500 relative pointer-events-auto';
-        node.setAttribute('data-tree-node', '1');
-        node.setAttribute('data-char-id', char.id);
-        node.onclick = () => openCinematicViewer(char.id);
-        node.innerHTML = `
-          ${timelineLabel ? `<div class="tree-tooltip">${timelineLabel}</div>` : ''}
-          <div class="relative w-16 h-16 md:w-20 md:h-20 rounded-sm overflow-hidden border border-stone-700 group-hover:border-amber-500/70 shadow-2xl transition-all duration-500 z-10">
-            <img src="${char.avatar}" class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
-          </div>
-          <p class="font-cinzel text-stone-400 group-hover:text-amber-400 tracking-widest uppercase text-[9px] md:text-[10px] transition-colors text-center w-20 md:w-24 z-10">
-            ${char.name}
-          </p>`;
-        row.appendChild(node);
-      });
-
-      // Espaciado entre generaciones — suficiente para ver las líneas SVG
-      row.style.marginBottom =
-        gIndex < familia.generations.length - 1 ? '110px' : '0';
-
-      container.appendChild(row);
-      rowEls.push(row);
-    });
-
-    container.appendChild(svgOverlay);
-
-    // Dibujar líneas SVG tras layout — esperamos más para que flexbox haya calculado todo
-    setTimeout(() => {
-      drawTreeLines(familia, rowEls, svgOverlay, container);
-    }, 80);
-
-    return true;
-  }
-
-  // Función separada para calcular y dibujar las líneas SVG
-  function drawTreeLines(familia, rowEls, svg, container) {
-    // Usar offsetWidth/offsetHeight del contenedor SIN transformar
+  // Version relacional: usa relationshipData directamente en lugar de inferir por filas.
+  function drawTreeLines(relationships, svg, container) {
+    svg.innerHTML = '';
     const W = container.offsetWidth;
     const H = container.offsetHeight;
 
@@ -1485,40 +1456,30 @@ const familiasData = [
     svg.style.width = W + 'px';
     svg.style.height = H + 'px';
 
-    // Helper: centro X e Y de un nodo relativo al container, usando offsetLeft/offsetTop
     function nodeCenter(node) {
-      let el = node;
-      let x = 0,
-        y = 0;
-      while (el && el !== container) {
-        x += el.offsetLeft;
-        y += el.offsetTop;
-        el = el.offsetParent;
-      }
+      const containerRect = container.getBoundingClientRect();
       const img = node.querySelector('img');
-      const imgH = img ? img.offsetHeight : node.offsetHeight;
-      const imgTop = img ? img.offsetTop : 0;
+      const targetRect = (img || node).getBoundingClientRect();
       return {
-        cx: x + node.offsetWidth / 2,
-        top: y + imgTop,
-        bottom: y + imgTop + imgH,
-        mid: y + imgTop + imgH / 2,
+        cx: targetRect.left - containerRect.left + targetRect.width / 2,
+        top: targetRect.top - containerRect.top,
+        bottom: targetRect.bottom - containerRect.top,
+        mid: targetRect.top - containerRect.top + targetRect.height / 2,
       };
     }
 
-    // Definir gradientes y animaciones
     const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
     defs.innerHTML = `
       <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%"   stop-color="rgba(245,158,11,0.1)" />
-        <stop offset="40%"  stop-color="rgba(245,158,11,0.7)" />
-        <stop offset="60%"  stop-color="rgba(245,158,11,0.9)" />
-        <stop offset="100%" stop-color="rgba(245,158,11,0.1)" />
+        <stop offset="0%" stop-color="rgba(245,158,11,0.08)" />
+        <stop offset="45%" stop-color="rgba(245,158,11,0.78)" />
+        <stop offset="55%" stop-color="rgba(245,158,11,0.92)" />
+        <stop offset="100%" stop-color="rgba(245,158,11,0.08)" />
       </linearGradient>
       <linearGradient id="lineGradH" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0%"   stop-color="rgba(245,158,11,0)" />
-        <stop offset="30%"  stop-color="rgba(245,158,11,0.6)" />
-        <stop offset="70%"  stop-color="rgba(245,158,11,0.6)" />
+        <stop offset="0%" stop-color="rgba(245,158,11,0)" />
+        <stop offset="28%" stop-color="rgba(245,158,11,0.62)" />
+        <stop offset="72%" stop-color="rgba(245,158,11,0.62)" />
         <stop offset="100%" stop-color="rgba(245,158,11,0)" />
       </linearGradient>
       <filter id="glowLine" x="-20%" y="-20%" width="140%" height="140%">
@@ -1532,7 +1493,6 @@ const familiasData = [
     `;
     svg.appendChild(defs);
 
-    // Función para crear una línea o path animado
     function makeLine(x1, y1, x2, y2, grad, delay = 0) {
       const len = Math.hypot(x2 - x1, y2 - y1) + 2;
       const el = document.createElementNS('http://www.w3.org/2000/svg', 'line');
@@ -1591,90 +1551,351 @@ const familiasData = [
       return el;
     }
 
-    familia.generations.forEach((gen, gIndex) => {
-      if (gIndex >= rowEls.length) return;
-      const row = rowEls[gIndex];
-      const nodes = Array.from(row.querySelectorAll('[data-tree-node]'));
-      const centers = nodes.map((n) => nodeCenter(n));
+    const nodesById = new Map();
+    container.querySelectorAll('[data-tree-node]').forEach((node) => {
+      nodesById.set(node.dataset.charId, nodeCenter(node));
+    });
 
-      // Línea horizontal + rombo entre pareja
-      if (centers.length === 2) {
-        const [c1, c2] = centers;
-        const y = c1.mid;
-        const midX = (c1.cx + c2.cx) / 2;
-        svg.appendChild(makeLine(c1.cx, y, c2.cx, y, 'url(#lineGradH)', 0));
-        svg.appendChild(makeDiamond(midX, y));
-      }
+    const couples = relationships.filter(
+      (relationship) => relationship.type === 'couple',
+    );
+    const parentChild = relationships.filter(
+      (relationship) => relationship.type === 'parentChild',
+    );
+    const coupleMidpoints = new Map();
 
-      // Conector hacia siguiente generación
-      if (gIndex < familia.generations.length - 1) {
-        const nextRow = rowEls[gIndex + 1];
-        const nextNodes = Array.from(
-          nextRow.querySelectorAll('[data-tree-node]'),
-        );
-        const nextCenters = nextNodes.map((n) => nodeCenter(n));
+    couples.forEach((relationship, index) => {
+      const from = nodesById.get(relationship.from);
+      const to = nodesById.get(relationship.to);
+      if (!from || !to) return;
 
-        // Punto de salida: centro del grupo actual (bajo los avatares)
-        let fromX, fromY;
-        if (centers.length === 1) {
-          fromX = centers[0].cx;
-          fromY = centers[0].bottom;
-        } else {
-          fromX = (centers[0].cx + centers[centers.length - 1].cx) / 2;
-          fromY = centers[0].bottom;
-        }
+      const y = (from.mid + to.mid) / 2;
+      const midX = (from.cx + to.cx) / 2;
+      const key = [relationship.from, relationship.to].sort().join(':');
+      coupleMidpoints.set(key, { x: midX, y });
 
-        if (nextCenters.length === 1) {
-          // Línea en L o recta hacia hijo único
-          const toX = nextCenters[0].cx;
-          const toY = nextCenters[0].top;
-          const midY = fromY + (toY - fromY) * 0.5;
-          const d =
-            Math.abs(fromX - toX) < 4
-              ? `M ${fromX} ${fromY} L ${toX} ${toY}`
-              : `M ${fromX} ${fromY} L ${fromX} ${midY} L ${toX} ${midY} L ${toX} ${toY}`;
-          svg.appendChild(makePath(d, 200));
-          svg.appendChild(makeArrow(toX, toY));
-        } else {
-          // Múltiples hijos: T
-          const midY = fromY + (nextCenters[0].top - fromY) * 0.5;
-          const leftX = Math.min(...nextCenters.map((n) => n.cx));
-          const rightX = Math.max(...nextCenters.map((n) => n.cx));
+      svg.appendChild(
+        makeLine(from.cx, from.mid, to.cx, to.mid, 'url(#lineGradH)', index * 80),
+      );
+      svg.appendChild(makeDiamond(midX, y));
+    });
 
-          svg.appendChild(
-            makeLine(fromX, fromY, fromX, midY, 'rgba(245,158,11,0.7)', 200),
-          );
-          svg.appendChild(
-            makeLine(leftX, midY, rightX, midY, 'url(#lineGradH)', 400),
-          );
-          nextCenters.forEach((nc, i) => {
-            svg.appendChild(
-              makeLine(
-                nc.cx,
-                midY,
-                nc.cx,
-                nc.top,
-                'rgba(245,158,11,0.7)',
-                500 + i * 80,
-              ),
-            );
-            svg.appendChild(makeArrow(nc.cx, nc.top));
-          });
-        }
+    const childrenByParents = new Map();
+
+    parentChild.forEach((relationship) => {
+      const parents = parentChild
+        .filter((candidate) => candidate.to === relationship.to)
+        .map((candidate) => candidate.from);
+      const couple = couples.find(
+        (candidate) =>
+          parents.includes(candidate.from) && parents.includes(candidate.to),
+      );
+      const key = couple
+        ? `${[couple.from, couple.to].sort().join(':')}->${relationship.to}`
+        : `${relationship.from}->${relationship.to}`;
+
+      if (!childrenByParents.has(key)) {
+        childrenByParents.set(key, {
+          parents: couple ? [couple.from, couple.to] : [relationship.from],
+          child: relationship.to,
+        });
       }
     });
+
+    Array.from(childrenByParents.values()).forEach((group, index) => {
+      const child = nodesById.get(group.child);
+      if (!child) return;
+
+      const parentCenters = group.parents
+        .map((parentId) => nodesById.get(parentId))
+        .filter(Boolean);
+      if (!parentCenters.length) return;
+
+      const coupleKey =
+        group.parents.length > 1 ? [...group.parents].sort().join(':') : '';
+      const couplePoint = coupleMidpoints.get(coupleKey);
+      const fromX =
+        couplePoint?.x ??
+        parentCenters.reduce((sum, center) => sum + center.cx, 0) /
+          parentCenters.length;
+      const fromY =
+        couplePoint?.y ??
+        Math.max(...parentCenters.map((center) => center.bottom));
+      const startY = couplePoint ? fromY + 6 : fromY;
+      const midY = startY + (child.top - startY) * 0.48;
+      const d =
+        Math.abs(fromX - child.cx) < 4
+          ? `M ${fromX} ${startY} L ${child.cx} ${child.top}`
+          : `M ${fromX} ${startY} L ${fromX} ${midY} L ${child.cx} ${midY} L ${child.cx} ${child.top}`;
+
+      svg.appendChild(makePath(d, 220 + index * 70));
+      svg.appendChild(makeArrow(child.cx, child.top));
+    });
+  }
+
+  // Espera a que las imágenes de los nodos del árbol terminen de decodificar
+  // (o fallen) y a un frame extra de layout antes de medir posiciones con
+  // getBoundingClientRect — evita líneas/iconos ausentes por leer posiciones
+  // antes de que el navegador haya terminado de pintar los avatares.
+  function scheduleTreeLinesDraw(relationships, svg, container, options = {}) {
+    const images = Array.from(container.querySelectorAll('img'));
+    const ready =
+      images.length === 0
+        ? Promise.resolve()
+        : Promise.all(
+            images.map((img) =>
+              img.decode ? img.decode().catch(() => {}) : Promise.resolve(),
+            ),
+          );
+
+    // Captura el token vigente en el momento de la llamada: si para cuando
+    // este dibujo esté listo el usuario ya cambió de árbol/familia (nuevo
+    // token), este resultado quedó obsoleto y no debe dibujarse.
+    const drawToken = treeDrawToken;
+
+    ready.then(() => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if (drawToken !== treeDrawToken) return;
+          drawTreeLines(relationships, svg, container);
+          if (typeof options.onDrawn === 'function') options.onDrawn();
+        });
+      });
+    });
+  }
+
+  function drawTree(familiaId) {
+    const familia = familiasData.find((f) => f.id === familiaId);
+    const layout = familyLayouts[familiaId];
+    if (!familia || !layout) return false;
+
+    currentFamilyId = familiaId;
+    currentTreeMode = 'family';
+    treeDrawToken++;
+    document.getElementById('tree-family-name').innerText = familia.name;
+
+    const container = document.getElementById('tree-nodes-container');
+    container.innerHTML = '';
+    container.className = 'family-tree-canvas relative';
+    container.style.width = layout.width + 'px';
+    container.style.height = layout.height + 'px';
+    container.style.minWidth = layout.width + 'px';
+    container.style.minHeight = layout.height + 'px';
+    container.style.position = 'relative';
+
+    const svgOverlay = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'svg',
+    );
+    svgOverlay.id = 'tree-svg-lines';
+    svgOverlay.style.cssText =
+      'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:6;';
+
+    familia.generations.flat().forEach((char) => {
+      const pos = layout.nodes[char.id];
+      if (!pos) return;
+      const nodeShell = document.createElement('div');
+      nodeShell.className = 'family-tree-node';
+      nodeShell.style.left = pos.x + 'px';
+      nodeShell.style.top = pos.y + 'px';
+      nodeShell.appendChild(renderTreeNode(familia, char));
+      container.appendChild(nodeShell);
+    });
+
+    container.appendChild(svgOverlay);
+
+    scheduleTreeLinesDraw(
+      getFamilyRelationships(familia.id),
+      svgOverlay,
+      container,
+      { onDrawn: centerTree },
+    );
+
+    return true;
+  }
+
+  function renderTreeNode(familia, char) {
+    const timelineLabel =
+      char.stages && char.stages[0] ? char.stages[0].timeline : '';
+    const node = document.createElement('div');
+    node.className =
+      'tree-node-wrap flex flex-col items-center gap-2 cursor-pointer group hover:scale-105 transition-transform duration-500 relative pointer-events-auto';
+    node.setAttribute('data-tree-node', '1');
+    node.setAttribute('data-char-id', char.id);
+    node.setAttribute('data-family-id', familia.id);
+    node.onclick = () => openCharacterFromTree(familia.id, char.id);
+    node.innerHTML = `
+      ${timelineLabel ? `<div class="tree-tooltip">${timelineLabel}</div>` : ''}
+      <div class="relative w-14 h-14 md:w-20 md:h-20 rounded-sm overflow-hidden border border-stone-700 group-hover:border-amber-500/70 shadow-2xl transition-all duration-500 z-10">
+        <img src="${char.avatar}" class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+      </div>
+      <p class="font-cinzel text-stone-400 group-hover:text-amber-400 tracking-widest uppercase text-[8px] md:text-[9px] transition-colors text-center w-20 md:w-24 z-10">
+        ${char.name}
+      </p>`;
+    return node;
+  }
+
+  function drawCompleteTree() {
+    currentTreeMode = 'complete';
+    treeDrawToken++;
+    document.getElementById('tree-family-name').innerText = 'Arbol Completo';
+
+    const container = document.getElementById('tree-nodes-container');
+    container.innerHTML = '';
+    container.className = 'complete-tree-grid relative';
+    container.style.width = completeLayout.width + 'px';
+    container.style.height = completeLayout.height + 'px';
+    container.style.minWidth = completeLayout.width + 'px';
+    container.style.minHeight = completeLayout.height + 'px';
+    container.style.position = 'relative';
+
+    const svgOverlay = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'svg',
+    );
+    svgOverlay.id = 'tree-svg-lines';
+    svgOverlay.style.cssText =
+      'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:6;';
+
+    // Etiquetas de familia flotantes — mapa único, sin bloques separados.
+    completeLayout.labels.forEach((label) => {
+      const familia = familiasData.find((family) => family.id === label.familyId);
+      if (!familia) return;
+      const labelEl = document.createElement('h3');
+      labelEl.className = 'complete-family-label';
+      labelEl.style.left = label.x + 'px';
+      labelEl.style.top = label.y + 'px';
+      labelEl.style.setProperty('--family-accent', familia.accent);
+      labelEl.textContent = familia.name;
+      container.appendChild(labelEl);
+    });
+
+    familiasData.forEach((familia) => {
+      familia.generations.flat().forEach((char) => {
+        const pos = completeLayout.nodes[char.id];
+        if (!pos) return;
+        const nodeShell = document.createElement('div');
+        nodeShell.className = 'complete-tree-node';
+        nodeShell.dataset.charId = char.id;
+        nodeShell.style.left = pos.x + 'px';
+        nodeShell.style.top = pos.y + 'px';
+        if (pos.core) nodeShell.dataset.core = '1';
+        nodeShell.appendChild(renderTreeNode(familia, char));
+        container.appendChild(nodeShell);
+      });
+    });
+
+    container.appendChild(svgOverlay);
+
+    scheduleTreeLinesDraw(getCompleteRelationships(), svgOverlay, container, {
+      onDrawn: () => {
+        drawInfinityCenterpiece(svgOverlay);
+        centerTree();
+      },
+    });
+
+    setupLineageHighlight(container);
+
+    return true;
+  }
+
+  // Al pasar el cursor sobre un personaje del Árbol Completo, resalta su
+  // linaje directo (ancestros + descendientes) y atenúa el resto.
+  function setupLineageHighlight(container) {
+    const nodes = Array.from(container.querySelectorAll('.complete-tree-node'));
+    const relationships = getCompleteRelationships();
+
+    nodes.forEach((node) => {
+      node.addEventListener('mouseenter', () => {
+        const lineage = computeLineage(node.dataset.charId, relationships);
+        nodes.forEach((other) => {
+          const inLineage = lineage.has(other.dataset.charId);
+          other.classList.toggle('is-dimmed', !inLineage);
+          other.classList.toggle('is-active', other === node);
+        });
+      });
+
+      node.addEventListener('mouseleave', () => {
+        nodes.forEach((other) => {
+          other.classList.remove('is-dimmed', 'is-active');
+        });
+      });
+    });
+  }
+
+  // Centerpiece decorativo: símbolo de infinito entre Jonas y Martha, en el
+  // centro visual del Árbol Completo — no es una relación modelada en
+  // relationshipData, es un elemento fijo anclado a sus ids conocidos.
+  function drawInfinityCenterpiece(svg) {
+    const jonasPos = completeLayout.nodes.jonas;
+    const marthaPos = completeLayout.nodes.martha;
+    if (!jonasPos || !marthaPos) return;
+
+    const midX = (jonasPos.x + marthaPos.x) / 2;
+    const midY = (jonasPos.y + marthaPos.y) / 2;
+
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', jonasPos.x);
+    line.setAttribute('y1', jonasPos.y);
+    line.setAttribute('x2', marthaPos.x);
+    line.setAttribute('y2', marthaPos.y);
+    line.setAttribute('stroke', 'rgba(245,158,11,0.8)');
+    line.setAttribute('stroke-width', '2');
+    line.setAttribute('filter', 'url(#glowLine)');
+    svg.appendChild(line);
+
+    const text = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'text',
+    );
+    text.setAttribute('x', midX);
+    text.setAttribute('y', midY);
+    text.setAttribute('font-size', '28');
+    text.setAttribute('class', 'complete-tree-infinity');
+    text.setAttribute('filter', 'url(#glowLine)');
+    text.textContent = '∞';
+    svg.appendChild(text);
+  }
+
+  function showTreeViewer() {
+    document.body.classList.add('hide-global-ui');
+    if (btnAudio) {
+      btnAudio.classList.remove('hidden');
+      btnAudio.classList.add('flex');
+    }
+
+    document.getElementById('familias-main-view').classList.add('hidden');
+    const treeViewer = document.getElementById('tree-viewer');
+    treeViewer.classList.remove('hidden');
+    setTimeout(() => {
+      treeViewer.classList.remove('opacity-0');
+      setTimeout(centerTree, 250);
+    }, 50);
+
+    playSectionAudio();
+  }
+
+  window.openCompleteTreeViewer = () => {
+    closeSidebarIfOpen();
+    drawCompleteTree();
+    showTreeViewer();
+  };
+
+  function openCharacterFromTree(famId, charId) {
+    currentFamilyId = famId;
+    document.body.classList.add('hide-global-ui');
+    document.getElementById('familias-main-view').classList.add('hidden');
+    document.getElementById('tree-viewer').classList.add('hidden');
+    openCinematicViewer(charId);
   }
 
   // SALTO DESDE SIDEBAR A PERSONAJE (Arregla el bug de la X re-dibujando silensiosamente)
   window.jumpToCharacter = (famId, charId) => {
-    toggleSidebar();
+    closeSidebarIfOpen();
     if (currentFamilyId !== famId) drawTree(famId);
 
-    document.body.classList.add('hide-global-ui');
-    document.getElementById('familias-main-view').classList.add('hidden');
-    document.getElementById('tree-viewer').classList.add('hidden');
-
-    openCinematicViewer(charId);
+    openCharacterFromTree(famId, charId);
   };
 
   // ============================
@@ -1909,12 +2130,7 @@ const familiasData = [
       setTimeout(centerTree, 250);
     }, 50);
 
-    if (audioEl && !isAudioPlaying) {
-      audioEl
-        .play()
-        .then(() => (isAudioPlaying = true))
-        .catch((e) => console.log(e));
-    }
+    playSectionAudio();
   };
 
   window.closeTreeViewer = () => {
@@ -1932,13 +2148,222 @@ const familiasData = [
       }
     }, 700);
 
-    if (audioEl) {
-      audioEl.pause();
-      isAudioPlaying = false;
-    }
+    resumeAudioOnFocus = false;
+    pauseSectionAudio();
   };
 
   // ABRIR VISOR CINEMÁTICO (Snap exacto 100vh)
+  function characterNameById(characterId) {
+    return findCharacterFamily(characterId)?.character?.name || characterId;
+  }
+
+  function buildCharacterInsight(familia, char, stage, index) {
+    const directRelationships = getCompleteRelationships()
+      .filter(
+        (relationship) =>
+          relationship.from === char.id || relationship.to === char.id,
+      )
+      .slice(0, 5)
+      .map((relationship) => {
+        const otherId =
+          relationship.from === char.id ? relationship.to : relationship.from;
+        const label =
+          relationship.type === 'couple'
+            ? 'vinculo'
+            : relationship.from === char.id
+              ? 'descendencia'
+              : 'origen';
+        return `${label}: ${characterNameById(otherId)}`;
+      });
+
+    const connectionText = directRelationships.length
+      ? directRelationships.join(' / ')
+      : `Pertenece al linaje ${familia.name}.`;
+    const arcText =
+      char.stages.length > 1
+        ? `Su arco se reparte en ${char.stages.length} momentos: esta escena no funciona solo como fecha, sino como una pista dentro de su transformacion.`
+        : 'Su presencia funciona como una pieza aislada pero decisiva dentro del mapa de Winden.';
+
+    return `
+      <div class="cinematic-insight mt-8 grid gap-3 text-stone-400 font-mono text-[10px] md:text-xs tracking-[0.18em] uppercase">
+        <div class="border-l border-amber-500/35 pl-4">
+          <span class="text-amber-500/80">Rol</span>
+          <p class="mt-2 normal-case tracking-wide text-stone-300 font-light leading-relaxed">
+            ${familia.subtitle}. ${arcText}
+          </p>
+        </div>
+        <div class="border-l border-white/10 pl-4">
+          <span class="text-stone-500">Conexiones</span>
+          <p class="mt-2 normal-case tracking-wide text-stone-400 font-light leading-relaxed">
+            ${connectionText}
+          </p>
+        </div>
+      </div>
+    `;
+  }
+
+  function getSceneImage(familia, char, stage, index) {
+    const previousStageImages = char.stages
+      .slice(0, index)
+      .map((candidate) => candidate.img);
+    if (stage.img && !previousStageImages.includes(stage.img)) return stage.img;
+
+    const pool = sceneImagePools[familia.id] || [familia.cover, char.avatar];
+    return pool[(index + char.id.length) % pool.length] || stage.img || char.avatar;
+  }
+
+  function renderNextPanelCue(char, index) {
+    const nextStage = char.stages[index + 1];
+    if (!nextStage) return '';
+
+    const label =
+      index === 0
+        ? 'Scroll para explorar'
+        : `Siguiente: ${nextStage.title}`;
+
+    return `
+      <div class="next-panel-cue mt-24 flex flex-col items-center gap-2 text-stone-300 pointer-events-none">
+        <div class="font-mono text-[10px] md:text-xs tracking-[0.28em] uppercase text-center">
+          ${label}
+        </div>
+        <div class="next-panel-cue-line"></div>
+        <div class="next-panel-cue-dot"></div>
+      </div>
+    `;
+  }
+
+  // Anima el feDisplacementMap del filtro #cinematic-ripple para dar un
+  // efecto de "agua/papel" breve cada vez que cambia la imagen de fondo.
+  function playRippleEffect() {
+    if (cinematicReducedMotion) return;
+    const displacement = document.getElementById('cinematic-ripple-displace');
+    if (!displacement) return;
+
+    const duration = 1300;
+    const peakScale = 40;
+    const start = performance.now();
+
+    function step(now) {
+      const t = Math.min((now - start) / duration, 1);
+      const intensity =
+        t < 0.3 ? t / 0.3 : Math.max(0, 1 - (t - 0.3) / 0.7);
+      displacement.setAttribute('scale', (intensity * peakScale).toFixed(1));
+      if (t < 1) requestAnimationFrame(step);
+    }
+
+    requestAnimationFrame(step);
+  }
+
+  // Revela la imagen de la nueva etapa como si fuera agua "subiendo": al
+  // hacer scroll hacia abajo, la imagen emerge de abajo hacia arriba; al
+  // hacer scroll hacia arriba, emerge de arriba hacia abajo. Se combina con
+  // playRippleEffect() (la distorsión) para el efecto conjunto.
+  // Revela la imagen con un borde ondulado (no una línea recta): varios
+  // puntos a lo largo del ancho oscilan con una onda senoidal cuya fase
+  // avanza en el tiempo (efecto "viento"), mientras la línea base sube o
+  // baja según la dirección del scroll (efecto "agua"). El oleaje se calma
+  // a medida que la revelación se completa.
+  function playDirectionalReveal(direction) {
+    const bgImage = document.getElementById('cinematic-bg');
+    if (!bgImage) return;
+    if (cinematicReducedMotion) {
+      bgImage.style.clipPath = '';
+      return;
+    }
+
+    const duration = 1300;
+    const start = performance.now();
+    const SAMPLES = 20;
+    const AMPLITUDE_1 = 7; // % de altura de la ondulación principal (agua)
+    const AMPLITUDE_2 = 3.2; // % de una segunda ondulación más rápida (viento)
+    const WAVE_COUNT_1 = 2.3; // nº de crestas a lo largo del ancho
+    const WAVE_COUNT_2 = 5.1; // crestas de la ondulación secundaria
+
+    function waterline(eased, xFrac, phase) {
+      const base = direction === 'up' ? eased * 100 : (1 - eased) * 100;
+      // El oleaje se mantiene vivo casi hasta el final y solo se calma
+      // en el último tramo, para que no se perciba como un barrido lineal.
+      const calm = eased < 0.82 ? 1 : Math.max(0, 1 - (eased - 0.82) / 0.18);
+      const wave1 =
+        Math.sin(xFrac * Math.PI * 2 * WAVE_COUNT_1 + phase) * AMPLITUDE_1;
+      const wave2 =
+        Math.sin(xFrac * Math.PI * 2 * WAVE_COUNT_2 - phase * 1.7 + 1.3) *
+        AMPLITUDE_2;
+      return Math.min(100, Math.max(0, base + (wave1 + wave2) * calm));
+    }
+
+    function frameAt(elapsed) {
+      const t = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
+      const phase = elapsed / 110; // fase del oleaje avanzando con el tiempo
+
+      const pts = [];
+      for (let i = 0; i <= SAMPLES; i++) {
+        const xFrac = i / SAMPLES;
+        const y = waterline(eased, xFrac, phase);
+        pts.push(`${(xFrac * 100).toFixed(2)}% ${y.toFixed(2)}%`);
+      }
+
+      return {
+        t,
+        clipPath:
+          direction === 'up'
+            ? // Visible: franja superior (0% → línea ondulada), crece hacia abajo
+              `polygon(0% 0%, 100% 0%, ${pts.slice().reverse().join(', ')})`
+            : // Visible: franja inferior (línea ondulada → 100%), crece hacia arriba
+              `polygon(${pts.join(', ')}, 100% 100%, 0% 100%)`,
+      };
+    }
+
+    // Fija el primer frame de inmediato (síncrono) para que la imagen nunca
+    // se muestre completa sin recortar durante el hueco antes del primer rAF.
+    bgImage.style.clipPath = frameAt(0).clipPath;
+
+    function step(now) {
+      const elapsed = now - start;
+      const { t, clipPath } = frameAt(elapsed);
+      bgImage.style.clipPath = clipPath;
+      if (t < 1) requestAnimationFrame(step);
+      else bgImage.style.clipPath = '';
+    }
+
+    requestAnimationFrame(step);
+  }
+
+  function setupCinematicBackground(root) {
+    const bgImage = document.getElementById('cinematic-bg');
+    if (!bgImage) return;
+
+    cinematicReducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+
+    if (bgImage.dataset.temporalBound) return;
+    bgImage.dataset.temporalBound = '1';
+
+    // Tilt/drift reactivo al ratón: solo en dispositivos con puntero fino
+    // (desktop/trackpad) y solo si el visitante no pidió movimiento reducido.
+    if (!hasFinePointer() || cinematicReducedMotion) return;
+
+    root.addEventListener('pointermove', (event) => {
+      const x = event.clientX / window.innerWidth;
+      const y = event.clientY / window.innerHeight;
+      bgImage.style.setProperty('--tilt-x', `${(x - 0.5) * 4}deg`);
+      bgImage.style.setProperty('--tilt-y', `${(0.5 - y) * 4}deg`);
+      bgImage.style.setProperty('--drift-x', `${(x - 0.5) * -18}px`);
+      bgImage.style.setProperty('--drift-y', `${(y - 0.5) * -18}px`);
+      bgImage.style.setProperty('--scan-y', `${y * 100}%`);
+    });
+
+    root.addEventListener('pointerleave', () => {
+      bgImage.style.setProperty('--tilt-x', '0deg');
+      bgImage.style.setProperty('--tilt-y', '0deg');
+      bgImage.style.setProperty('--drift-x', '0px');
+      bgImage.style.setProperty('--drift-y', '0px');
+      bgImage.style.setProperty('--scan-y', '52%');
+    });
+  }
+
   window.openCinematicViewer = (charId) => {
     const familia = familiasData.find((f) => f.id === currentFamilyId);
     if (!familia) return;
@@ -1954,6 +2379,7 @@ const familiasData = [
 
     char.stages.forEach((stage, index) => {
       const isFirst = index === 0;
+      const sceneImage = getSceneImage(familia, char, stage, index);
 
       const timelineHTML = `
         <div class="flex items-center gap-3 mb-6">
@@ -1972,8 +2398,8 @@ const familiasData = [
       `;
 
       contentArea.innerHTML += `
-        <div class="scroll-scene w-full h-[100vh] flex items-center p-8 md:pl-24 md:pr-16 snap-center pointer-events-auto" data-image="${stage.img}">
-          <div class="max-w-2xl relative w-full md:w-[60%] lg:w-[50%]">
+        <div class="scroll-scene w-full h-[100vh] flex items-center p-8 md:pl-20 md:pr-16 snap-center pointer-events-auto" data-image="${sceneImage}">
+          <div class="cinematic-panel max-w-2xl relative w-full md:w-[60%] lg:w-[48%]">
             
             ${
               isFirst
@@ -1991,16 +2417,9 @@ const familiasData = [
               ${stage.text}
             </p>
 
-            ${
-              isFirst && char.stages.length > 1
-                ? `
-              <div class="mt-24 animate-pulse opacity-50 flex items-center gap-2 text-stone-400 pointer-events-none">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
-                <span class="font-mono text-[10px] tracking-widest uppercase">Scroll para explorar</span>
-              </div>
-            `
-                : ''
-            }
+            ${isFirst ? buildCharacterInsight(familia, char, stage, index) : ''}
+
+            ${renderNextPanelCue(char, index)}
           </div>
         </div>
       `;
@@ -2027,8 +2446,9 @@ const familiasData = [
     `;
 
     const bgImage = document.getElementById('cinematic-bg');
-    bgImage.src = char.stages[0].img;
-    bgImage.dataset.current = char.stages[0].img;
+    const firstImage = getSceneImage(familia, char, char.stages[0], 0);
+    bgImage.src = firstImage;
+    bgImage.dataset.current = firstImage;
     bgImage.style.opacity = '1';
 
     const cineViewer = document.getElementById('cinematic-viewer');
@@ -2036,15 +2456,30 @@ const familiasData = [
     cineViewer.scrollTo(0, 0);
     setTimeout(() => cineViewer.classList.remove('opacity-0'), 50);
 
+    // Resetea el estado de scroll ANTES de re-enlazar el observer: si no,
+    // el primer scroll dentro del personaje nuevo se compara contra el
+    // scrollTop que dejó el personaje anterior y la dirección sale mal.
+    cinematicLastScrollTop = 0;
+    cinematicScrollDirection = 'down';
+    cinematicBgToken++;
     initCinematicScroll();
+    playRippleEffect();
+    playDirectionalReveal(cinematicScrollDirection);
   };
 
   window.closeCinematicViewer = () => {
+    // Desconectar el observer y anular cualquier cambio de imagen pendiente
+    // de inmediato (no esperar a los 700ms de la animación de salida): si no,
+    // un setTimeout de cambio de imagen todavía en vuelo puede aplicarse
+    // sobre el fondo después de cerrar, y la próxima vez que se abra un
+    // personaje puede arrancar con una imagen que no le corresponde.
+    if (observer) observer.disconnect();
+    cinematicBgToken++;
+
     const cineViewer = document.getElementById('cinematic-viewer');
     cineViewer.classList.add('opacity-0');
     setTimeout(() => {
       cineViewer.classList.add('hidden');
-      if (observer) observer.disconnect();
 
       const treeViewer = document.getElementById('tree-viewer');
       treeViewer.classList.remove('hidden');
@@ -2160,6 +2595,37 @@ const familiasData = [
     const scenes = document.querySelectorAll('.scroll-scene');
     const bgImage = document.getElementById('cinematic-bg');
     const cineViewer = document.getElementById('cinematic-viewer');
+    setupCinematicBackground(cineViewer);
+
+    // Parallax de scroll: el fondo se desplaza a distinto ritmo que el texto
+    // dentro de cada escena. Se une al mismo transform que el tilt de ratón
+    // vía --scroll-y (ver CSS #cinematic-bg.temporal-bg).
+    if (!cineViewer.dataset.scrollParallaxBound) {
+      cineViewer.dataset.scrollParallaxBound = '1';
+      let scrollRafId = null;
+      cineViewer.addEventListener(
+        'scroll',
+        () => {
+          // Dirección de scroll: siempre se registra (aunque haya movimiento
+          // reducido) para que playDirectionalReveal() sepa hacia dónde
+          // "emerger" la siguiente imagen.
+          cinematicScrollDirection =
+            cineViewer.scrollTop >= cinematicLastScrollTop ? 'down' : 'up';
+          cinematicLastScrollTop = cineViewer.scrollTop;
+
+          if (cinematicReducedMotion || scrollRafId) return;
+          scrollRafId = requestAnimationFrame(() => {
+            scrollRafId = null;
+            const sceneHeight = cineViewer.clientHeight || window.innerHeight;
+            const offsetWithinScene = cineViewer.scrollTop % sceneHeight;
+            const progress = offsetWithinScene / sceneHeight; // 0..1
+            const parallaxPx = (progress - 0.5) * 24; // rango sutil: -12px a 12px
+            bgImage.style.setProperty('--scroll-y', `${parallaxPx}px`);
+          });
+        },
+        { passive: true },
+      );
+    }
 
     observer = new IntersectionObserver(
       (entries) => {
@@ -2183,10 +2649,18 @@ const familiasData = [
               bgImage.dataset.current = 'none';
             } else if (newImgSrc && bgImage.dataset.current !== newImgSrc) {
               bgImage.style.opacity = '0';
+              const bgToken = ++cinematicBgToken;
+              const revealDirection = cinematicScrollDirection;
               setTimeout(() => {
+                // Si el usuario ya avanzó a otra escena mientras esta
+                // esperaba, este cambio quedó obsoleto: no pisar la imagen
+                // correcta con una vieja.
+                if (bgToken !== cinematicBgToken) return;
                 bgImage.src = newImgSrc;
                 bgImage.style.opacity = '1';
                 bgImage.dataset.current = newImgSrc;
+                playRippleEffect();
+                playDirectionalReveal(revealDirection);
               }, 600);
             } else if (newImgSrc && bgImage.dataset.current === newImgSrc) {
               bgImage.style.opacity = '1';
