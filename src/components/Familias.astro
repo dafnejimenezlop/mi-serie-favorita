@@ -113,7 +113,9 @@ const relationshipValidation = validateRelationships(
     cursor: none;
   }
   #tree-viewer,
-  #tree-viewer * {
+  #tree-viewer *,
+  #netflix-sidebar,
+  #netflix-sidebar * {
     cursor: none !important;
   }
   #tree-zoom-container {
@@ -1062,6 +1064,15 @@ const relationshipValidation = validateRelationships(
   const audioMutedIcon = document.getElementById('audio-muted-icon');
   let resumeAudioOnFocus = false;
 
+  // Preferencia de silencio del usuario, persistida entre familias y entre
+  // visitas. Solo el botón de sonido la modifica — el pausado/reanudado
+  // automático por cambio de pestaña (más abajo) no debe tocarla.
+  const AUDIO_MUTED_KEY = 'darkAmbientAudioMuted';
+  let audioMutedByUser = false;
+  try {
+    audioMutedByUser = localStorage.getItem(AUDIO_MUTED_KEY) === '1';
+  } catch {}
+
   if (
     relationshipValidation.missingEndpoints.length ||
     relationshipValidation.duplicateIds.length ||
@@ -1312,9 +1323,17 @@ const relationshipValidation = validateRelationships(
     btnAudio.addEventListener('click', () => {
       if (!audioEl) return;
       if (isAudioPlaying) {
+        audioMutedByUser = true;
+        try {
+          localStorage.setItem(AUDIO_MUTED_KEY, '1');
+        } catch {}
         resumeAudioOnFocus = false;
         pauseSectionAudio();
       } else {
+        audioMutedByUser = false;
+        try {
+          localStorage.setItem(AUDIO_MUTED_KEY, '0');
+        } catch {}
         playSectionAudio();
       }
     });
@@ -1352,6 +1371,7 @@ const relationshipValidation = validateRelationships(
   }
 
   function playSectionAudio() {
+    if (audioMutedByUser) return;
     if (!audioEl || document.hidden || !isImmersiveViewActive()) return;
     audioEl
       .play()
@@ -1486,15 +1506,18 @@ const relationshipValidation = validateRelationships(
         <feGaussianBlur stdDeviation="1.5" result="blur"/>
         <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
       </filter>
-      <style>
-        @keyframes svgDraw { from { stroke-dashoffset: 1000; } to { stroke-dashoffset: 0; } }
-        .tree-line { animation: svgDraw 1.2s cubic-bezier(.4,0,.2,1) forwards; }
-      </style>
     `;
     svg.appendChild(defs);
 
-    function makeLine(x1, y1, x2, y2, grad, delay = 0) {
-      const len = Math.hypot(x2 - x1, y2 - y1) + 2;
+    // Nota: las líneas se pintan completas desde el primer frame, sin
+    // animación de "trazado" progresivo (antes usaban stroke-dasharray +
+    // una animación CSS escalonada por índice). Con varias conexiones en un
+    // mismo árbol, el retraso acumulado (~220-360ms + 1.2s de animación)
+    // hacía que las últimas líneas tardaran hasta 1.5s en completarse — si
+    // el árbol se miraba/capturaba antes de eso parecían no existir. Esto
+    // contradice el requisito de que el árbol esté siempre correcto y
+    // completo en cuanto es visible, sin estados intermedios.
+    function makeLine(x1, y1, x2, y2, grad) {
       const el = document.createElementNS('http://www.w3.org/2000/svg', 'line');
       el.setAttribute('x1', x1);
       el.setAttribute('y1', y1);
@@ -1503,24 +1526,16 @@ const relationshipValidation = validateRelationships(
       el.setAttribute('stroke', grad);
       el.setAttribute('stroke-width', '1.5');
       el.setAttribute('filter', 'url(#glowLine)');
-      el.setAttribute('stroke-dasharray', len);
-      el.setAttribute('stroke-dashoffset', len);
-      el.setAttribute('class', 'tree-line');
-      el.style.animationDelay = delay + 'ms';
       return el;
     }
 
-    function makePath(d, delay = 0) {
+    function makePath(d) {
       const el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       el.setAttribute('d', d);
       el.setAttribute('stroke', 'url(#lineGrad)');
       el.setAttribute('stroke-width', '1.5');
       el.setAttribute('fill', 'none');
       el.setAttribute('filter', 'url(#glowLine)');
-      el.setAttribute('stroke-dasharray', '1000');
-      el.setAttribute('stroke-dashoffset', '1000');
-      el.setAttribute('class', 'tree-line');
-      el.style.animationDelay = delay + 'ms';
       return el;
     }
 
@@ -1564,7 +1579,7 @@ const relationshipValidation = validateRelationships(
     );
     const coupleMidpoints = new Map();
 
-    couples.forEach((relationship, index) => {
+    couples.forEach((relationship) => {
       const from = nodesById.get(relationship.from);
       const to = nodesById.get(relationship.to);
       if (!from || !to) return;
@@ -1575,7 +1590,7 @@ const relationshipValidation = validateRelationships(
       coupleMidpoints.set(key, { x: midX, y });
 
       svg.appendChild(
-        makeLine(from.cx, from.mid, to.cx, to.mid, 'url(#lineGradH)', index * 80),
+        makeLine(from.cx, from.mid, to.cx, to.mid, 'url(#lineGradH)'),
       );
       svg.appendChild(makeDiamond(midX, y));
     });
@@ -1602,7 +1617,7 @@ const relationshipValidation = validateRelationships(
       }
     });
 
-    Array.from(childrenByParents.values()).forEach((group, index) => {
+    Array.from(childrenByParents.values()).forEach((group) => {
       const child = nodesById.get(group.child);
       if (!child) return;
 
@@ -1623,12 +1638,12 @@ const relationshipValidation = validateRelationships(
         Math.max(...parentCenters.map((center) => center.bottom));
       const startY = couplePoint ? fromY + 6 : fromY;
       const midY = startY + (child.top - startY) * 0.48;
-      const d =
-        Math.abs(fromX - child.cx) < 4
-          ? `M ${fromX} ${startY} L ${child.cx} ${child.top}`
-          : `M ${fromX} ${startY} L ${fromX} ${midY} L ${child.cx} ${midY} L ${child.cx} ${child.top}`;
+      const isStraight = Math.abs(fromX - child.cx) < 4;
+      const d = isStraight
+        ? `M ${fromX} ${startY} L ${child.cx} ${child.top}`
+        : `M ${fromX} ${startY} L ${fromX} ${midY} L ${child.cx} ${midY} L ${child.cx} ${child.top}`;
 
-      svg.appendChild(makePath(d, 220 + index * 70));
+      svg.appendChild(makePath(d));
       svg.appendChild(makeArrow(child.cx, child.top));
     });
   }
@@ -1637,6 +1652,30 @@ const relationshipValidation = validateRelationships(
   // (o fallen) y a un frame extra de layout antes de medir posiciones con
   // getBoundingClientRect — evita líneas/iconos ausentes por leer posiciones
   // antes de que el navegador haya terminado de pintar los avatares.
+  // Espera hasta que el contenedor del árbol tenga tamaño real (visible en
+  // pantalla) antes de medir sus nodos. Si el árbol se dibuja mientras el
+  // visor está oculto (p. ej. salto entre familias desde la barra lateral),
+  // medir antes de tiempo produce rectángulos de tamaño cero y líneas rotas
+  // de forma permanente. Se autocancela con el mismo treeDrawToken que ya
+  // usa scheduleTreeLinesDraw si un nuevo dibujo lo deja obsoleto mientras
+  // espera.
+  function waitForVisibleTreeContainer(container, drawToken) {
+    return new Promise((resolve) => {
+      function check() {
+        if (drawToken !== treeDrawToken) {
+          resolve(false);
+          return;
+        }
+        if (container.offsetWidth > 0 && container.offsetHeight > 0) {
+          resolve(true);
+          return;
+        }
+        requestAnimationFrame(check);
+      }
+      check();
+    });
+  }
+
   function scheduleTreeLinesDraw(relationships, svg, container, options = {}) {
     const images = Array.from(container.querySelectorAll('img'));
     const ready =
@@ -1653,15 +1692,43 @@ const relationshipValidation = validateRelationships(
     // token), este resultado quedó obsoleto y no debe dibujarse.
     const drawToken = treeDrawToken;
 
-    ready.then(() => {
-      requestAnimationFrame(() => {
+    ready
+      .then(() => waitForVisibleTreeContainer(container, drawToken))
+      .then((isVisible) => {
+        if (!isVisible) return;
         requestAnimationFrame(() => {
-          if (drawToken !== treeDrawToken) return;
-          drawTreeLines(relationships, svg, container);
-          if (typeof options.onDrawn === 'function') options.onDrawn();
+          requestAnimationFrame(() => {
+            if (drawToken !== treeDrawToken) return;
+            // El zoom/pan dejado por una visita anterior a cualquier árbol
+            // sigue aplicado al contenedor en este punto: si no se resetea
+            // antes de medir, drawTreeLines() mide posiciones ya escaladas
+            // y las líneas quedan mal calculadas de forma permanente.
+            // #tree-zoom-container tiene SIEMPRE una transición CSS de
+            // transform (0.08s, o 0.4s si queda la clase smooth-reset de un
+            // centerTree() anterior) — asignar el transform directamente no
+            // basta, el navegador la anima igualmente y drawTreeLines()
+            // mediría posiciones a mitad de esa animación. Se anula la
+            // transición con un estilo inline (máxima especificidad, gana a
+            // cualquier regla de clase), se fuerza un reflow síncrono para
+            // que el cambio de transform se aplique ya, y solo entonces se
+            // restaura la transición — centerTree() (llamado después, vía
+            // onDrawn) es quien anima suavemente hacia el zoom final.
+            treeScale = 1;
+            treePanX = 0;
+            treePanY = 0;
+            const zc = document.getElementById('tree-zoom-container');
+            if (zc) {
+              zc.classList.remove('smooth-reset');
+              zc.style.transition = 'none';
+              zc.style.transform = 'translate(0px, 0px) scale(1)';
+              void zc.offsetWidth;
+              zc.style.transition = '';
+            }
+            drawTreeLines(relationships, svg, container);
+            if (typeof options.onDrawn === 'function') options.onDrawn();
+          });
         });
       });
-    });
   }
 
   function drawTree(familiaId) {
@@ -1730,7 +1797,7 @@ const relationshipValidation = validateRelationships(
         <img src="${char.avatar}" class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
       </div>
-      <p class="font-cinzel text-stone-400 group-hover:text-amber-400 tracking-widest uppercase text-[8px] md:text-[9px] transition-colors text-center w-20 md:w-24 z-10">
+      <p class="font-cinzel text-stone-400 group-hover:text-amber-400 tracking-widest uppercase text-[8px] md:text-[9px] transition-colors text-center w-20 md:w-24 min-h-[2.4em] leading-tight z-10">
         ${char.name}
       </p>`;
     return node;
@@ -2108,12 +2175,23 @@ const relationshipValidation = validateRelationships(
       treeCursor.style.transform = 'translate(-50%, -50%) scale(1)';
   });
 
+  // Guarda de generación para las transiciones abrir/cerrar árbol: si el
+  // usuario cierra y reabre (la misma familia u otra) antes de que termine
+  // la animación de cierre, el setTimeout retrasado de closeTreeViewer no
+  // debe volver a ocultar un árbol que ya se reabrió después — y viceversa,
+  // un setTimeout retrasado de un openTreeViewer anterior no debe pisar un
+  // cierre posterior. Cada llamada reclama un token propio; solo el más
+  // reciente puede ejecutar sus callbacks diferidos.
+  let treeViewerToken = 0;
+
   window.openTreeViewer = (familiaId) => {
     const isDrawn = drawTree(familiaId);
     if (!isDrawn) {
       alert('Archivos bloqueados por Sic Mundus...');
       return;
     }
+
+    const viewerToken = ++treeViewerToken;
 
     document.body.classList.add('hide-global-ui');
     if (btnAudio) {
@@ -2125,20 +2203,27 @@ const relationshipValidation = validateRelationships(
     const treeViewer = document.getElementById('tree-viewer');
     treeViewer.classList.remove('hidden');
     setTimeout(() => {
+      if (viewerToken !== treeViewerToken) return;
       treeViewer.classList.remove('opacity-0');
       // Esperar a que el DOM esté pintado + las líneas SVG calculadas antes de centrar
-      setTimeout(centerTree, 250);
+      setTimeout(() => {
+        if (viewerToken !== treeViewerToken) return;
+        centerTree();
+      }, 250);
     }, 50);
 
     playSectionAudio();
   };
 
   window.closeTreeViewer = () => {
+    const viewerToken = ++treeViewerToken;
+
     if (treeCursor) treeCursor.style.opacity = '0';
     const treeViewer = document.getElementById('tree-viewer');
     treeViewer.classList.add('opacity-0');
 
     setTimeout(() => {
+      if (viewerToken !== treeViewerToken) return;
       treeViewer.classList.add('hidden');
       document.getElementById('familias-main-view').classList.remove('hidden');
       document.body.classList.remove('hide-global-ui');
