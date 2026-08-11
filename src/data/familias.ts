@@ -1134,8 +1134,13 @@ export const relationshipData: FamilyRelationship[] = [
   { id: 'nielsen-katharina-magnus', type: 'parentChild', from: 'katharina', to: 'magnus', familyId: 'nielsen' },
   { id: 'nielsen-ulrich-martha', type: 'parentChild', from: 'ulrich', to: 'martha', familyId: 'nielsen' },
   { id: 'nielsen-katharina-martha', type: 'parentChild', from: 'katharina', to: 'martha', familyId: 'nielsen' },
-  { id: 'nielsen-ulrich-mikkel', type: 'parentChild', from: 'ulrich', to: 'mikkel', familyId: 'nielsen' },
-  { id: 'nielsen-katharina-mikkel', type: 'parentChild', from: 'katharina', to: 'mikkel', familyId: 'nielsen' },
+  // Mikkel es hijo biológico de Ulrich y Katharina, pero en la vista de la
+  // familia Nielsen no se renderiza como nodo (su personaje pertenece a los
+  // "generations" de Kahnwald, no a los de Nielsen) — una relación aquí
+  // nunca podría dibujar una línea válida y solo generaría un aviso de
+  // "posición no resoluble". El vínculo real ya lo cubren las entradas
+  // globales sin familyId (global-ulrich-mikkel / global-katharina-mikkel),
+  // que sí se dibujan correctamente en el Árbol Completo.
 
   { id: 'doppler-bernd-greta', type: 'couple', from: 'bernd', to: 'greta', familyId: 'doppler' },
   { id: 'doppler-bernd-helge', type: 'parentChild', from: 'bernd', to: 'helge', familyId: 'doppler' },

@@ -1489,53 +1489,117 @@ const relationshipValidation = validateRelationships(
     }
 
     const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-    defs.innerHTML = `
-      <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="rgba(245,158,11,0.08)" />
-        <stop offset="45%" stop-color="rgba(245,158,11,0.78)" />
-        <stop offset="55%" stop-color="rgba(245,158,11,0.92)" />
-        <stop offset="100%" stop-color="rgba(245,158,11,0.08)" />
-      </linearGradient>
-      <linearGradient id="lineGradH" x1="0" y1="0" x2="1" y2="0">
+    svg.appendChild(defs);
+
+    // lineGrad/lineGradH (degradado) y glowLine (filtro de resplandor) eran
+    // <linearGradient>/<filter> únicos y compartidos, usando las unidades
+    // por defecto ("objectBoundingBox") — relativas al propio bounding box
+    // de CADA elemento que los usa. Por especificación SVG, un elemento con
+    // bounding box de alto O ancho CERO hace que ese efecto no se pinte en
+    // absoluto (queda invisible), aunque el elemento siga presente en el
+    // DOM con opacity/visibility normales. Una <line> de pareja
+    // perfectamente horizontal (y1 === y2, el caso normal: casi todas las
+    // parejas están definidas a la misma altura Y) o un <path> recto
+    // perfectamente vertical (isStraight, x del origen === x del hijo, el
+    // caso normal para un hijo único bajo una pareja) tienen bounding box
+    // de alto o ancho cero respectivamente — el trazo desaparecía de forma
+    // inconsistente según qué elemento cayera exactamente en ese caso
+    // degenerado. El degradado ya se corrigió generando uno propio por
+    // línea con gradientUnits="userSpaceOnUse"; el filtro de resplandor
+    // tenía exactamente el mismo problema (confirmado en vivo: quitar
+    // `filter` a una línea afectada la hacía visible de nuevo) y se corrige
+    // igual — un <filter> propio por línea con filterUnits="userSpaceOnUse"
+    // y una región calculada en coordenadas absolutas con margen fijo, en
+    // vez de un porcentaje relativo a un bbox que puede ser degenerado.
+    let gradientIdCounter = 0;
+
+    function makeGlowFilter(minX, maxX, minY, maxY) {
+      const filterId = `glowLine-${gradientIdCounter++}`;
+      const filter = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'filter',
+      );
+      const pad = 12;
+      filter.setAttribute('id', filterId);
+      filter.setAttribute('filterUnits', 'userSpaceOnUse');
+      filter.setAttribute('x', minX - pad);
+      filter.setAttribute('y', minY - pad);
+      filter.setAttribute('width', maxX - minX + pad * 2);
+      filter.setAttribute('height', maxY - minY + pad * 2);
+      filter.innerHTML = `
+        <feGaussianBlur stdDeviation="1.5" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      `;
+      defs.appendChild(filter);
+      return filterId;
+    }
+
+    function makeLine(x1, y1, x2, y2) {
+      const gradId = `lineGradH-${gradientIdCounter++}`;
+      const gradient = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'linearGradient',
+      );
+      gradient.setAttribute('id', gradId);
+      gradient.setAttribute('gradientUnits', 'userSpaceOnUse');
+      gradient.setAttribute('x1', x1);
+      gradient.setAttribute('y1', y1);
+      gradient.setAttribute('x2', x2);
+      gradient.setAttribute('y2', y2);
+      gradient.innerHTML = `
         <stop offset="0%" stop-color="rgba(245,158,11,0)" />
         <stop offset="28%" stop-color="rgba(245,158,11,0.62)" />
         <stop offset="72%" stop-color="rgba(245,158,11,0.62)" />
         <stop offset="100%" stop-color="rgba(245,158,11,0)" />
-      </linearGradient>
-      <filter id="glowLine" x="-20%" y="-20%" width="140%" height="140%">
-        <feGaussianBlur stdDeviation="1.5" result="blur"/>
-        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-      </filter>
-    `;
-    svg.appendChild(defs);
+      `;
+      defs.appendChild(gradient);
 
-    // Nota: las líneas se pintan completas desde el primer frame, sin
-    // animación de "trazado" progresivo (antes usaban stroke-dasharray +
-    // una animación CSS escalonada por índice). Con varias conexiones en un
-    // mismo árbol, el retraso acumulado (~220-360ms + 1.2s de animación)
-    // hacía que las últimas líneas tardaran hasta 1.5s en completarse — si
-    // el árbol se miraba/capturaba antes de eso parecían no existir. Esto
-    // contradice el requisito de que el árbol esté siempre correcto y
-    // completo en cuanto es visible, sin estados intermedios.
-    function makeLine(x1, y1, x2, y2, grad) {
+      const filterId = makeGlowFilter(
+        Math.min(x1, x2),
+        Math.max(x1, x2),
+        Math.min(y1, y2),
+        Math.max(y1, y2),
+      );
+
       const el = document.createElementNS('http://www.w3.org/2000/svg', 'line');
       el.setAttribute('x1', x1);
       el.setAttribute('y1', y1);
       el.setAttribute('x2', x2);
       el.setAttribute('y2', y2);
-      el.setAttribute('stroke', grad);
+      el.setAttribute('stroke', `url(#${gradId})`);
       el.setAttribute('stroke-width', '1.5');
-      el.setAttribute('filter', 'url(#glowLine)');
+      el.setAttribute('filter', `url(#${filterId})`);
       return el;
     }
 
-    function makePath(d) {
+    function makePath(d, minX, maxX, minY, maxY) {
+      const gradId = `lineGrad-${gradientIdCounter++}`;
+      const gradient = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'linearGradient',
+      );
+      gradient.setAttribute('id', gradId);
+      gradient.setAttribute('gradientUnits', 'userSpaceOnUse');
+      gradient.setAttribute('x1', '0');
+      gradient.setAttribute('y1', minY);
+      gradient.setAttribute('x2', '0');
+      gradient.setAttribute('y2', maxY);
+      gradient.innerHTML = `
+        <stop offset="0%" stop-color="rgba(245,158,11,0.08)" />
+        <stop offset="45%" stop-color="rgba(245,158,11,0.78)" />
+        <stop offset="55%" stop-color="rgba(245,158,11,0.92)" />
+        <stop offset="100%" stop-color="rgba(245,158,11,0.08)" />
+      `;
+      defs.appendChild(gradient);
+
+      const filterId = makeGlowFilter(minX, maxX, minY, maxY);
+
       const el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       el.setAttribute('d', d);
-      el.setAttribute('stroke', 'url(#lineGrad)');
+      el.setAttribute('stroke', `url(#${gradId})`);
       el.setAttribute('stroke-width', '1.5');
       el.setAttribute('fill', 'none');
-      el.setAttribute('filter', 'url(#glowLine)');
+      el.setAttribute('filter', `url(#${filterId})`);
       return el;
     }
 
@@ -1549,7 +1613,8 @@ const relationshipValidation = validateRelationships(
         `${cx},${cy - 6} ${cx + 6},${cy} ${cx},${cy + 6} ${cx - 6},${cy}`,
       );
       el.setAttribute('fill', 'rgba(245,158,11,0.85)');
-      el.setAttribute('filter', 'url(#glowLine)');
+      const filterId = makeGlowFilter(cx - 6, cx + 6, cy - 6, cy + 6);
+      el.setAttribute('filter', `url(#${filterId})`);
       return el;
     }
 
@@ -1582,16 +1647,23 @@ const relationshipValidation = validateRelationships(
     couples.forEach((relationship) => {
       const from = nodesById.get(relationship.from);
       const to = nodesById.get(relationship.to);
-      if (!from || !to) return;
+      if (!from || !to) {
+        console.warn('Tree line skipped: couple relationship has no resolvable position', {
+          id: relationship.id,
+          type: relationship.type,
+          from: relationship.from,
+          to: relationship.to,
+          familyId: relationship.familyId,
+        });
+        return;
+      }
 
       const y = (from.mid + to.mid) / 2;
       const midX = (from.cx + to.cx) / 2;
       const key = [relationship.from, relationship.to].sort().join(':');
       coupleMidpoints.set(key, { x: midX, y });
 
-      svg.appendChild(
-        makeLine(from.cx, from.mid, to.cx, to.mid, 'url(#lineGradH)'),
-      );
+      svg.appendChild(makeLine(from.cx, from.mid, to.cx, to.mid));
       svg.appendChild(makeDiamond(midX, y));
     });
 
@@ -1619,12 +1691,24 @@ const relationshipValidation = validateRelationships(
 
     Array.from(childrenByParents.values()).forEach((group) => {
       const child = nodesById.get(group.child);
-      if (!child) return;
+      if (!child) {
+        console.warn('Tree line skipped: child has no resolvable position', {
+          child: group.child,
+          parents: group.parents,
+        });
+        return;
+      }
 
       const parentCenters = group.parents
         .map((parentId) => nodesById.get(parentId))
         .filter(Boolean);
-      if (!parentCenters.length) return;
+      if (!parentCenters.length) {
+        console.warn('Tree line skipped: no parent has a resolvable position', {
+          child: group.child,
+          parents: group.parents,
+        });
+        return;
+      }
 
       const coupleKey =
         group.parents.length > 1 ? [...group.parents].sort().join(':') : '';
@@ -1643,7 +1727,15 @@ const relationshipValidation = validateRelationships(
         ? `M ${fromX} ${startY} L ${child.cx} ${child.top}`
         : `M ${fromX} ${startY} L ${fromX} ${midY} L ${child.cx} ${midY} L ${child.cx} ${child.top}`;
 
-      svg.appendChild(makePath(d));
+      svg.appendChild(
+        makePath(
+          d,
+          Math.min(fromX, child.cx),
+          Math.max(fromX, child.cx),
+          Math.min(startY, child.top),
+          Math.max(startY, child.top),
+        ),
+      );
       svg.appendChild(makeArrow(child.cx, child.top));
     });
   }
@@ -1902,6 +1994,41 @@ const relationshipValidation = validateRelationships(
     const midX = (jonasPos.x + marthaPos.x) / 2;
     const midY = (jonasPos.y + marthaPos.y) / 2;
 
+    // `drawTreeLines()` ya construyó y adjuntó un <defs> a este mismo `svg`
+    // (comparten el elemento vía el parámetro svgOverlay de drawCompleteTree),
+    // pero el <filter id="glowLine"> compartido que existía antes se
+    // eliminó — cada línea ahora genera su propio filtro con
+    // filterUnits="userSpaceOnUse" (ver makeGlowFilter dentro de
+    // drawTreeLines) porque las unidades por defecto ("objectBoundingBox")
+    // no se pintan cuando el bounding box del elemento tiene ancho o alto
+    // cero. La línea Jonas–Martha y el símbolo ∞ de este centerpiece corren
+    // el mismo riesgo (línea potencialmente recta), así que se les crea su
+    // propio filtro local aquí, igual de inmune al bbox.
+    const defs = svg.querySelector('defs');
+    const filterId = 'infinityGlow';
+    if (defs && !defs.querySelector(`#${filterId}`)) {
+      const pad = 20;
+      const minX = Math.min(jonasPos.x, marthaPos.x) - pad;
+      const maxX = Math.max(jonasPos.x, marthaPos.x) + pad;
+      const minY = Math.min(jonasPos.y, marthaPos.y) - pad;
+      const maxY = Math.max(jonasPos.y, marthaPos.y) + pad;
+      const filter = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'filter',
+      );
+      filter.setAttribute('id', filterId);
+      filter.setAttribute('filterUnits', 'userSpaceOnUse');
+      filter.setAttribute('x', minX);
+      filter.setAttribute('y', minY);
+      filter.setAttribute('width', maxX - minX);
+      filter.setAttribute('height', maxY - minY);
+      filter.innerHTML = `
+        <feGaussianBlur stdDeviation="1.5" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      `;
+      defs.appendChild(filter);
+    }
+
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     line.setAttribute('x1', jonasPos.x);
     line.setAttribute('y1', jonasPos.y);
@@ -1909,7 +2036,7 @@ const relationshipValidation = validateRelationships(
     line.setAttribute('y2', marthaPos.y);
     line.setAttribute('stroke', 'rgba(245,158,11,0.8)');
     line.setAttribute('stroke-width', '2');
-    line.setAttribute('filter', 'url(#glowLine)');
+    line.setAttribute('filter', `url(#${filterId})`);
     svg.appendChild(line);
 
     const text = document.createElementNS(
@@ -1920,7 +2047,7 @@ const relationshipValidation = validateRelationships(
     text.setAttribute('y', midY);
     text.setAttribute('font-size', '28');
     text.setAttribute('class', 'complete-tree-infinity');
-    text.setAttribute('filter', 'url(#glowLine)');
+    text.setAttribute('filter', `url(#${filterId})`);
     text.textContent = '∞';
     svg.appendChild(text);
   }
