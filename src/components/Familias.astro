@@ -193,10 +193,10 @@ const relationshipValidation = validateRelationships(
   }
 
   .complete-tree-grid {
-    width: 2600px;
-    height: 1500px;
-    min-width: 2600px;
-    min-height: 1500px;
+    width: 2530px;
+    height: 1415px;
+    min-width: 2530px;
+    min-height: 1415px;
     position: relative;
     padding: 0;
   }
@@ -350,7 +350,7 @@ const relationshipValidation = validateRelationships(
       rotateX(var(--tilt-y))
       rotateY(var(--tilt-x))
       scale(1.08);
-    filter: url(#cinematic-ripple) grayscale(0.25) contrast(1.08) brightness(0.92) saturate(1);
+    filter: url(#cinematic-ripple) grayscale(0.2) contrast(1.02) brightness(1.18) saturate(1.05);
   }
 
   .cinematic-temporal-overlay {
@@ -376,7 +376,6 @@ const relationshipValidation = validateRelationships(
      degradado global de la imagen (ver #cinematic-viewer) y en su propio
      text-shadow, al estilo Netflix, en vez de una tarjeta negra sólida. */
   .cinematic-panel {
-    border-left: 1px solid rgba(245, 158, 11, 0.25);
     padding: 1.5rem 1.65rem;
   }
 
@@ -417,28 +416,28 @@ const relationshipValidation = validateRelationships(
     0%,
     100% {
       transform: scale(1);
-      box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.45);
+      box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.55);
     }
     50% {
-      transform: scale(1.35);
-      box-shadow: 0 0 0 6px rgba(245, 158, 11, 0);
+      transform: scale(1.5);
+      box-shadow: 0 0 0 9px rgba(245, 158, 11, 0);
     }
   }
 
   .next-panel-cue-dot {
-    width: 6px;
-    height: 6px;
+    width: 9px;
+    height: 9px;
     border-radius: 999px;
     background: rgb(245, 158, 11);
-    animation: cue-pulse 1.8s ease-in-out infinite;
+    animation: cue-pulse 1.6s ease-in-out infinite;
   }
 
   .next-panel-cue-line {
     width: 1px;
-    height: 22px;
+    height: 30px;
     background: linear-gradient(
       to bottom,
-      rgba(245, 158, 11, 0.55),
+      rgba(245, 158, 11, 0.7),
       rgba(245, 158, 11, 0)
     );
   }
@@ -1006,11 +1005,11 @@ const relationshipValidation = validateRelationships(
     <img
       id="cinematic-bg"
       src=""
-      class="temporal-bg w-full h-full object-cover object-[70%_center] opacity-100 scale-100 transition-all duration-[1s] ease-out"
+      class="temporal-bg w-full h-full object-cover object-center opacity-100 scale-100 transition-all duration-[1s] ease-out"
     />
     <div class="cinematic-temporal-overlay absolute inset-0"></div>
     <div
-      class="absolute inset-0 bg-gradient-to-t from-[#020202]/92 via-[#020202]/45 to-transparent md:bg-gradient-to-r md:from-[#020202]/88 md:via-[#020202]/42 md:to-transparent"
+      class="absolute inset-0 bg-gradient-to-t from-[#020202]/55 via-[#020202]/24 to-transparent md:bg-gradient-to-r md:from-[#020202]/52 md:via-[#020202]/22 md:to-transparent"
     >
     </div>
   </div>
@@ -1217,57 +1216,66 @@ const relationshipValidation = validateRelationships(
   // como vértices simbólicos arriba/abajo de todo el árbol — mismo mecanismo
   // de coordenadas manuales que antes, solo redistribuido.
   const completeLayout = {
-    width: 2200,
-    height: 1230,
-    center: { x: 1100, y: 840 },
+    // Lienzo ampliado +15% (cap aprobado) respecto a la versión anterior
+    // (2200x1230 → 2530x1415) para dar más aire entre bloques y reducir la
+    // sensación de amontonamiento — todas las coordenadas de abajo están
+    // escaladas ×1.15 desde el layout previo, preservando la disposición
+    // relativa (Tiedemann/Nielsen+Kahnwald/Doppler) ya corregida.
+    width: 2530,
+    height: 1415,
+    center: { x: 1265, y: 966 },
     nodes: {
       // ===== Tiedemann (columna izquierda, converge hacia el centro) =====
-      egon: { x: 250, y: 150 },
-      doris: { x: 430, y: 150 },
-      claudia: { x: 400, y: 380 },
-      regina: { x: 470, y: 610 },
-      aleksander: { x: 650, y: 610 },
-      bartosz: { x: 610, y: 840 },
+      // Bloque desplazado -130px (más separado de Kahnwald: el hueco
+      // aleksander↔ines pasa de 34px a ~164px) — antes quedaba casi pegado.
+      egon: { x: 160, y: 173 },
+      doris: { x: 365, y: 173 },
+      claudia: { x: 330, y: 437 },
+      regina: { x: 411, y: 702 },
+      aleksander: { x: 618, y: 702 },
+      bartosz: { x: 572, y: 966 },
 
       // ===== Nielsen + Kahnwald (columna central) =====
-      tronte: { x: 830, y: 150 },
-      jana: { x: 1010, y: 150 },
-      ulrich: { x: 830, y: 380 },
-      katharina: { x: 1010, y: 380 },
-      ines: { x: 680, y: 380 },
-      mikkel: { x: 760, y: 610 },
-      hannah: { x: 930, y: 610 },
-      // Antes en x:1350 (casi pegado a la columna Doppler): el conector desde
-      // Ulrich/Katharina cruzaba todo el mapa en horizontal y parecía una
-      // línea suelta junto a Peter Doppler. Reubicado junto a sus hermanos.
-      magnus: { x: 1120, y: 610 },
+      // Nielsen (tronte/jana/ulrich/katharina/magnus) desplazados a la
+      // derecha respecto a Kahnwald (ines/mikkel/hannah) para que ambas
+      // familias se lean como bloques separados en vez de mezclados.
+      tronte: { x: 1093, y: 173 },
+      jana: { x: 1369, y: 173 },
+      ulrich: { x: 1093, y: 437 },
+      katharina: { x: 1369, y: 437 },
+      ines: { x: 782, y: 437 },
+      mikkel: { x: 874, y: 702 },
+      hannah: { x: 1070, y: 702 },
+      magnus: { x: 1495, y: 702 },
 
-      jonas: { x: 1000, y: 840, core: true },
-      martha: { x: 1200, y: 840, core: true },
-      desconocido: { x: 1100, y: 1050, core: true },
+      jonas: { x: 1150, y: 966, core: true },
+      martha: { x: 1380, y: 966, core: true },
+      desconocido: { x: 1265, y: 1208, core: true },
       // Tannhaus: figura "fuera del tiempo", sin línea de sangre directa —
       // colocado en el hueco vacío entre el bloque Nielsen/Kahnwald y el
       // bloque Doppler, en vez de amontonado junto a El Desconocido o
       // flotando aislado arriba del todo.
-      tannhaus: { x: 1450, y: 380 },
+      tannhaus: { x: 1668, y: 437 },
 
       // ===== Doppler (columna derecha, converge hacia el centro — espejo de Tiedemann) =====
-      bernd: { x: 1750, y: 150 },
-      greta: { x: 1930, y: 150 },
-      helge: { x: 1800, y: 380 },
-      peter: { x: 1730, y: 610 },
-      charlotte: { x: 1910, y: 610 },
-      franziska: { x: 1770, y: 840 },
-      elisabeth: { x: 1950, y: 840 },
+      // Bloque desplazado -180px (más junto al resto: el hueco tannhaus↔peter
+      // pasa de 322px a ~142px) — antes quedaba demasiado aislado a la derecha.
+      bernd: { x: 1833, y: 173 },
+      greta: { x: 2040, y: 173 },
+      helge: { x: 1890, y: 437 },
+      peter: { x: 1810, y: 702 },
+      charlotte: { x: 2017, y: 702 },
+      franziska: { x: 1856, y: 966 },
+      elisabeth: { x: 2063, y: 966 },
     },
     // Etiquetas de familia flotantes (sin caja/borde) — ya no se dibujan
     // 5 bloques separados, solo un nombre tenue cerca de cada grupo.
     labels: [
-      { familyId: 'tiedemann', x: 250, y: 95 },
-      { familyId: 'nielsen', x: 830, y: 95 },
-      { familyId: 'kahnwald', x: 680, y: 325 },
-      { familyId: 'doppler', x: 1750, y: 95 },
-      { familyId: 'adicionales', x: 1100, y: 985 },
+      { familyId: 'tiedemann', x: 160, y: 109 },
+      { familyId: 'nielsen', x: 1231, y: 109 },
+      { familyId: 'kahnwald', x: 782, y: 374 },
+      { familyId: 'doppler', x: 1833, y: 109 },
+      { familyId: 'adicionales', x: 1265, y: 1133 },
     ],
   };
 
@@ -1567,7 +1575,7 @@ const relationshipValidation = validateRelationships(
       el.setAttribute('x2', x2);
       el.setAttribute('y2', y2);
       el.setAttribute('stroke', `url(#${gradId})`);
-      el.setAttribute('stroke-width', '1.5');
+      el.setAttribute('stroke-width', '1.1');
       el.setAttribute('filter', `url(#${filterId})`);
       return el;
     }
@@ -1597,7 +1605,7 @@ const relationshipValidation = validateRelationships(
       const el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       el.setAttribute('d', d);
       el.setAttribute('stroke', `url(#${gradId})`);
-      el.setAttribute('stroke-width', '1.5');
+      el.setAttribute('stroke-width', '1.1');
       el.setAttribute('fill', 'none');
       el.setAttribute('filter', `url(#${filterId})`);
       return el;
@@ -1667,26 +1675,48 @@ const relationshipValidation = validateRelationships(
       svg.appendChild(makeDiamond(midX, y));
     });
 
+    // Agrupa por hijo primero (no por relación individual): un hijo puede
+    // tener más de dos "padres" registrados (p. ej. Mikkel: Ulrich+Katharina
+    // como progenitores biológicos, más Ines como figura tutora en el
+    // universo Kahnwald). La versión anterior recalculaba "parents" en cada
+    // iteración de `parentChild` filtrando solo por `to === relationship.to`,
+    // así que las 3 relaciones de Mikkel colapsaban siempre en la misma key
+    // (la de la pareja Ulrich+Katharina) y la línea de Ines nunca llegaba a
+    // insertarse en el Map. Ahora: se detecta como mucho UNA pareja entre los
+    // padres de cada hijo (se sigue dibujando como una sola línea desde el
+    // punto medio de la pareja), y cualquier padre que no forme parte de esa
+    // pareja recibe su propia línea individual hacia el hijo.
     const childrenByParents = new Map();
+    const parentsByChild = new Map();
 
     parentChild.forEach((relationship) => {
-      const parents = parentChild
-        .filter((candidate) => candidate.to === relationship.to)
-        .map((candidate) => candidate.from);
+      if (!parentsByChild.has(relationship.to)) {
+        parentsByChild.set(relationship.to, new Set());
+      }
+      parentsByChild.get(relationship.to).add(relationship.from);
+    });
+
+    parentsByChild.forEach((parentsSet, child) => {
+      const parents = Array.from(parentsSet);
       const couple = couples.find(
         (candidate) =>
           parents.includes(candidate.from) && parents.includes(candidate.to),
       );
-      const key = couple
-        ? `${[couple.from, couple.to].sort().join(':')}->${relationship.to}`
-        : `${relationship.from}->${relationship.to}`;
+      const usedParents = new Set();
 
-      if (!childrenByParents.has(key)) {
-        childrenByParents.set(key, {
-          parents: couple ? [couple.from, couple.to] : [relationship.from],
-          child: relationship.to,
-        });
+      if (couple) {
+        const key = `${[couple.from, couple.to].sort().join(':')}->${child}`;
+        childrenByParents.set(key, { parents: [couple.from, couple.to], child });
+        usedParents.add(couple.from);
+        usedParents.add(couple.to);
       }
+
+      parents
+        .filter((parentId) => !usedParents.has(parentId))
+        .forEach((parentId) => {
+          const key = `${parentId}->${child}`;
+          childrenByParents.set(key, { parents: [parentId], child });
+        });
     });
 
     Array.from(childrenByParents.values()).forEach((group) => {
@@ -2035,7 +2065,7 @@ const relationshipValidation = validateRelationships(
     line.setAttribute('x2', marthaPos.x);
     line.setAttribute('y2', marthaPos.y);
     line.setAttribute('stroke', 'rgba(245,158,11,0.8)');
-    line.setAttribute('stroke-width', '2');
+    line.setAttribute('stroke-width', '1.4');
     line.setAttribute('filter', `url(#${filterId})`);
     svg.appendChild(line);
 
@@ -2045,7 +2075,7 @@ const relationshipValidation = validateRelationships(
     );
     text.setAttribute('x', midX);
     text.setAttribute('y', midY);
-    text.setAttribute('font-size', '28');
+    text.setAttribute('font-size', '46');
     text.setAttribute('class', 'complete-tree-infinity');
     text.setAttribute('filter', `url(#${filterId})`);
     text.textContent = '∞';
@@ -2434,8 +2464,8 @@ const relationshipValidation = validateRelationships(
         : `Siguiente: ${nextStage.title}`;
 
     return `
-      <div class="next-panel-cue mt-24 flex flex-col items-center gap-2 text-stone-300 pointer-events-none">
-        <div class="font-mono text-[10px] md:text-xs tracking-[0.28em] uppercase text-center">
+      <div class="next-panel-cue mt-36 md:mt-52 flex flex-col items-center gap-3 text-stone-200 pointer-events-none">
+        <div class="font-mono text-xs md:text-sm tracking-[0.28em] uppercase text-center">
           ${label}
         </div>
         <div class="next-panel-cue-line"></div>
@@ -2594,7 +2624,7 @@ const relationshipValidation = validateRelationships(
       const sceneImage = getSceneImage(familia, char, stage, index);
 
       const timelineHTML = `
-        <div class="flex items-center gap-3 mb-6">
+        <div class="flex flex-col items-center text-center gap-4 mb-8">
           <h2 class="font-cinzel text-2xl md:text-4xl text-stone-200 uppercase tracking-widest font-bold">
             ${stage.title}
           </h2>

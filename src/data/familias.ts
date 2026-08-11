@@ -265,7 +265,7 @@ export const familiasData: Family[] = [
         {
           id: 'tronte',
           name: 'Tronte Nielsen',
-          avatar: '/Familias/Familia2/11.jpg',
+          avatar: '/Familias/Familia2/tronte-avatar.webp',
           stages: [
             {
               title: 'El Niño Marcado',
@@ -296,7 +296,7 @@ export const familiasData: Family[] = [
         {
           id: 'jana',
           name: 'Jana Nielsen',
-          avatar: '/Familias/Familia2/12.jpg',
+          avatar: '/Familias/Familia2/jana-avatar.webp',
           stages: [
             {
               title: 'La Niña de Winden',
@@ -329,7 +329,7 @@ export const familiasData: Family[] = [
         {
           id: 'ulrich',
           name: 'Ulrich Nielsen',
-          avatar: '/Familias/Familia2/1.jpg',
+          avatar: '/Familias/Familia2/ulrich-avatar.webp',
           stages: [
             {
               title: 'Ulrich Nielsen',
@@ -384,7 +384,7 @@ export const familiasData: Family[] = [
         {
           id: 'katharina',
           name: 'Katharina',
-          avatar: '/Familias/Familia2/3.jpg',
+          avatar: '/Familias/Familia2/katharina-avatar.webp',
           stages: [
             {
               title: 'Katharina Albers',
@@ -472,7 +472,7 @@ export const familiasData: Family[] = [
         {
           id: 'martha',
           name: 'Martha / Eva',
-          avatar: '/Familias/Familia2/4.jpg',
+          avatar: '/Familias/Familia2/martha-avatar.webp',
           stages: [
             {
               title: 'Martha Nielsen',
@@ -496,7 +496,7 @@ export const familiasData: Family[] = [
               title: 'Mundo de Eva',
               timeline: 'La Sustituta',
               text: 'En su mundo paralelo, Jonas no existe. Al encontrar a un Jonas del otro universo, entiende la verdad del nudo.',
-              img: '/Familias/Familia2/martha_mundo_eva.jpg',
+              img: '/Familias/Familia2/martha-mundo-eva.webp',
             },
             {
               title: 'La Otra Martha',
@@ -615,7 +615,7 @@ export const familiasData: Family[] = [
         {
           id: 'helge',
           name: 'Helge Doppler',
-          avatar: '/Familias/Familia3/9.jpg',
+          avatar: '/Familias/Familia3/helge-avatar.webp',
           stages: [
             {
               title: 'El Niño Atacado',
@@ -761,6 +761,18 @@ export const familiasData: Family[] = [
               timeline: '2019',
               text: 'Hija mayor de Peter y Charlotte. Gimnasta rítmica y rebelde que esconde fajos de billetes en las vías del tren. Se enamora perdidamente de <span class="magic-highlight">Magnus Nielsen</span>.',
               img: '/Familias/Familia3/franziska_2019.jpg',
+            },
+            {
+              title: 'El Secreto de Bernadette',
+              timeline: '2020',
+              text: 'Magnus la descubre dejando dinero bajo las vías abandonadas y sospecha lo peor. La verdad es otra: Franziska lleva tiempo consiguiendo en secreto las recetas hormonales que <span class="magic-highlight">Bernadette Wöller</span> necesita para completar su transición — el mismo dinero que antes pagaba su propio padre, Peter, como cliente de Bernadette. Dolida por la desconfianza de Magnus, aun así lo perdona.',
+              img: '/Familias/Familia3/franziska-bernadette.webp',
+            },
+            {
+              title: 'La Huida del Apocalipsis',
+              timeline: '27 de junio',
+              text: 'El día del fin del mundo, el Forastero encuentra a Magnus, Bartosz y Franziska en la casa de los Nielsen con una máquina del tiempo improvisada. Escapan juntos en el último instante, dejando atrás un Winden que ya se derrumba.',
+              img: '/Familias/Familia3/franziska-apocalipsis.webp',
             },
             {
               title: 'La Devota',
@@ -937,7 +949,7 @@ export const familiasData: Family[] = [
         {
           id: 'regina',
           name: 'Regina Tiedemann',
-          avatar: '/Familias/Familia4/1.1.jpg',
+          avatar: '/Familias/Familia4/regina-avatar.webp',
           stages: [
             {
               title: 'El Bullying',
@@ -974,7 +986,7 @@ export const familiasData: Family[] = [
         {
           id: 'aleksander',
           name: 'Aleksander Tiedemann',
-          avatar: '/Familias/Familia4/2.jpg',
+          avatar: '/Familias/Familia4/aleksander-avatar.webp',
           stages: [
             {
               title: 'Boris Niewald',
@@ -1056,7 +1068,7 @@ export const familiasData: Family[] = [
         {
           id: 'tannhaus',
           name: 'H.G. Tannhaus',
-          avatar: '/Familias/Familia5/inicio.png',
+          avatar: '/Familias/Familia5/tannhaus-avatar.webp',
           stages: [
             {
               title: 'El Relojero',
@@ -1121,19 +1133,91 @@ export const familiasData: Family[] = [
 ];
 
 export const relationshipData: FamilyRelationship[] = [
-  { id: 'kahnwald-mikkel-hannah', type: 'couple', from: 'mikkel', to: 'hannah', familyId: 'kahnwald' },
-  { id: 'kahnwald-ines-mikkel', type: 'parentChild', from: 'ines', to: 'mikkel', familyId: 'kahnwald' },
-  { id: 'kahnwald-mikkel-jonas', type: 'parentChild', from: 'mikkel', to: 'jonas', familyId: 'kahnwald' },
-  { id: 'kahnwald-hannah-jonas', type: 'parentChild', from: 'hannah', to: 'jonas', familyId: 'kahnwald' },
+  {
+    id: 'kahnwald-mikkel-hannah',
+    type: 'couple',
+    from: 'mikkel',
+    to: 'hannah',
+    familyId: 'kahnwald',
+  },
+  {
+    id: 'kahnwald-ines-mikkel',
+    type: 'parentChild',
+    from: 'ines',
+    to: 'mikkel',
+    familyId: 'kahnwald',
+  },
+  {
+    id: 'kahnwald-mikkel-jonas',
+    type: 'parentChild',
+    from: 'mikkel',
+    to: 'jonas',
+    familyId: 'kahnwald',
+  },
+  {
+    id: 'kahnwald-hannah-jonas',
+    type: 'parentChild',
+    from: 'hannah',
+    to: 'jonas',
+    familyId: 'kahnwald',
+  },
 
-  { id: 'nielsen-tronte-jana', type: 'couple', from: 'tronte', to: 'jana', familyId: 'nielsen' },
-  { id: 'nielsen-tronte-ulrich', type: 'parentChild', from: 'tronte', to: 'ulrich', familyId: 'nielsen' },
-  { id: 'nielsen-jana-ulrich', type: 'parentChild', from: 'jana', to: 'ulrich', familyId: 'nielsen' },
-  { id: 'nielsen-ulrich-katharina', type: 'couple', from: 'ulrich', to: 'katharina', familyId: 'nielsen' },
-  { id: 'nielsen-ulrich-magnus', type: 'parentChild', from: 'ulrich', to: 'magnus', familyId: 'nielsen' },
-  { id: 'nielsen-katharina-magnus', type: 'parentChild', from: 'katharina', to: 'magnus', familyId: 'nielsen' },
-  { id: 'nielsen-ulrich-martha', type: 'parentChild', from: 'ulrich', to: 'martha', familyId: 'nielsen' },
-  { id: 'nielsen-katharina-martha', type: 'parentChild', from: 'katharina', to: 'martha', familyId: 'nielsen' },
+  {
+    id: 'nielsen-tronte-jana',
+    type: 'couple',
+    from: 'tronte',
+    to: 'jana',
+    familyId: 'nielsen',
+  },
+  {
+    id: 'nielsen-tronte-ulrich',
+    type: 'parentChild',
+    from: 'tronte',
+    to: 'ulrich',
+    familyId: 'nielsen',
+  },
+  {
+    id: 'nielsen-jana-ulrich',
+    type: 'parentChild',
+    from: 'jana',
+    to: 'ulrich',
+    familyId: 'nielsen',
+  },
+  {
+    id: 'nielsen-ulrich-katharina',
+    type: 'couple',
+    from: 'ulrich',
+    to: 'katharina',
+    familyId: 'nielsen',
+  },
+  {
+    id: 'nielsen-ulrich-magnus',
+    type: 'parentChild',
+    from: 'ulrich',
+    to: 'magnus',
+    familyId: 'nielsen',
+  },
+  {
+    id: 'nielsen-katharina-magnus',
+    type: 'parentChild',
+    from: 'katharina',
+    to: 'magnus',
+    familyId: 'nielsen',
+  },
+  {
+    id: 'nielsen-ulrich-martha',
+    type: 'parentChild',
+    from: 'ulrich',
+    to: 'martha',
+    familyId: 'nielsen',
+  },
+  {
+    id: 'nielsen-katharina-martha',
+    type: 'parentChild',
+    from: 'katharina',
+    to: 'martha',
+    familyId: 'nielsen',
+  },
   // Mikkel es hijo biológico de Ulrich y Katharina, pero en la vista de la
   // familia Nielsen no se renderiza como nodo (su personaje pertenece a los
   // "generations" de Kahnwald, no a los de Nielsen) — una relación aquí
@@ -1142,34 +1226,190 @@ export const relationshipData: FamilyRelationship[] = [
   // globales sin familyId (global-ulrich-mikkel / global-katharina-mikkel),
   // que sí se dibujan correctamente en el Árbol Completo.
 
-  { id: 'doppler-bernd-greta', type: 'couple', from: 'bernd', to: 'greta', familyId: 'doppler' },
-  { id: 'doppler-bernd-helge', type: 'parentChild', from: 'bernd', to: 'helge', familyId: 'doppler' },
-  { id: 'doppler-greta-helge', type: 'parentChild', from: 'greta', to: 'helge', familyId: 'doppler' },
-  { id: 'doppler-helge-peter', type: 'parentChild', from: 'helge', to: 'peter', familyId: 'doppler' },
-  { id: 'doppler-peter-charlotte', type: 'couple', from: 'peter', to: 'charlotte', familyId: 'doppler' },
-  { id: 'doppler-peter-franziska', type: 'parentChild', from: 'peter', to: 'franziska', familyId: 'doppler' },
-  { id: 'doppler-charlotte-franziska', type: 'parentChild', from: 'charlotte', to: 'franziska', familyId: 'doppler' },
-  { id: 'doppler-peter-elisabeth', type: 'parentChild', from: 'peter', to: 'elisabeth', familyId: 'doppler' },
-  { id: 'doppler-charlotte-elisabeth', type: 'parentChild', from: 'charlotte', to: 'elisabeth', familyId: 'doppler' },
+  {
+    id: 'doppler-bernd-greta',
+    type: 'couple',
+    from: 'bernd',
+    to: 'greta',
+    familyId: 'doppler',
+  },
+  {
+    id: 'doppler-bernd-helge',
+    type: 'parentChild',
+    from: 'bernd',
+    to: 'helge',
+    familyId: 'doppler',
+  },
+  {
+    id: 'doppler-greta-helge',
+    type: 'parentChild',
+    from: 'greta',
+    to: 'helge',
+    familyId: 'doppler',
+  },
+  {
+    id: 'doppler-helge-peter',
+    type: 'parentChild',
+    from: 'helge',
+    to: 'peter',
+    familyId: 'doppler',
+  },
+  {
+    id: 'doppler-peter-charlotte',
+    type: 'couple',
+    from: 'peter',
+    to: 'charlotte',
+    familyId: 'doppler',
+  },
+  {
+    id: 'doppler-peter-franziska',
+    type: 'parentChild',
+    from: 'peter',
+    to: 'franziska',
+    familyId: 'doppler',
+  },
+  {
+    id: 'doppler-charlotte-franziska',
+    type: 'parentChild',
+    from: 'charlotte',
+    to: 'franziska',
+    familyId: 'doppler',
+  },
+  {
+    id: 'doppler-peter-elisabeth',
+    type: 'parentChild',
+    from: 'peter',
+    to: 'elisabeth',
+    familyId: 'doppler',
+  },
+  {
+    id: 'doppler-charlotte-elisabeth',
+    type: 'parentChild',
+    from: 'charlotte',
+    to: 'elisabeth',
+    familyId: 'doppler',
+  },
 
-  { id: 'tiedemann-egon-doris', type: 'couple', from: 'egon', to: 'doris', familyId: 'tiedemann' },
-  { id: 'tiedemann-egon-claudia', type: 'parentChild', from: 'egon', to: 'claudia', familyId: 'tiedemann' },
-  { id: 'tiedemann-doris-claudia', type: 'parentChild', from: 'doris', to: 'claudia', familyId: 'tiedemann' },
-  { id: 'tiedemann-claudia-regina', type: 'parentChild', from: 'claudia', to: 'regina', familyId: 'tiedemann' },
-  { id: 'tiedemann-regina-aleksander', type: 'couple', from: 'regina', to: 'aleksander', familyId: 'tiedemann' },
-  { id: 'tiedemann-regina-bartosz', type: 'parentChild', from: 'regina', to: 'bartosz', familyId: 'tiedemann' },
-  { id: 'tiedemann-aleksander-bartosz', type: 'parentChild', from: 'aleksander', to: 'bartosz', familyId: 'tiedemann' },
+  {
+    id: 'tiedemann-egon-doris',
+    type: 'couple',
+    from: 'egon',
+    to: 'doris',
+    familyId: 'tiedemann',
+  },
+  {
+    id: 'tiedemann-egon-claudia',
+    type: 'parentChild',
+    from: 'egon',
+    to: 'claudia',
+    familyId: 'tiedemann',
+  },
+  {
+    id: 'tiedemann-doris-claudia',
+    type: 'parentChild',
+    from: 'doris',
+    to: 'claudia',
+    familyId: 'tiedemann',
+  },
+  {
+    id: 'tiedemann-claudia-regina',
+    type: 'parentChild',
+    from: 'claudia',
+    to: 'regina',
+    familyId: 'tiedemann',
+  },
+  {
+    id: 'tiedemann-regina-aleksander',
+    type: 'couple',
+    from: 'regina',
+    to: 'aleksander',
+    familyId: 'tiedemann',
+  },
+  {
+    id: 'tiedemann-regina-bartosz',
+    type: 'parentChild',
+    from: 'regina',
+    to: 'bartosz',
+    familyId: 'tiedemann',
+  },
+  {
+    id: 'tiedemann-aleksander-bartosz',
+    type: 'parentChild',
+    from: 'aleksander',
+    to: 'bartosz',
+    familyId: 'tiedemann',
+  },
 
-  { id: 'global-mikkel-jonas', type: 'parentChild', from: 'mikkel', to: 'jonas' },
-  { id: 'global-hannah-jonas', type: 'parentChild', from: 'hannah', to: 'jonas' },
-  { id: 'global-ulrich-mikkel', type: 'parentChild', from: 'ulrich', to: 'mikkel' },
-  { id: 'global-katharina-mikkel', type: 'parentChild', from: 'katharina', to: 'mikkel' },
-  { id: 'global-ulrich-martha', type: 'parentChild', from: 'ulrich', to: 'martha' },
-  { id: 'global-katharina-martha', type: 'parentChild', from: 'katharina', to: 'martha' },
-  { id: 'global-peter-charlotte', type: 'couple', from: 'peter', to: 'charlotte' },
-  { id: 'global-regina-aleksander', type: 'couple', from: 'regina', to: 'aleksander' },
-  { id: 'global-regina-bartosz', type: 'parentChild', from: 'regina', to: 'bartosz' },
-  { id: 'global-aleksander-bartosz', type: 'parentChild', from: 'aleksander', to: 'bartosz' },
-  { id: 'global-jonas-desconocido', type: 'parentChild', from: 'jonas', to: 'desconocido' },
-  { id: 'global-martha-desconocido', type: 'parentChild', from: 'martha', to: 'desconocido' },
+  {
+    id: 'global-mikkel-jonas',
+    type: 'parentChild',
+    from: 'mikkel',
+    to: 'jonas',
+  },
+  {
+    id: 'global-hannah-jonas',
+    type: 'parentChild',
+    from: 'hannah',
+    to: 'jonas',
+  },
+  {
+    id: 'global-ulrich-mikkel',
+    type: 'parentChild',
+    from: 'ulrich',
+    to: 'mikkel',
+  },
+  {
+    id: 'global-katharina-mikkel',
+    type: 'parentChild',
+    from: 'katharina',
+    to: 'mikkel',
+  },
+  {
+    id: 'global-ulrich-martha',
+    type: 'parentChild',
+    from: 'ulrich',
+    to: 'martha',
+  },
+  {
+    id: 'global-katharina-martha',
+    type: 'parentChild',
+    from: 'katharina',
+    to: 'martha',
+  },
+  {
+    id: 'global-peter-charlotte',
+    type: 'couple',
+    from: 'peter',
+    to: 'charlotte',
+  },
+  {
+    id: 'global-regina-aleksander',
+    type: 'couple',
+    from: 'regina',
+    to: 'aleksander',
+  },
+  {
+    id: 'global-regina-bartosz',
+    type: 'parentChild',
+    from: 'regina',
+    to: 'bartosz',
+  },
+  {
+    id: 'global-aleksander-bartosz',
+    type: 'parentChild',
+    from: 'aleksander',
+    to: 'bartosz',
+  },
+  {
+    id: 'global-jonas-desconocido',
+    type: 'parentChild',
+    from: 'jonas',
+    to: 'desconocido',
+  },
+  {
+    id: 'global-martha-desconocido',
+    type: 'parentChild',
+    from: 'martha',
+    to: 'desconocido',
+  },
 ];
