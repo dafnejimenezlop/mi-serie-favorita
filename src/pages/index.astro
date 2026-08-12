@@ -9,6 +9,9 @@ import Whatsapp from '../components/Whatsapp.astro';
 import Resumen from '../components/Resumen.astro';
 import Aclaraciones from '../components/Aclaraciones.astro';
 import Familias from '../components/Familias.astro';
+import Recomendaciones from '../components/Recomendaciones.astro';
+import AsistenteWinden from '../components/AsistenteWinden.astro';
+import Galeria from '../components/Galeria.astro';
 ---
 
 <BaseLayout title="DARK - Sic Mundus">
@@ -31,7 +34,16 @@ import Familias from '../components/Familias.astro';
     <Familias />
   </div>
 
+  <div id="vista-recomendaciones" class="hidden transition-opacity duration-500">
+    <Recomendaciones />
+  </div>
+
+  <div id="vista-galeria" class="hidden transition-opacity duration-500">
+    <Galeria />
+  </div>
+
   <Whatsapp />
+  <AsistenteWinden />
 </BaseLayout>
 
 <script is:inline>
@@ -42,6 +54,8 @@ import Familias from '../components/Familias.astro';
       'vista-resumen',
       'vista-aclaraciones',
       'vista-personajes',
+      'vista-recomendaciones',
+      'vista-galeria',
     ];
 
     // Decidir cuál es la vista activa
@@ -49,6 +63,8 @@ import Familias from '../components/Familias.astro';
     if (hash === '#resumen') vistaActiva = 'vista-resumen';
     if (hash === '#aclaraciones') vistaActiva = 'vista-aclaraciones';
     if (hash === '#personajes') vistaActiva = 'vista-personajes';
+    if (hash === '#recomendaciones') vistaActiva = 'vista-recomendaciones';
+    if (hash === '#galeria') vistaActiva = 'vista-galeria';
 
     // Mostrar solo la vista activa y ocultar el resto
     vistas.forEach((v) => {
@@ -89,6 +105,18 @@ import Familias from '../components/Familias.astro';
       typeof window.resetPersonajesTabs === 'function'
     ) {
       window.resetPersonajesTabs();
+    }
+    if (
+      vistaActiva === 'vista-recomendaciones' &&
+      typeof window.resetRecomendacionesTabs === 'function'
+    ) {
+      window.resetRecomendacionesTabs();
+    }
+    if (
+      vistaActiva === 'vista-galeria' &&
+      typeof window.resetGaleriaTabs === 'function'
+    ) {
+      window.resetGaleriaTabs();
     }
   }
 

@@ -2191,7 +2191,16 @@ const relationshipValidation = validateRelationships(
     zc.style.transform = `translate(${treePanX}px, ${treePanY}px) scale(${treeScale})`;
   }
 
-  function centerTree() {
+  // `smooth` controla si el salto a la posición centrada anima el transform
+  // (420ms, vía la clase `smooth-reset`) o lo aplica al instante. Los
+  // centrados AUTOMÁTICOS (justo al dibujar el árbol, antes de que el
+  // usuario haya visto nada) deben ser instantáneos — si animan, el fade-in
+  // de opacidad del visor (que arranca en paralelo, ver showTreeViewer)
+  // puede pillar la transición a medias y mostrar el árbol sin centrar
+  // durante ese primer instante. La animación suave solo tiene sentido para
+  // el reset manual (botón "encajar en pantalla"), donde el usuario ya está
+  // viendo el árbol y el movimiento es una señal útil de que algo cambió.
+  function centerTree(smooth = false) {
     const panArea = document.getElementById('tree-pan-area');
     const container = document.getElementById('tree-nodes-container');
     const zoomContainer = document.getElementById('tree-zoom-container');
@@ -2215,7 +2224,7 @@ const relationshipValidation = validateRelationships(
     treePanX = (areaW - contW * treeScale) / 2;
     treePanY = (areaH - contH * treeScale) / 2;
 
-    applyTreeTransform(true);
+    applyTreeTransform(smooth);
   }
 
   window.zoomIn = () => {
@@ -2227,7 +2236,7 @@ const relationshipValidation = validateRelationships(
     applyTreeTransform();
   };
   window.zoomReset = () => {
-    centerTree();
+    centerTree(true);
   };
 
   // Rueda del ratón → zoom centrado en el cursor

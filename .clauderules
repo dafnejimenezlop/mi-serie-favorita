@@ -1,0 +1,137 @@
+# 🎭 CLAUDE RULES: MI-SERIE-FAVORITA (SERIE DARK)
+
+Sitio tributo (fan-made, no afiliado a Netflix) a la serie *Dark*. Astro
+como motor principal, con islas de React solo donde hace falta estado real.
+Estética "Netflix cinemático + investigación conspirativa" en tonos oscuros
+y acento ámbar.
+
+Estas reglas existen para que cualquier cambio (tuyo o de Claude) mantenga
+el mismo nivel de acabado que ya tiene el sitio — no para reinventarlo.
+**Ante la duda, imita el patrón ya existente en el componente vecino antes
+de inventar uno nuevo.**
+
+---
+
+## 1. 🛠️ STACK Y ARQUITECTURA
+
+- **Framework**: Astro v6, `output: 'server'` sobre adapter `@astrojs/vercel`.
+- **Estilos**: Tailwind CSS v4 vía plugin de Vite (`@tailwindcss/vite`), no PostCSS clásico. El modo oscuro se activa por clase (`@variant dark (&:where(.dark, .dark *));` en `global.css`), no por `prefers-color-scheme` — respétalo, no cambies a la variante `media`.
+- **Componentes Dinámicos**: React (`.jsx`/`.tsx`) con `@astrojs/react`, solo con `client:load`/`client:visible` cuando de verdad se necesita estado interactivo del lado cliente. **Por defecto, sigue usando `.astro` + `<script is:inline>` como ya hace el resto del proyecto** (Header, Sidebar de familias, Aclaraciones, Resumen) — no migres a React "porque sí"; es una decisión de arquitectura ya tomada y consistente.
+- **Iconografía**: `lucide-react` para React; en `.astro` los iconos van como SVG inline (patrón ya usado en Header/Footer/Hero) — mantén ese mismo patrón, no mezcles ambos sistemas en la misma vista.
+- **Datos y Tipado**: TypeScript estricto. Toda la genealogía/personajes vive en `src/data/familias.ts` (`familiasData`, `relationshipData`) con sus tipos `Family`, `FamilyCharacter`, `FamilyRelationship`, etc. — nunca hardcodees datos de personajes directamente en un componente.
+- **Validación de datos**: `src/utils/familyTree.ts` (`validateRelationships`, `computeLineage`) es la fuente de verdad de la lógica de parentesco. Si tocas relaciones familiares, actualiza también sus tests (`src/utils/familyTree.test.ts`, `vitest run`) — no dupliques la lógica salvo el caso ya documentado abajo.
+- **Duplicación intencional documentada**: `Familias.astro` reimplementa `computeLineage` y otros helpers en su `<script is:inline>` porque no puede hacer `import` de un `.ts`. Es una excepción ya justificada con comentario en el propio archivo — si cambias el algoritmo en `familyTree.ts`, replica el cambio ahí también y actualiza el comentario que lo explica.
+- **API routes**: `src/pages/api/*.ts` usa `Resend` para email (`send-email.ts`). Cualquier nuevo endpoint sigue el mismo patrón: instanciar el cliente dentro del handler, validar campos obligatorios, devolver `Response` con status explícito, nunca dejar que un error interno se filtre al cliente en texto plano.
+
+---
+
+## 2. 🎨 SISTEMA DE DISEÑO & ESTÉTICA (Taste + UI/UX Pro Max)
+
+El listón es "impecable", no "correcto". Antes de dar por terminada una
+sección visual, pregúntate: ¿esto lo firmaría un diseñador senior, o solo
+"funciona"? Si dudas, compáralo pixel a pixel contra una sección ya pulida
+(Hero, Resumen, Aclaraciones) antes de entregarlo.
+
+- **Paleta "Dark"**:
+  - Fondos: `bg-stone-950`/`bg-[#141414]`/`bg-[#0a0a0a]` (usa los tonos `stone` del proyecto, no mezcles con `slate`/`zinc`/`neutral` salvo que un componente ya establecido lo use — revisa el componente vecino antes de elegir la familia de grises).
+  - Tarjetas/paneles: `bg-stone-900/60–80` + `backdrop-blur-md`.
+  - Acento único: **ámbar** (`amber-400/500/600`) para focos, bordes hover, texto destacado, resplandores. No introduzcas un segundo color de acento (rojo, azul, verde) salvo para semántica puntual ya existente (rojo para "spoilers"/alertas, verde para WhatsApp).
+  - Texto: `text-stone-100`/`text-zinc-100` como principal (nunca `#fff` puro), `text-stone-400` como secundario.
+- **Bordes**: `border-white/10` por defecto, `hover:border-amber-500/50` en interacción.
+- **Tipografía**: `font-cinzel` (serif, mayúsculas, tracking amplio) para títulos/etiquetas de identidad de marca; `Open Sans` para cuerpo de texto. No mezcles otra fuente sin tocar `global.css`.
+- **Espaciado**: generoso, sin amontonar — sigue las proporciones ya usadas (`py-16 md:py-20`, `mb-12 md:mb-16`, etc.) en vez de valores arbitrarios nuevos.
+- **Consistencia entre secciones**: cada sección de contenido largo (Resumen, Aclaraciones) reutiliza el mismo patrón de tarjeta con imagen lateral + degradado + texto — no inventes un layout distinto para una sección nueva del mismo tipo sin buena razón.
+- **No dejes componentes "huérfanos"**: si creas o encuentras un componente que no se importa/renderiza en ninguna página, o que no comparte la paleta del resto (ver `Sidebar.astro`, que usa `red-600`/`slate-900` en vez de ámbar/stone y no está montado en ningún layout), o lo integras correctamente o lo eliminas — no lo dejes vivo y desconectado.
+
+---
+
+## 3. ⚡ MICROINTERACCIONES Y ANIMACIÓN (Estilo Emil Kowalski)
+
+Filosofía: la animación debe sentirse *inevitable*, nunca decorativa ni
+gratuita. Cada movimiento comunica jerarquía o causalidad — nunca "porque
+queda bonito". Si una animación no ayuda a entender qué cambió, quítala.
+
+- **Duración según propósito** (no todo son 200ms):
+  - Micro-feedback (botones, iconos, hover de tarjeta): `150–300ms`, `ease-out`.
+  - Transiciones de layout/aparición de bloques grandes (paneles, modales, sidebar): `400–700ms`, curvas suaves tipo `cubic-bezier(0.2, 0.8, 0.2, 1)` (ya usado en `.scroll-scene`).
+  - Ambientales/loop (spin de fondo, pulso de línea, barras de audio): pueden ser más lentas (`1.2s`–`60s`) porque no bloquean la percepción de una acción del usuario.
+- **Fuente única de verdad del "impulso"**: usa `transform`/`opacity` para animar, nunca `width`/`height`/`top`/`left` en propiedades que se repiten muchas veces en pantalla (excepción ya asumida y documentada: `.timeline-line`, aceptable por ser puntual). Prioriza `will-change: transform` solo en el elemento que realmente se anima en bucle (ver `#tree-zoom-container`).
+- **Cada interactivo tiene sus 4 estados**: `hover:`, `active:` (o `:scale-95`/similar), `focus-visible:ring-2 focus-visible:ring-amber-400`, y un estado de "cargando/deshabilitado" si dispara una acción async (ver patrón en `Sidebar.astro` `disabled:opacity-50 disabled:cursor-not-allowed` — replícalo en cualquier formulario nuevo).
+- **`prefers-reduced-motion` es obligatorio, no opcional**: cualquier animación nueva que mueva/escale/parallax-ee contenido (tilt de ratón, scroll parallax, ripple SVG) debe respetar `@media (prefers-reduced-motion: reduce)` igual que ya hace `.temporal-image-wrap` y `cinematicReducedMotion` en `Familias.astro`. Cópialo, no lo omitas "porque es un detalle menor".
+- **No animes por narrativa, anima por estado**: usa clases de estado (`.is-open`, `.in-view`, `.is-dimmed`, `.is-interacting`) controladas por JS/IntersectionObserver, tal como ya hace el proyecto — no metas animaciones con `setTimeout` puro salvo que sea estrictamente necesario para sincronizar con algo externo (p.ej. YouTube IFrame API).
+
+---
+
+## 4. 🌐 LÓGICA DE NAVEGACIÓN Y VISTAS (patrón específico de este proyecto)
+
+Este sitio **no usa rutas de Astro para las secciones internas** — usa una
+SPA-lite sobre `location.hash` gestionada en `src/pages/index.astro`
+(`controlarVistas()`), con vistas `#inicio`, `#resumen`, `#aclaraciones`,
+`#personajes` mostradas/ocultadas por `hidden`/`block`.
+
+- **Cualquier enlace de navegación (`Header.astro`, `Footer.astro`, CTAs internos) DEBE apuntar a un hash que exista realmente en `vistas` de `index.astro`.** Antes de añadir un link nuevo, comprueba que hay una vista real detrás; si no la hay, no lo publiques como link activo (ni oculto, ni "para luego") — es la fuente #1 de bugs de "botón que no hace nada" en este proyecto.
+- Si añades una vista nueva (p.ej. una futura sección "Teorías"), debes:
+  1. Añadir su `id="vista-xxx"` en `index.astro`, con el mismo patrón `hidden`/`block` + AOS refresh.
+  2. Registrar el hash en el array `vistas` y en el `if` que decide `vistaActiva`.
+  3. Añadir el link en `Header.astro` y, si aplica, `Footer.astro`.
+  4. Si la vista tiene tabs internas (patrón `Resumen`/`Aclaraciones`), exponer `window.resetXxxTabs` y llamarlo desde `controlarVistas()`.
+- El toggle de tema (claro/oscuro), el header sticky con "píldora" deslizante, y el menú móvil con overlay ya están resueltos en `Header.astro` — no reimplementes esa lógica en otro componente.
+
+---
+
+## 5. ♿ ACCESIBILIDAD Y SEO (no negociable, aunque no se vea)
+
+- Todo botón icon-only lleva `aria-label` (patrón ya seguido en casi todo el proyecto — mantenlo también en componentes nuevos).
+- Todo modal/panel deslizante (`videoModal`, `mobileMenu`, `netflix-sidebar`, `tree-viewer`, `cinematic-viewer`) debe:
+  - Ser cerrable con `Escape`.
+  - Mover el foco al abrir y devolverlo al elemento que lo abrió al cerrar.
+  - Marcar `aria-hidden`/`aria-expanded` coherente con su estado visual (ya hecho en `mobileMenu`; replícalo si falta en otros paneles).
+- Contraste: nunca texto `stone-500` o más claro sobre fondos claros (`bg-stone-200`) sin verificarlo — el modo claro existe y se prueba, no es solo un guiño.
+- **Meta tags obligatorios en `BaseLayout.astro`** para cualquier página nueva: `<meta name="description">`, Open Graph (`og:title`, `og:description`, `og:image`, `og:type`) y `twitter:card`. Si añades una página nueva bajo `src/pages/`, no la publiques sin esto.
+- El favicon debe coincidir `type` ↔ extensión real del archivo (`image/svg+xml` → `.svg`, no `.ico`). Antes de tocar el `<head>`, verifica en `public/` qué archivo estás referenciando de verdad.
+
+---
+
+## 6. 🚀 RENDIMIENTO
+
+- El reproductor de YouTube ambiental (fondo de `BaseLayout` + `Hero`) y el `<audio>` ambiental de `Familias.astro` son pesados por diseño — no dupliques instancias nuevas de la IFrame API o de `<audio>` en otros componentes; reutiliza los `players`/`audioEl` globales ya definidos en `BaseLayout.astro`/`Familias.astro`.
+- Imágenes de personajes/familias (`public/Familias/**`, `public/Aclaraciones/**`, `public/resumen/**`) son muchas y pesadas: usa `loading="lazy"` en toda `<img>` que no esté en el viewport inicial (hero/LCP exceptuado), y no subas assets sin comprimir.
+- AOS (`aos@2.3.1` vía CDN unpkg) y la Google Font (`fonts.googleapis.com`) son requests externos render-blocking en el `<head>`. No añadas más dependencias por CDN sin evaluar antes si un paquete npm + bundling de Astro sería más rápido y más fiable (offline-safe, sin depender de un CDN de terceros).
+- Cualquier `<script is:inline>` nuevo debe ir al final del `<body>` o con `defer`, salvo que necesite ejecutarse antes del primer paint (como el script anti-flash de tema en `BaseLayout.astro`, que es la única excepción legítima).
+
+---
+
+## 7. 🧬 DATOS Y COMPONENTES
+
+- Respeta siempre los tipos exportados de `familias.ts` (`Family`, `FamilyCharacter`, `FamilyRelationship`, `CharacterStage`, etc.).
+- Los personajes tienen variaciones por etapa temporal (1953, 1986, 2019, 2052...) y por mundo (Adam/Eva) — nunca asumas que un personaje tiene un único retrato o un único estado civil/familiar; usa las estructuras ya modeladas (`generations`, `stages`) en vez de campos planos nuevos.
+- Componentes visuales de sección van en `src/components/sections/`; componentes de página completa (Header, Footer, Familias, Resumen, Aclaraciones) van en `src/components/`. Sigue esa carpeta al crear algo nuevo.
+- Evita duplicar utilidades CSS: si una clase de efecto (glow, scanlines, mask, tooltip) ya existe en el `<style is:global>` de `Familias.astro`, reutilízala en vez de crear una variante casi idéntica en otro componente.
+- No dejes código muerto: componentes no importados, funciones expuestas a `window` que ya no se llaman, o estilos huérfanos deben eliminarse en el mismo cambio que los deja obsoletos.
+
+---
+
+## 8. 🔍 VERIFICACIÓN VISUAL Y DE REGRESIÓN (Playwright)
+
+`@playwright/test` está instalado como devDependency — úsalo activamente,
+no solo cuando se pida explícitamente.
+
+- **Antes de dar por terminado cualquier cambio visual o de interacción**, levanta el sitio (`npm run dev`) y verifica con Playwright (o el navegador de la sesión) en al menos dos viewports:
+  - Móvil: `390x844`.
+  - Escritorio: `1440x900`.
+- Comprueba explícitamente:
+  1. Que no haya overflow horizontal ni texto desbordado/cortado.
+  2. Que el grid responsivo cumpla la regla de la sección 9.
+  3. Que las animaciones nuevas no salten (layout shift) ni se disparen fuera de viewport.
+  4. Que el modo oscuro **y** el modo claro se vean correctos (el toggle de tema es una feature real del sitio, pruébalo en ambos).
+  5. Que cualquier vista/hash nueva sea alcanzable navegando (no solo cargando la URL con el hash directamente) — clic real en el nav.
+- Si el cambio toca `familyTree.ts` o los datos de `familias.ts`, corre también `npm run test` (Vitest) antes de considerar el trabajo terminado.
+- Si detectas overflow, desbordamiento o salto de layout, corrígelo en el mismo cambio — no lo dejes como nota para "después".
+
+---
+
+## 9. 📐 RESPONSIVE
+
+- Grilla base: Móvil `grid-cols-1` (o `grid-cols-2` compacto en tabs, como ya hace `Resumen`/`Aclaraciones`); Tablet/Escritorio `md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4` según densidad de contenido.
+- Todo bloque de texto largo dentro de tarjetas con imagen debe usar `leading-relaxed` + anchura máxima (`max-w-*`) — nunca dejar párrafos a ancho completo en desktop, sigue el patrón `lg:w-[65%]` ya usado en Resumen/Aclaraciones.
+- Los paneles inmersivos (`tree-viewer`, `cinematic-viewer`, sidebar de familias) deben degradar con gracia en móvil: controles reposicionados, sin depender de hover puro (usa `active:`/tap targets ≥ 40px).

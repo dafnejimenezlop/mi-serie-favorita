@@ -1,0 +1,408 @@
+---
+// src/components/AsistenteWinden.astro
+// Asistente guiado (sin backend): un menú de respuestas rápidas
+// predefinidas presentado como conversación. Todo el contenido es estático,
+// igual que el resto del sitio — no hay IA ni llamadas a ningún servicio.
+
+const icons: Record<string, string> = {
+  sparkles: 'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z',
+  loop: 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15',
+  users: 'M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-1.13a4 4 0 10-4-4 4 4 0 004 4zm6-1a4 4 0 10-4-4',
+  info: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+  calendar: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',
+  music: 'M9 19V6l12-2v13M9 19a3 3 0 11-6 0 3 3 0 016 0zm12-2a3 3 0 11-6 0 3 3 0 016 0z',
+  bulb: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z',
+  play: 'M14 4h6m0 0v6m0-6L10 14M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4',
+};
+
+const quickReplies = [
+  {
+    id: 'recomienda',
+    label: 'Recomiéndame algo',
+    icon: 'sparkles',
+    reply:
+      'Si ya te has terminado DARK, tengo quince candidatas a tu próxima obsesión: de "1899" (de los mismos creadores) a "Twin Peaks". Puedes filtrarlas por plataforma.',
+    cta: { label: 'Ver recomendaciones', href: '#recomendaciones' },
+  },
+  {
+    id: 'final',
+    label: 'No entiendo el final',
+    icon: 'loop',
+    reply:
+      'Tranquilo, a casi todo el mundo le pasa. La clave está en entender que no son dos mundos, sino tres: el Mundo de Adam, el Mundo de Eva y el Origen. Lo desgloso con calma en Aclaraciones.',
+    cta: { label: 'Leer la explicación completa', href: '#aclaraciones' },
+  },
+  {
+    id: 'quien-es-quien',
+    label: '¿Quién es quién?',
+    icon: 'users',
+    reply:
+      'Con cuatro familias y hasta cuatro versiones de cada personaje en distintas épocas, es normal perderse. Tienes el árbol genealógico completo, interactivo, por familia.',
+    cta: { label: 'Explorar las familias', href: '#personajes' },
+  },
+  {
+    id: 'resumen',
+    label: 'Resumen de temporadas',
+    icon: 'calendar',
+    reply:
+      '26 episodios, tres temporadas, un solo misterio. Tienes el resumen de cada temporada explicado por bloques, con vídeo incluido.',
+    cta: { label: 'Ver resumen', href: '#resumen' },
+  },
+  {
+    id: 'banda-sonora',
+    label: 'Banda sonora y fotos',
+    icon: 'music',
+    reply:
+      'La música de DARK está elegida con muchísimo mimo. Tienes las 18 canciones de la serie para escuchar, más una galería de fotogramas.',
+    cta: { label: 'Escuchar y ver', href: '#galeria' },
+  },
+  {
+    id: 'numero-33',
+    label: '¿Qué significa el 33?',
+    icon: 'bulb',
+    reply:
+      'Es el ciclo que tarda la órbita de la luna en concordar con el sol — y el número que une todas las líneas temporales de la serie (1953, 1986, 2019...). Hay más simbología como esta en Aclaraciones.',
+    cta: { label: 'Ver simbología', href: '#aclaraciones' },
+  },
+  {
+    id: 'sobre-el-sitio',
+    label: 'Sobre este sitio',
+    icon: 'info',
+    reply:
+      'Este es un proyecto de fan hecho con cariño: resumen de temporadas, aclaraciones, árbol genealógico, banda sonora y recomendaciones. No está afiliado con Netflix.',
+    cta: null,
+  },
+  {
+    id: 'ver-dark',
+    label: 'Ver DARK en Netflix',
+    icon: 'play',
+    reply: 'Aquí la tienes, directa desde la fuente. Que disfrutes el viaje — o el bucle.',
+    cta: { label: 'Abrir en Netflix', href: 'https://www.netflix.com/title/80100172', external: true },
+  },
+];
+---
+
+<div id="asistente-winden-root" class="fixed bottom-6 left-6 z-[95] flex flex-col items-start">
+  <!-- Panel del asistente -->
+  <div
+    id="asistente-panel"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Asistente de Winden"
+    aria-hidden="true"
+    class="hidden mb-4 w-[calc(100vw-3rem)] max-w-sm sm:w-96 h-[34rem] max-h-[80vh] flex-col rounded-2xl border border-stone-700/60 bg-stone-950/95 backdrop-blur-xl shadow-2xl shadow-black/50 overflow-hidden origin-bottom-left opacity-0 scale-95 translate-y-2 transition-all duration-300 ease-out"
+  >
+    <div
+      class="shrink-0 flex items-center justify-between gap-3 px-4 md:px-5 py-4 border-b border-stone-800 bg-stone-900/80"
+    >
+      <div class="flex items-center gap-3 min-w-0">
+        <div
+          class="relative shrink-0 w-9 h-9 rounded-full bg-black border border-amber-500/40 flex items-center justify-center"
+        >
+          <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.8"
+              d="M8 10.5h.01M12 10.5h.01M16 10.5h.01M21 12c0 4.418-4.03 8-9 8-1.06 0-2.077-.162-3.02-.46L3 21l1.53-3.83A7.947 7.947 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+            ></path>
+          </svg>
+          <span
+            class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-amber-500 border-2 border-stone-950"
+          ></span>
+        </div>
+        <div class="min-w-0">
+          <p class="font-cinzel text-xs tracking-[0.2em] uppercase text-amber-500 font-bold truncate">
+            Asistente de Winden
+          </p>
+          <p class="flex items-center gap-1.5 text-[10px] text-stone-500 font-mono tracking-wide">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+            En línea
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        id="asistente-close"
+        aria-label="Cerrar asistente"
+        class="shrink-0 p-1.5 rounded-full text-stone-400 hover:text-amber-500 hover:bg-stone-800 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"
+          ></path>
+        </svg>
+      </button>
+    </div>
+
+    <div
+      id="asistente-transcript"
+      role="log"
+      aria-live="polite"
+      class="flex-1 min-h-0 overflow-y-auto custom-scrollbar px-4 py-4 space-y-3"
+    >
+      <div class="asistente-bubble asistente-bubble--bot flex items-end gap-2 max-w-[88%]">
+        <p class="text-sm leading-relaxed bg-stone-800 text-stone-200 rounded-2xl rounded-bl-sm px-4 py-2.5">
+          Hola, soy el asistente de este archivo. ¿En qué te ayudo?
+        </p>
+      </div>
+    </div>
+
+    <div class="shrink-0 border-t border-stone-800 px-3 py-3 bg-stone-950/60 max-h-[38%] overflow-y-auto custom-scrollbar">
+      <div id="asistente-quick-replies" class="grid grid-cols-2 gap-2">
+        {
+          quickReplies.map((option) => (
+            <button
+              type="button"
+              data-asistente-option={option.id}
+              class="asistente-chip flex items-center gap-2 rounded-xl border border-stone-700 bg-stone-900 px-2.5 py-2 text-left text-[11px] leading-tight font-semibold text-stone-300 hover:border-amber-500/60 hover:text-amber-500 hover:bg-stone-800 hover:-translate-y-0.5 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+            >
+              <svg class="w-3.5 h-3.5 shrink-0 text-amber-500/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d={icons[option.icon]} />
+              </svg>
+              <span>{option.label}</span>
+            </button>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Botón flotante -->
+  <button
+    type="button"
+    id="asistente-toggle"
+    aria-haspopup="dialog"
+    aria-expanded="false"
+    aria-controls="asistente-panel"
+    aria-label="Abrir asistente de Winden"
+    class="group relative w-14 h-14 rounded-full bg-stone-900 border border-amber-500/40 shadow-2xl shadow-black/40 flex items-center justify-center text-amber-500 hover:bg-black hover:border-amber-500 hover:-translate-y-1 active:scale-95 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+  >
+    <span
+      class="absolute inset-0 rounded-full bg-amber-500/25 blur-md scale-90 opacity-0 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 -z-10"
+    ></span>
+    <svg
+      id="asistente-icon-open"
+      class="w-6 h-6 transition-transform duration-300"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="1.8"
+        d="M8 10.5h.01M12 10.5h.01M16 10.5h.01M21 12c0 4.418-4.03 8-9 8-1.06 0-2.077-.162-3.02-.46L3 21l1.53-3.83A7.947 7.947 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+      ></path>
+    </svg>
+    <svg
+      id="asistente-icon-close"
+      class="hidden w-5 h-5 transition-transform duration-300"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M6 18L18 6M6 6l12 12"
+      ></path>
+    </svg>
+  </button>
+</div>
+
+<style>
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(245, 158, 11, 0.35);
+    border-radius: 10px;
+  }
+
+  .asistente-bubble {
+    animation: asistente-bubble-in 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  @keyframes asistente-bubble-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px) scale(0.97);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .asistente-typing-dot {
+    animation: asistente-typing 1s ease-in-out infinite;
+  }
+  .asistente-typing-dot:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+  .asistente-typing-dot:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+  @keyframes asistente-typing {
+    0%,
+    60%,
+    100% {
+      transform: translateY(0);
+      opacity: 0.5;
+    }
+    30% {
+      transform: translateY(-3px);
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .asistente-bubble,
+    .asistente-typing-dot,
+    #asistente-panel,
+    #asistente-icon-open,
+    #asistente-icon-close {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+</style>
+
+<script is:inline define:vars={{ quickReplies }}>
+  document.addEventListener('DOMContentLoaded', () => {
+    const root = document.getElementById('asistente-winden-root');
+    const toggleBtn = document.getElementById('asistente-toggle');
+    const closeBtn = document.getElementById('asistente-close');
+    const panel = document.getElementById('asistente-panel');
+    const transcript = document.getElementById('asistente-transcript');
+    const iconOpen = document.getElementById('asistente-icon-open');
+    const iconClose = document.getElementById('asistente-icon-close');
+    if (!root || !toggleBtn || !panel || !transcript) return;
+
+    let isOpen = false;
+    let lastFocused = null;
+
+    function scrollTranscriptToBottom() {
+      transcript.scrollTop = transcript.scrollHeight;
+    }
+
+    function addUserBubble(text) {
+      const wrap = document.createElement('div');
+      wrap.className = 'asistente-bubble asistente-bubble--user flex items-end gap-2 max-w-[85%]';
+      wrap.innerHTML = `<p class="text-sm leading-relaxed bg-amber-500 text-black font-medium rounded-2xl rounded-bl-sm px-4 py-2.5">${text}</p>`;
+      transcript.appendChild(wrap);
+      scrollTranscriptToBottom();
+    }
+
+    function addTypingBubble() {
+      const wrap = document.createElement('div');
+      wrap.className = 'asistente-bubble asistente-bubble--typing flex items-end gap-2 max-w-[60%]';
+      wrap.innerHTML = `
+        <div class="flex items-center gap-1 bg-stone-800 rounded-2xl rounded-bl-sm px-4 py-3">
+          <span class="asistente-typing-dot w-1.5 h-1.5 rounded-full bg-stone-400"></span>
+          <span class="asistente-typing-dot w-1.5 h-1.5 rounded-full bg-stone-400"></span>
+          <span class="asistente-typing-dot w-1.5 h-1.5 rounded-full bg-stone-400"></span>
+        </div>`;
+      transcript.appendChild(wrap);
+      scrollTranscriptToBottom();
+      return wrap;
+    }
+
+    function addBotBubble(option) {
+      const wrap = document.createElement('div');
+      wrap.className = 'asistente-bubble asistente-bubble--bot flex flex-col items-start gap-2 max-w-[88%]';
+      const ctaHtml = option.cta
+        ? `<a href="${option.cta.href}" data-asistente-cta ${option.cta.external ? 'data-asistente-cta-external target="_blank" rel="noopener noreferrer"' : ''} class="inline-flex items-center gap-1.5 self-start rounded-full border border-amber-500/50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-amber-500 hover:bg-amber-500 hover:text-black transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400">
+            ${option.cta.label}
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+          </a>`
+        : '';
+      wrap.innerHTML = `
+        <p class="text-sm leading-relaxed bg-stone-800 text-stone-200 rounded-2xl rounded-bl-sm px-4 py-2.5">${option.reply}</p>
+        ${ctaHtml}
+      `;
+      transcript.appendChild(wrap);
+      scrollTranscriptToBottom();
+
+      const cta = wrap.querySelector('[data-asistente-cta]');
+      if (cta && !cta.hasAttribute('data-asistente-cta-external')) {
+        cta.addEventListener('click', () => closeAsistente());
+      }
+    }
+
+    function handleOptionClick(optionId) {
+      const option = quickReplies.find((o) => o.id === optionId);
+      if (!option) return;
+      addUserBubble(option.label);
+      const typingEl = addTypingBubble();
+      window.setTimeout(() => {
+        typingEl.remove();
+        addBotBubble(option);
+      }, 550);
+    }
+
+    document.querySelectorAll('[data-asistente-option]').forEach((btn) => {
+      btn.addEventListener('click', () => handleOptionClick(btn.dataset.asistenteOption));
+    });
+
+    function openAsistente() {
+      isOpen = true;
+      lastFocused = document.activeElement;
+      panel.classList.remove('hidden');
+      panel.classList.add('flex');
+      panel.setAttribute('aria-hidden', 'false');
+      requestAnimationFrame(() => {
+        panel.classList.remove('opacity-0', 'scale-95', 'translate-y-2');
+      });
+      toggleBtn.setAttribute('aria-expanded', 'true');
+      toggleBtn.setAttribute('aria-label', 'Cerrar asistente de Winden');
+      iconOpen?.classList.add('hidden');
+      iconClose?.classList.remove('hidden');
+      window.setTimeout(() => closeBtn?.focus(), 320);
+      document.addEventListener('keydown', onKeydown);
+    }
+
+    function closeAsistente() {
+      isOpen = false;
+      panel.classList.add('opacity-0', 'scale-95', 'translate-y-2');
+      panel.setAttribute('aria-hidden', 'true');
+      toggleBtn.setAttribute('aria-expanded', 'false');
+      toggleBtn.setAttribute('aria-label', 'Abrir asistente de Winden');
+      iconOpen?.classList.remove('hidden');
+      iconClose?.classList.add('hidden');
+      window.setTimeout(() => {
+        if (!isOpen) {
+          panel.classList.add('hidden');
+          panel.classList.remove('flex');
+        }
+      }, 300);
+      document.removeEventListener('keydown', onKeydown);
+      if (lastFocused instanceof HTMLElement) lastFocused.focus();
+      else toggleBtn.focus();
+    }
+
+    function onKeydown(event) {
+      if (event.key === 'Escape') {
+        closeAsistente();
+        return;
+      }
+      if (event.key === 'Tab') {
+        const focusables = panel.querySelectorAll(
+          'button, a[href], [tabindex]:not([tabindex="-1"])',
+        );
+        if (!focusables.length) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    }
+
+    toggleBtn.addEventListener('click', () => (isOpen ? closeAsistente() : openAsistente()));
+    closeBtn?.addEventListener('click', closeAsistente);
+  });
+</script>

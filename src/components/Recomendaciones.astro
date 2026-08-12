@@ -1,0 +1,436 @@
+---
+// src/components/Recomendaciones.astro
+// Layout "spotlight + carril" (maestro-detalle): un panel grande muestra el
+// título seleccionado, un carril horizontal a la derecha permite recorrer
+// el resto. Filtro por plataforma sobre el carril.
+import { recommendations, platformFilters } from '../data/recomendaciones';
+
+const initial = recommendations.reduce((best, item) =>
+  item.affinity > best.affinity ? item : best,
+);
+---
+
+<div class="pt-40 md:pt-48 pb-24 relative z-10 w-full min-h-screen">
+  <div class="container mx-auto px-4 md:px-6 max-w-7xl">
+    <div class="text-center space-y-6 mb-10" data-aos="fade-down">
+      <h2
+        class="text-4xl md:text-6xl font-cinzel text-amber-600 dark:text-amber-500 font-bold tracking-[0.2em] drop-shadow-lg dark:drop-shadow-2xl uppercase"
+      >
+        Recomendaciones
+      </h2>
+      <p
+        class="text-base md:text-lg text-stone-700 dark:text-stone-300 font-light leading-relaxed max-w-2xl mx-auto tracking-wide"
+      >
+        Si DARK te ha atrapado, este es el resto del laberinto: misterio,
+        viajes en el tiempo y pueblos con demasiados secretos. Elige una
+        carátula del carril — el panel de la izquierda cambia con ella.
+      </p>
+    </div>
+
+    <!-- Filtro por plataforma -->
+    <div
+      role="group"
+      aria-label="Filtrar recomendaciones por plataforma"
+      class="flex flex-wrap items-center justify-center gap-2 md:gap-3 mb-10 md:mb-12"
+      data-aos="fade-up"
+    >
+      <button
+        type="button"
+        data-reco-filter="todas"
+        aria-pressed="true"
+        class="reco-filter-btn active px-4 py-2 rounded-full font-cinzel text-[10px] md:text-xs font-bold tracking-[0.15em] uppercase transition-all duration-300 border border-amber-500 bg-amber-500 text-black shadow-lg shadow-amber-500/20"
+      >
+        Todas
+      </button>
+      {
+        platformFilters.map((platform) => (
+          <button
+            type="button"
+            data-reco-filter={platform}
+            aria-pressed="false"
+            class="reco-filter-btn px-4 py-2 rounded-full font-cinzel text-[10px] md:text-xs font-bold tracking-[0.15em] uppercase transition-all duration-300 border border-stone-400/50 dark:border-stone-700 text-stone-600 dark:text-stone-400 hover:border-amber-500/60 hover:text-amber-600 dark:hover:text-amber-500"
+          >
+            {platform}
+          </button>
+        ))
+      }
+    </div>
+
+    <!-- ===== Master-detail: spotlight + carril ===== -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
+      <!-- Spotlight (detail) -->
+      <div class="lg:col-span-7 relative">
+        <div
+          id="reco-spotlight"
+          class="relative w-full h-full min-h-[420px] rounded-3xl overflow-hidden border border-stone-800 bg-stone-950 shadow-2xl shadow-black/40"
+        >
+          <img
+            id="reco-spotlight-img"
+            src={initial.cover}
+            alt=""
+            class="absolute inset-0 w-full h-full object-cover opacity-90 transition-opacity duration-500 ease-out"
+          />
+          <div
+            id="reco-spotlight-fallback"
+            class:list={['absolute inset-0 flex items-center justify-center bg-stone-950 reco-cover-fallback transition-opacity duration-500 ease-out', { hidden: !!initial.cover }]}
+            aria-hidden="true"
+          >
+            <span class="font-cinzel text-8xl md:text-9xl font-bold text-amber-500/20 select-none">
+              {initial.title.charAt(0)}
+            </span>
+          </div>
+          <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/10" />
+          <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/10 to-transparent" />
+
+          <div class="relative z-10 flex flex-col justify-end h-full p-6 md:p-10 min-h-[420px]">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="flex items-center gap-1.5 rounded-full bg-black/50 border border-amber-500/30 backdrop-blur-md px-3 py-1">
+                <svg class="w-3.5 h-3.5 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z" />
+                </svg>
+                <span id="reco-spotlight-affinity" class="font-mono text-[11px] tracking-wider text-stone-100">
+                  {initial.affinity}% afín
+                </span>
+              </div>
+              <span id="reco-spotlight-years" class="font-mono text-[11px] tracking-widest text-stone-400 uppercase">
+                {initial.years}
+              </span>
+            </div>
+
+            <h3
+              id="reco-spotlight-title"
+              class="font-cinzel text-3xl md:text-5xl font-bold text-white uppercase tracking-wide drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] transition-opacity duration-300"
+            >
+              {initial.title}
+            </h3>
+
+            <p id="reco-spotlight-hook" class="mt-4 max-w-xl text-sm md:text-base text-stone-200 font-light leading-relaxed transition-opacity duration-300">
+              {initial.hook}
+            </p>
+
+            <div id="reco-spotlight-body" class="mt-3 max-w-xl space-y-2 hidden md:block">
+              {initial.body.map((p) => (
+                <p class="text-sm text-stone-400 font-light leading-relaxed">{p}</p>
+              ))}
+            </div>
+
+            <div class="mt-4 max-w-xl h-1 w-full max-w-[220px] rounded-full bg-white/10 overflow-hidden">
+              <div
+                id="reco-spotlight-affinity-fill"
+                class="h-full rounded-full bg-gradient-to-r from-amber-600 to-amber-400 transition-[width] duration-700 ease-out"
+                style={`width: ${initial.affinity}%`}
+              />
+            </div>
+
+            <div class="mt-6 flex flex-wrap items-center gap-3">
+              <a
+                id="reco-spotlight-link"
+                href={initial.platform.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 rounded-full bg-amber-500 text-black px-5 py-2.5 text-xs font-bold uppercase tracking-wide hover:bg-amber-400 hover:-translate-y-0.5 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+              >
+                <span id="reco-spotlight-platform">Ver en {initial.platform.name}</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </a>
+              <div id="reco-spotlight-tags" class="flex flex-wrap gap-2">
+                {initial.tags.map((tag) => (
+                  <span class="px-2.5 py-1 rounded-full bg-white/10 text-[10px] font-mono tracking-wide text-stone-300 uppercase">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Carril (master) -->
+      <div class="min-w-0 lg:col-span-5 flex flex-col">
+        <div class="flex items-center justify-between mb-3 px-1">
+          <p id="reco-rail-count" class="font-cinzel text-xs tracking-[0.25em] uppercase text-stone-500">
+            {recommendations.length} títulos
+          </p>
+          <div class="flex gap-2">
+            <button
+              type="button"
+              id="reco-rail-prev"
+              aria-label="Desplazar hacia atrás"
+              class="w-8 h-8 rounded-full border border-stone-700 text-stone-400 hover:text-amber-500 hover:border-amber-500 flex items-center justify-center transition-all duration-200 disabled:opacity-30 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              id="reco-rail-next"
+              aria-label="Desplazar hacia adelante"
+              class="w-8 h-8 rounded-full border border-stone-700 text-stone-400 hover:text-amber-500 hover:border-amber-500 flex items-center justify-center transition-all duration-200 disabled:opacity-30 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="relative flex-1 min-w-0">
+          <div
+            id="reco-rail"
+            class="reco-rail h-full flex lg:grid lg:grid-cols-3 lg:auto-rows-min gap-3 md:gap-4 overflow-x-auto lg:overflow-y-auto lg:max-h-[440px] snap-x lg:snap-none snap-mandatory pb-2 lg:pb-1 pr-1"
+          >
+            {
+              recommendations.map((item) => (
+                <button
+                  type="button"
+                  data-reco-item={item.id}
+                  data-platform={item.platform.name}
+                  aria-pressed={item.id === initial.id ? 'true' : 'false'}
+                  class="reco-rail-card snap-start shrink-0 w-32 sm:w-36 lg:w-full flex flex-col text-left rounded-xl overflow-hidden border border-stone-800 bg-stone-900/60 transition-all duration-300 ease-out hover:-translate-y-1 hover:border-amber-500/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+                >
+                  <div class="relative w-full aspect-[3/4] overflow-hidden bg-stone-950">
+                    {item.cover ? (
+                      <img
+                        src={item.cover}
+                        alt=""
+                        loading="lazy"
+                        class="w-full h-full object-cover grayscale-[40%] transition-all duration-300"
+                      />
+                    ) : (
+                      <div class="reco-cover-fallback w-full h-full flex items-center justify-center bg-gradient-to-br from-stone-900 to-stone-950">
+                        <span class="font-cinzel text-3xl font-bold text-amber-500/25">{item.title.charAt(0)}</span>
+                      </div>
+                    )}
+                    <div class="reco-rail-card-glow absolute inset-0 border-2 border-amber-500 rounded-xl opacity-0 transition-opacity duration-300" />
+                    <div class="absolute top-1.5 right-1.5 flex items-center gap-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 px-1.5 py-0.5">
+                      <svg class="w-2.5 h-2.5 text-amber-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z" />
+                      </svg>
+                      <span class="font-mono text-[9px] tracking-wide text-stone-200">{item.affinity}%</span>
+                    </div>
+                  </div>
+                  <div class="px-2.5 py-2">
+                    <p class="font-cinzel text-[11px] font-bold text-stone-200 uppercase tracking-wide truncate">
+                      {item.title}
+                    </p>
+                    <p class="text-[10px] font-mono text-stone-500 truncate">{item.platform.name}</p>
+                  </div>
+                </button>
+              ))
+            }
+          </div>
+          <div class="reco-rail-fade-start pointer-events-none absolute inset-y-0 left-0 w-6 lg:hidden" aria-hidden="true" />
+          <div class="reco-rail-fade-end pointer-events-none absolute inset-y-0 right-0 w-6 lg:hidden" aria-hidden="true" />
+        </div>
+
+        <p
+          id="reco-empty-state"
+          class="hidden text-center text-stone-500 dark:text-stone-500 font-mono text-sm tracking-wide py-10"
+        >
+          No hay recomendaciones para esta plataforma todavía.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .reco-cover-fallback {
+    background-image:
+      radial-gradient(circle at 30% 20%, rgba(245, 158, 11, 0.16), transparent 55%),
+      radial-gradient(circle at 80% 90%, rgba(245, 158, 11, 0.1), transparent 50%);
+  }
+
+  .reco-rail::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  .reco-rail::-webkit-scrollbar-thumb {
+    background: rgba(245, 158, 11, 0.35);
+    border-radius: 10px;
+  }
+  .reco-rail-card[aria-pressed='true'] .reco-rail-card-glow {
+    opacity: 1;
+  }
+  .reco-rail-card[aria-pressed='true'] img {
+    filter: grayscale(0);
+  }
+  .reco-rail-fade-start {
+    background: linear-gradient(to right, var(--reco-fade-color, #fafaf9), transparent);
+  }
+  .reco-rail-fade-end {
+    background: linear-gradient(to left, var(--reco-fade-color, #fafaf9), transparent);
+  }
+  :global(.dark) .reco-rail-fade-start,
+  :global(.dark) .reco-rail-fade-end {
+    --reco-fade-color: #0a0a0a;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #reco-spotlight-img,
+    #reco-spotlight-title,
+    #reco-spotlight-hook,
+    #reco-spotlight-affinity-fill,
+    .reco-rail-card,
+    .reco-rail-card-glow,
+    .reco-filter-btn {
+      transition: none !important;
+    }
+  }
+</style>
+
+<script is:inline define:vars={{ recommendations }}>
+  document.addEventListener('DOMContentLoaded', () => {
+    const spotlightImg = document.getElementById('reco-spotlight-img');
+    const spotlightFallback = document.getElementById('reco-spotlight-fallback');
+    const spotlightTitle = document.getElementById('reco-spotlight-title');
+    const spotlightHook = document.getElementById('reco-spotlight-hook');
+    const spotlightBody = document.getElementById('reco-spotlight-body');
+    const spotlightAffinity = document.getElementById('reco-spotlight-affinity');
+    const spotlightAffinityFill = document.getElementById('reco-spotlight-affinity-fill');
+    const spotlightYears = document.getElementById('reco-spotlight-years');
+    const spotlightLink = document.getElementById('reco-spotlight-link');
+    const spotlightPlatform = document.getElementById('reco-spotlight-platform');
+    const spotlightTags = document.getElementById('reco-spotlight-tags');
+    const railCards = document.querySelectorAll('[data-reco-item]');
+    const rail = document.getElementById('reco-rail');
+    const railPrev = document.getElementById('reco-rail-prev');
+    const railNext = document.getElementById('reco-rail-next');
+    const railCount = document.getElementById('reco-rail-count');
+    const emptyState = document.getElementById('reco-empty-state');
+    const filterButtons = document.querySelectorAll('[data-reco-filter]');
+
+    if (!spotlightImg || !rail) return;
+
+    let currentPlatform = 'todas';
+
+    function renderSpotlight(item) {
+      [spotlightTitle, spotlightHook].forEach((el) => el?.classList.add('opacity-0'));
+      window.setTimeout(() => {
+        if (item.cover) {
+          spotlightImg.src = item.cover;
+          spotlightImg.style.opacity = '0.9';
+          spotlightFallback?.classList.add('hidden');
+        } else {
+          spotlightImg.style.opacity = '0';
+          spotlightFallback?.classList.remove('hidden');
+          const fallbackLetter = spotlightFallback?.querySelector('span');
+          if (fallbackLetter) fallbackLetter.textContent = item.title.charAt(0);
+        }
+        spotlightTitle.textContent = item.title;
+        spotlightHook.textContent = item.hook;
+        spotlightAffinity.textContent = `${item.affinity}% afín`;
+        if (spotlightAffinityFill) spotlightAffinityFill.style.width = `${item.affinity}%`;
+        spotlightYears.textContent = item.years;
+        spotlightLink.href = item.platform.url;
+        spotlightPlatform.textContent = `Ver en ${item.platform.name}`;
+
+        spotlightBody.innerHTML = item.body
+          .map(
+            (p) =>
+              `<p class="text-sm text-stone-400 font-light leading-relaxed">${p}</p>`,
+          )
+          .join('');
+
+        spotlightTags.innerHTML = item.tags
+          .map(
+            (tag) =>
+              `<span class="px-2.5 py-1 rounded-full bg-white/10 text-[10px] font-mono tracking-wide text-stone-300 uppercase">${tag}</span>`,
+          )
+          .join('');
+
+        [spotlightTitle, spotlightHook].forEach((el) => el?.classList.remove('opacity-0'));
+      }, 150);
+    }
+
+    function selectItem(id) {
+      const item = recommendations.find((r) => r.id === id);
+      if (!item) return;
+      railCards.forEach((card) => {
+        card.setAttribute('aria-pressed', card.dataset.recoItem === id ? 'true' : 'false');
+      });
+      renderSpotlight(item);
+    }
+
+    railCards.forEach((card) => {
+      card.addEventListener('click', () => selectItem(card.dataset.recoItem));
+    });
+
+    function updateRailNav() {
+      if (!railPrev || !railNext) return;
+      const isVertical = window.innerWidth >= 1024;
+      if (isVertical) {
+        railPrev.disabled = rail.scrollTop <= 4;
+        railNext.disabled = rail.scrollTop >= rail.scrollHeight - rail.clientHeight - 4;
+      } else {
+        railPrev.disabled = rail.scrollLeft <= 4;
+        railNext.disabled = rail.scrollLeft >= rail.scrollWidth - rail.clientWidth - 4;
+      }
+    }
+
+    railPrev?.addEventListener('click', () => rail.scrollBy({ left: -240, top: -240, behavior: 'smooth' }));
+    railNext?.addEventListener('click', () => rail.scrollBy({ left: 240, top: 240, behavior: 'smooth' }));
+    rail.addEventListener('scroll', updateRailNav, { passive: true });
+    window.addEventListener('resize', updateRailNav);
+    // La vista puede seguir "hidden" (display:none, 0x0) cuando corre este
+    // script — el ResizeObserver recalcula en cuanto el hash-router revela
+    // la sección, sin depender del orden de los listeners DOMContentLoaded.
+    new ResizeObserver(updateRailNav).observe(rail);
+    updateRailNav();
+
+    const ACTIVE = ['active', 'bg-amber-500', 'border-amber-500', 'text-black', 'shadow-lg', 'shadow-amber-500/20'];
+    const INACTIVE = ['border-stone-400/50', 'dark:border-stone-700', 'text-stone-600', 'dark:text-stone-400'];
+
+    function applyFilter(platform) {
+      currentPlatform = platform;
+      let visibleCount = 0;
+      let firstVisible = null;
+      railCards.forEach((card) => {
+        const matches = platform === 'todas' || card.dataset.platform === platform;
+        card.classList.toggle('hidden', !matches);
+        if (matches) {
+          visibleCount += 1;
+          if (!firstVisible) firstVisible = card;
+        }
+      });
+      if (railCount) railCount.textContent = `${visibleCount} título${visibleCount === 1 ? '' : 's'}`;
+      if (emptyState) emptyState.classList.toggle('hidden', visibleCount > 0);
+
+      const activeCard = document.querySelector('[data-reco-item][aria-pressed="true"]');
+      if (activeCard && activeCard.classList.contains('hidden') && firstVisible) {
+        selectItem(firstVisible.dataset.recoItem);
+      }
+      window.setTimeout(updateRailNav, 50);
+      if (typeof AOS !== 'undefined') window.setTimeout(() => AOS.refresh(), 50);
+    }
+
+    filterButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach((b) => {
+          b.classList.remove(...ACTIVE);
+          b.classList.add(...INACTIVE);
+          b.setAttribute('aria-pressed', 'false');
+        });
+        btn.classList.add(...ACTIVE);
+        btn.classList.remove(...INACTIVE);
+        btn.setAttribute('aria-pressed', 'true');
+        applyFilter(btn.dataset.recoFilter);
+      });
+    });
+
+    window.resetRecomendacionesTabs = () => {
+      const defaultBtn = document.querySelector('[data-reco-filter="todas"]');
+      if (defaultBtn && currentPlatform !== 'todas') {
+        defaultBtn.click();
+      }
+      // El carril arranca dentro de una vista en `display:none`: el
+      // ResizeObserver no siempre dispara al pasar a `block` en todos los
+      // navegadores, así que recalculamos explícitamente aquí, que es
+      // justo cuando el router de index.astro revela esta vista.
+      window.setTimeout(updateRailNav, 60);
+    };
+  });
+</script>
