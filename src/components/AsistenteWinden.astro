@@ -140,10 +140,26 @@ const quickReplies = [
       aria-live="polite"
       class="flex-1 min-h-0 overflow-y-auto custom-scrollbar px-4 py-4 space-y-3"
     >
-      <div class="asistente-bubble asistente-bubble--bot flex items-end gap-2 max-w-[88%]">
-        <p class="text-sm leading-relaxed bg-stone-800 text-stone-200 rounded-2xl rounded-bl-sm px-4 py-2.5">
-          Hola, soy el asistente de este archivo. ¿En qué te ayudo?
-        </p>
+      <div class="asistente-bubble asistente-bubble--bot flex items-end gap-2 max-w-[88%] w-fit">
+        <span
+          aria-hidden="true"
+          class="shrink-0 w-6 h-6 rounded-full bg-black border border-amber-500/40 flex items-center justify-center"
+        >
+          <svg class="w-3 h-3 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.8"
+              d="M8 10.5h.01M12 10.5h.01M16 10.5h.01M21 12c0 4.418-4.03 8-9 8-1.06 0-2.077-.162-3.02-.46L3 21l1.53-3.83A7.947 7.947 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+            ></path>
+          </svg>
+        </span>
+        <span class="flex flex-col gap-1 min-w-0">
+          <p class="text-sm leading-relaxed bg-stone-800 text-stone-200 rounded-2xl rounded-bl-sm px-4 py-2.5">
+            Hola, soy el asistente de este archivo. ¿En qué te ayudo?
+          </p>
+          <span class="asistente-timestamp pl-1 text-[10px] font-mono tracking-wide text-stone-600"></span>
+        </span>
       </div>
     </div>
 
@@ -285,18 +301,34 @@ const quickReplies = [
       transcript.scrollTop = transcript.scrollHeight;
     }
 
+    function timestampNow() {
+      return new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    // Sella la burbuja de bienvenida (ya presente en el HTML) al montar.
+    const initialTimestamp = document.querySelector('.asistente-timestamp');
+    if (initialTimestamp) initialTimestamp.textContent = timestampNow();
+
     function addUserBubble(text) {
       const wrap = document.createElement('div');
-      wrap.className = 'asistente-bubble asistente-bubble--user flex items-end gap-2 max-w-[85%]';
-      wrap.innerHTML = `<p class="text-sm leading-relaxed bg-amber-500 text-black font-medium rounded-2xl rounded-bl-sm px-4 py-2.5">${text}</p>`;
+      wrap.className = 'asistente-bubble asistente-bubble--user flex flex-col items-end gap-1 max-w-[85%] w-fit ml-auto';
+      wrap.innerHTML = `
+        <p class="text-sm leading-relaxed bg-amber-500 text-black font-medium rounded-2xl rounded-br-sm px-4 py-2.5">${text}</p>
+        <span class="asistente-timestamp pr-1 text-[10px] font-mono tracking-wide text-stone-600">${timestampNow()}</span>
+      `;
       transcript.appendChild(wrap);
       scrollTranscriptToBottom();
     }
 
     function addTypingBubble() {
       const wrap = document.createElement('div');
-      wrap.className = 'asistente-bubble asistente-bubble--typing flex items-end gap-2 max-w-[60%]';
+      wrap.className = 'asistente-bubble asistente-bubble--typing flex items-end gap-2 max-w-[60%] w-fit';
       wrap.innerHTML = `
+        <span aria-hidden="true" class="shrink-0 w-6 h-6 rounded-full bg-black border border-amber-500/40 flex items-center justify-center">
+          <svg class="w-3 h-3 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 10.5h.01M12 10.5h.01M16 10.5h.01M21 12c0 4.418-4.03 8-9 8-1.06 0-2.077-.162-3.02-.46L3 21l1.53-3.83A7.947 7.947 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+          </svg>
+        </span>
         <div class="flex items-center gap-1 bg-stone-800 rounded-2xl rounded-bl-sm px-4 py-3">
           <span class="asistente-typing-dot w-1.5 h-1.5 rounded-full bg-stone-400"></span>
           <span class="asistente-typing-dot w-1.5 h-1.5 rounded-full bg-stone-400"></span>
@@ -309,7 +341,7 @@ const quickReplies = [
 
     function addBotBubble(option) {
       const wrap = document.createElement('div');
-      wrap.className = 'asistente-bubble asistente-bubble--bot flex flex-col items-start gap-2 max-w-[88%]';
+      wrap.className = 'asistente-bubble asistente-bubble--bot flex items-end gap-2 max-w-[88%] w-fit';
       const ctaHtml = option.cta
         ? `<a href="${option.cta.href}" data-asistente-cta ${option.cta.external ? 'data-asistente-cta-external target="_blank" rel="noopener noreferrer"' : ''} class="inline-flex items-center gap-1.5 self-start rounded-full border border-amber-500/50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-amber-500 hover:bg-amber-500 hover:text-black transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400">
             ${option.cta.label}
@@ -317,8 +349,16 @@ const quickReplies = [
           </a>`
         : '';
       wrap.innerHTML = `
-        <p class="text-sm leading-relaxed bg-stone-800 text-stone-200 rounded-2xl rounded-bl-sm px-4 py-2.5">${option.reply}</p>
-        ${ctaHtml}
+        <span aria-hidden="true" class="shrink-0 w-6 h-6 rounded-full bg-black border border-amber-500/40 flex items-center justify-center">
+          <svg class="w-3 h-3 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 10.5h.01M12 10.5h.01M16 10.5h.01M21 12c0 4.418-4.03 8-9 8-1.06 0-2.077-.162-3.02-.46L3 21l1.53-3.83A7.947 7.947 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+          </svg>
+        </span>
+        <span class="flex flex-col items-start gap-1 min-w-0">
+          <p class="text-sm leading-relaxed bg-stone-800 text-stone-200 rounded-2xl rounded-bl-sm px-4 py-2.5">${option.reply}</p>
+          ${ctaHtml}
+          <span class="asistente-timestamp pl-1 text-[10px] font-mono tracking-wide text-stone-600">${timestampNow()}</span>
+        </span>
       `;
       transcript.appendChild(wrap);
       scrollTranscriptToBottom();
