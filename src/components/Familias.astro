@@ -353,6 +353,13 @@ const relationshipValidation = validateRelationships(
     filter: url(#cinematic-ripple) grayscale(0.2) contrast(1.02) brightness(1.18) saturate(1.05);
   }
 
+  /* Puntero táctil/basto (móvil): se cae al filtro CSS liviano, sin el
+     filtro SVG (feTurbulence + feDisplacementMap) — es el que más lag
+     provoca al mantenerlo activo durante el scroll en GPUs de móvil. */
+  #cinematic-bg.temporal-bg.temporal-bg-lite {
+    filter: grayscale(0.2) contrast(1.02) brightness(1.18) saturate(1.05);
+  }
+
   .cinematic-temporal-overlay {
     background:
       linear-gradient(
@@ -717,10 +724,10 @@ const relationshipValidation = validateRelationships(
 
 <div
   id="familias-main-view"
-  class="pt-40 md:pt-48 pb-24 relative z-10 w-full min-h-screen flex flex-col transition-opacity duration-700 block"
+  class="pt-28 md:pt-48 pb-24 relative z-10 w-full min-h-screen flex flex-col transition-opacity duration-700 block"
 >
   <div class="container mx-auto px-4 md:px-6 max-w-7xl flex-grow flex flex-col">
-    <div class="text-center space-y-4 mb-20" data-aos="fade-down">
+    <div class="text-center space-y-4 mb-10 md:mb-20" data-aos="fade-down">
       <h2
         class="text-4xl md:text-6xl font-cinzel text-amber-600 dark:text-amber-500 font-bold tracking-[0.2em] uppercase drop-shadow-lg"
       >
@@ -2083,6 +2090,11 @@ const relationshipValidation = validateRelationships(
   }
 
   function showTreeViewer() {
+    // Forzar scrollTop a 0 antes de mostrar el overlay `fixed inset-0`: en
+    // móvil, si la página venía desplazada, el overlay puede quedar mal
+    // posicionado (recortado) hasta que el usuario hace scroll a mano —
+    // bug conocido de position:fixed en Safari/Chrome móvil.
+    window.scrollTo(0, 0);
     document.body.classList.add('hide-global-ui');
     if (btnAudio) {
       btnAudio.classList.remove('hidden');
@@ -2359,6 +2371,9 @@ const relationshipValidation = validateRelationships(
 
     const viewerToken = ++treeViewerToken;
 
+    // Ver comentario en showTreeViewer(): evita el overlay fixed mal
+    // posicionado en móvil si la página venía desplazada.
+    window.scrollTo(0, 0);
     document.body.classList.add('hide-global-ui');
     if (btnAudio) {
       btnAudio.classList.remove('hidden');
@@ -2485,8 +2500,13 @@ const relationshipValidation = validateRelationships(
 
   // Anima el feDisplacementMap del filtro #cinematic-ripple para dar un
   // efecto de "agua/papel" breve cada vez que cambia la imagen de fondo.
+  // Filtro SVG muy costoso de recalcular en cada frame — reservado a
+  // dispositivos con puntero fino (desktop); en móvil/táctil se omite para
+  // evitar el lag reportado al cambiar de escena dentro del detalle de un
+  // personaje (ver también setupCinematicBackground, que ya reserva el
+  // tilt de ratón del mismo modo).
   function playRippleEffect() {
-    if (cinematicReducedMotion) return;
+    if (cinematicReducedMotion || !hasFinePointer()) return;
     const displacement = document.getElementById('cinematic-ripple-displace');
     if (!displacement) return;
 
@@ -2517,7 +2537,9 @@ const relationshipValidation = validateRelationships(
   function playDirectionalReveal(direction) {
     const bgImage = document.getElementById('cinematic-bg');
     if (!bgImage) return;
-    if (cinematicReducedMotion) {
+    // clip-path animado por frame (21 puntos) es caro de repintar en
+    // móvil — igual que playRippleEffect(), se reserva a puntero fino.
+    if (cinematicReducedMotion || !hasFinePointer()) {
       bgImage.style.clipPath = '';
       return;
     }
@@ -2589,6 +2611,12 @@ const relationshipValidation = validateRelationships(
       '(prefers-reduced-motion: reduce)',
     ).matches;
 
+    // En puntero táctil/basto se cae al filtro CSS liviano (sin el filtro
+    // SVG de ondulación, muy caro de mantener en el compositor durante el
+    // scroll) — se reevalúa en cada apertura de personaje, no solo la
+    // primera vez, por si el tipo de puntero cambia entre sesiones.
+    bgImage.classList.toggle('temporal-bg-lite', !hasFinePointer());
+
     if (bgImage.dataset.temporalBound) return;
     bgImage.dataset.temporalBound = '1';
 
@@ -2622,6 +2650,10 @@ const relationshipValidation = validateRelationships(
     const flatChars = familia.generations.flat();
     const char = flatChars.find((c) => c.id === charId);
     if (!char) return;
+
+    // Ver comentario en showTreeViewer(): evita el overlay fixed mal
+    // posicionado en móvil si la página venía desplazada.
+    window.scrollTo(0, 0);
 
     const contentArea = document.getElementById('cinematic-content');
     contentArea.innerHTML = '';
