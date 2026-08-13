@@ -1,6 +1,6 @@
 # 🎭 CLAUDE RULES: MI-SERIE-FAVORITA (SERIE DARK)
 
-Sitio tributo (fan-made, no afiliado a Netflix) a la serie *Dark*. Astro
+Sitio tributo (fan-made, no afiliado a Netflix) a la serie _Dark_. Astro
 como motor principal, con islas de React solo donde hace falta estado real.
 Estética "Netflix cinemático + investigación conspirativa" en tonos oscuros
 y acento ámbar.
@@ -12,6 +12,14 @@ de inventar uno nuevo.**
 
 ---
 
+## 0. 🛡️ PROTOCOLO DE REFACTORIZACIÓN Y CAMBIOS (Anti-Regresiones)
+
+- **Cero Modificaciones Innecesarias**: Si una tarea solicita modificar el archivo `X`, NO reescribas ni "limpies" archivos `Y` o `Z` a menos que sea estrictamente necesario para la tarea. No modifiques comentarios existentes ni reestructures imports sin motivo.
+- **Principio de Mínima Intervención**: Respeta la estructura de archivos existente. Si una función `<script is:inline>` funciona, no intentes abstraerla a un módulo externo a menos que se solicite explícitamente.
+- **Análisis Previo de Dependencias**: Antes de eliminar o renombrar una variable, función global expuesta en `window` o clase CSS, realiza una búsqueda global para confirmar que no se utiliza en otra vista o script inline.
+
+---
+
 ## 1. 🛠️ STACK Y ARQUITECTURA
 
 - **Framework**: Astro v6, `output: 'server'` sobre adapter `@astrojs/vercel`.
@@ -19,6 +27,9 @@ de inventar uno nuevo.**
 - **Componentes Dinámicos**: React (`.jsx`/`.tsx`) con `@astrojs/react`, solo con `client:load`/`client:visible` cuando de verdad se necesita estado interactivo del lado cliente. **Por defecto, sigue usando `.astro` + `<script is:inline>` como ya hace el resto del proyecto** (Header, Sidebar de familias, Aclaraciones, Resumen) — no migres a React "porque sí"; es una decisión de arquitectura ya tomada y consistente.
 - **Iconografía**: `lucide-react` para React; en `.astro` los iconos van como SVG inline (patrón ya usado en Header/Footer/Hero) — mantén ese mismo patrón, no mezcles ambos sistemas en la misma vista.
 - **Datos y Tipado**: TypeScript estricto. Toda la genealogía/personajes vive en `src/data/familias.ts` (`familiasData`, `relationshipData`) con sus tipos `Family`, `FamilyCharacter`, `FamilyRelationship`, etc. — nunca hardcodees datos de personajes directamente en un componente.
+- **TypeScript Defensivo**:
+  - Prohibido el uso de `any` o aserciones de tipo agresivas (`as unknown as X`). Si los tipos de `familias.ts` son complejos, usa `Type Guards` o validaciones runtime (`optional chaining ?.`, `Nullish coalescing ??`).
+  - Todo parámetro en funciones helpers de `familyTree.ts` debe prever valores `undefined` o arrays vacíos sin romper la ejecución.
 - **Validación de datos**: `src/utils/familyTree.ts` (`validateRelationships`, `computeLineage`) es la fuente de verdad de la lógica de parentesco. Si tocas relaciones familiares, actualiza también sus tests (`src/utils/familyTree.test.ts`, `vitest run`) — no dupliques la lógica salvo el caso ya documentado abajo.
 - **Duplicación intencional documentada**: `Familias.astro` reimplementa `computeLineage` y otros helpers en su `<script is:inline>` porque no puede hacer `import` de un `.ts`. Es una excepción ya justificada con comentario en el propio archivo — si cambias el algoritmo en `familyTree.ts`, replica el cambio ahí también y actualiza el comentario que lo explica.
 - **API routes**: `src/pages/api/*.ts` usa `Resend` para email (`send-email.ts`). Cualquier nuevo endpoint sigue el mismo patrón: instanciar el cliente dentro del handler, validar campos obligatorios, devolver `Response` con status explícito, nunca dejar que un error interno se filtre al cliente en texto plano.
@@ -47,11 +58,11 @@ sección visual, pregúntate: ¿esto lo firmaría un diseñador senior, o solo
 
 ## 3. ⚡ MICROINTERACCIONES Y ANIMACIÓN (Estilo Emil Kowalski)
 
-Filosofía: la animación debe sentirse *inevitable*, nunca decorativa ni
+Filosofía: la animación debe sentirse _inevitable_, nunca decorativa ni
 gratuita. Cada movimiento comunica jerarquía o causalidad — nunca "porque
 queda bonito". Si una animación no ayuda a entender qué cambió, quítala.
 
-- **Duración según propósito** (no todo son 200ms):
+- **Duración según propósito**:
   - Micro-feedback (botones, iconos, hover de tarjeta): `150–300ms`, `ease-out`.
   - Transiciones de layout/aparición de bloques grandes (paneles, modales, sidebar): `400–700ms`, curvas suaves tipo `cubic-bezier(0.2, 0.8, 0.2, 1)` (ya usado en `.scroll-scene`).
   - Ambientales/loop (spin de fondo, pulso de línea, barras de audio): pueden ser más lentas (`1.2s`–`60s`) porque no bloquean la percepción de una acción del usuario.
@@ -62,7 +73,7 @@ queda bonito". Si una animación no ayuda a entender qué cambió, quítala.
 
 ---
 
-## 4. 🌐 LÓGICA DE NAVEGACIÓN Y VISTAS (patrón específico de este proyecto)
+## 4. 🌐 LÓGICA DE NAVEGACIÓN Y VISTAS (Patrón específico de este proyecto)
 
 Este sitio **no usa rutas de Astro para las secciones internas** — usa una
 SPA-lite sobre `location.hash` gestionada en `src/pages/index.astro`
@@ -79,7 +90,7 @@ SPA-lite sobre `location.hash` gestionada en `src/pages/index.astro`
 
 ---
 
-## 5. ♿ ACCESIBILIDAD Y SEO (no negociable, aunque no se vea)
+## 5. ♿ ACCESIBILIDAD Y SEO (No negociable)
 
 - Todo botón icon-only lleva `aria-label` (patrón ya seguido en casi todo el proyecto — mantenlo también en componentes nuevos).
 - Todo modal/panel deslizante (`videoModal`, `mobileMenu`, `netflix-sidebar`, `tree-viewer`, `cinematic-viewer`) debe:
@@ -92,19 +103,24 @@ SPA-lite sobre `location.hash` gestionada en `src/pages/index.astro`
 
 ---
 
-## 6. 🚀 RENDIMIENTO
+## 6. 🚀 RENDIMIENTO Y MANEJO DEL DOM
 
 - El reproductor de YouTube ambiental (fondo de `BaseLayout` + `Hero`) y el `<audio>` ambiental de `Familias.astro` son pesados por diseño — no dupliques instancias nuevas de la IFrame API o de `<audio>` en otros componentes; reutiliza los `players`/`audioEl` globales ya definidos en `BaseLayout.astro`/`Familias.astro`.
 - Imágenes de personajes/familias (`public/Familias/**`, `public/Aclaraciones/**`, `public/resumen/**`) son muchas y pesadas: usa `loading="lazy"` en toda `<img>` que no esté en el viewport inicial (hero/LCP exceptuado), y no subas assets sin comprimir.
-- AOS (`aos@2.3.1` vía CDN unpkg) y la Google Font (`fonts.googleapis.com`) son requests externos render-blocking en el `<head>`. No añadas más dependencias por CDN sin evaluar antes si un paquete npm + bundling de Astro sería más rápido y más fiable (offline-safe, sin depender de un CDN de terceros).
-- Cualquier `<script is:inline>` nuevo debe ir al final del `<body>` o con `defer`, salvo que necesite ejecutarse antes del primer paint (como el script anti-flash de tema en `BaseLayout.astro`, que es la única excepción legítima).
+- **Manejo Limpio del DOM y Event Listeners**:
+  - Todo script que agregue listeners a `window` o `document` (ej. eventos de teclado `Escape`, `resize`, `scroll`, o `hashchange`) en componentes interactivos debe implementar la limpieza adecuada (`removeEventListener`) cuando el componente se desmonte o destruya.
+  - Evita re-layouts forzados (Layout Thrashing). Si lees propiedades de medidas del DOM (`offsetHeight`, `getBoundingClientRect()`), realiza todas las lecturas juntas antes de escribir cambios en el DOM o aplicar estilos con JS.
+- AOS (`aos@2.3.1` vía CDN unpkg) y la Google Font (`fonts.googleapis.com`) son requests externos render-blocking en el `<head>`. No añadas más dependencias por CDN sin evaluar antes si un paquete npm + bundling de Astro sería más rápido y más fiable.
+- Cualquier `<script is:inline>` nuevo debe ir al final del `<body>` o con `defer`, salvo que necesite ejecutarse antes del primer paint (como el script anti-flash de tema en `BaseLayout.astro`).
 
 ---
 
-## 7. 🧬 DATOS Y COMPONENTES
+## 7. 🧬 DATOS, COMPONENTES Y EDGE CASES
 
 - Respeta siempre los tipos exportados de `familias.ts` (`Family`, `FamilyCharacter`, `FamilyRelationship`, `CharacterStage`, etc.).
 - Los personajes tienen variaciones por etapa temporal (1953, 1986, 2019, 2052...) y por mundo (Adam/Eva) — nunca asumas que un personaje tiene un único retrato o un único estado civil/familiar; usa las estructuras ya modeladas (`generations`, `stages`) en vez de campos planos nuevos.
+- **Manejo de Estados Nulos/Vacíos (Edge Cases)**:
+  - Cualquier componente que renderice listas o detalles de personajes debe gestionar los casos donde la lista esté vacía o falta una imagen (`fallback` visual o silueta en lugar de un `<img>` roto o pantalla en blanco).
 - Componentes visuales de sección van en `src/components/sections/`; componentes de página completa (Header, Footer, Familias, Resumen, Aclaraciones) van en `src/components/`. Sigue esa carpeta al crear algo nuevo.
 - Evita duplicar utilidades CSS: si una clase de efecto (glow, scanlines, mask, tooltip) ya existe en el `<style is:global>` de `Familias.astro`, reutilízala en vez de crear una variante casi idéntica en otro componente.
 - No dejes código muerto: componentes no importados, funciones expuestas a `window` que ya no se llaman, o estilos huérfanos deben eliminarse en el mismo cambio que los deja obsoletos.
@@ -135,3 +151,14 @@ no solo cuando se pida explícitamente.
 - Grilla base: Móvil `grid-cols-1` (o `grid-cols-2` compacto en tabs, como ya hace `Resumen`/`Aclaraciones`); Tablet/Escritorio `md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4` según densidad de contenido.
 - Todo bloque de texto largo dentro de tarjetas con imagen debe usar `leading-relaxed` + anchura máxima (`max-w-*`) — nunca dejar párrafos a ancho completo en desktop, sigue el patrón `lg:w-[65%]` ya usado en Resumen/Aclaraciones.
 - Los paneles inmersivos (`tree-viewer`, `cinematic-viewer`, sidebar de familias) deben degradar con gracia en móvil: controles reposicionados, sin depender de hover puro (usa `active:`/tap targets ≥ 40px).
+
+---
+
+## 10. 🤖 PROTOCOLO DE ENTREGABLE DE CLAUDE
+
+Cuando des por finalizada una tarea en este proyecto, debes incluir en tu respuesta final un **resumen de verificación**:
+
+1. **Test Status**: Confirmar si ejecutaste `vitest run` y cuál fue el resultado tras tocar lógica de árbol/datos.
+2. **Visual & Responsive Verification**: Confirmar que se verificó la ausencia de scrollbars horizontales espurios en viewports móvil (`390px`) y desktop (`1440px`).
+3. **Hash Nav Check**: Confirmar que no hay enlaces rotos apuntando a hashes inexistentes en `index.astro`.
+4. **Respeto a la Consistencia**: Declarar explícitamente si se reutilizaron los estilos/componentes vecinos (`stone-950`, `amber-400`, etc.) sin introducir librerías ni variantes innecesarias.

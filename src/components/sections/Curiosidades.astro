@@ -1,0 +1,92 @@
+---
+// src/components/sections/Curiosidades.astro
+// Pequeño "expediente" de datos de producción y curiosidades reales de la
+// serie, entre Timeline y Testimonials. Reutiliza el lenguaje visual de
+// Timeline.astro (tarjeta stone-950/60 + backdrop-blur + borde ámbar en
+// hover) para no introducir un layout nuevo.
+
+const expedientes = [
+  {
+    title: 'Un solo director',
+    text: 'Baran bo Odar dirigió los 26 episodios de la serie él mismo, algo muy poco habitual en una producción de esta escala.',
+    delay: '0',
+  },
+  {
+    title: 'Netflix, en alemán',
+    text: 'Dark fue la primera serie original de Netflix producida íntegramente en alemán, estrenada en diciembre de 2017.',
+    delay: '100',
+  },
+  {
+    title: 'Cuatro épocas, no tres',
+    text: 'A las líneas de 1953, 1986 y 2019 se suma más adelante 2052, formando el ciclo completo de 33 años entre cada salto.',
+    delay: '200',
+  },
+  {
+    title: 'La triqueta, en todas partes',
+    text: 'El símbolo del triángulo/triqueta que representa a los tres mundos aparece oculto en el logo, la cueva y varios objetos de attrezzo.',
+    delay: '300',
+  },
+  {
+    title: 'Decorados reales',
+    text: 'La cueva y el búnker de la central se construyeron como sets físicos practicables, no como escenarios generados por ordenador.',
+    delay: '400',
+  },
+  {
+    title: 'Títulos con nombre propio',
+    text: 'Cada episodio de la tercera temporada toma su título de un concepto filosófico o científico ligado a la trama de ese capítulo.',
+    delay: '500',
+  },
+];
+---
+
+<section
+  id="curiosidades"
+  class="py-24 bg-transparent transition-colors duration-300 overflow-hidden relative"
+>
+  <div class="container mx-auto px-6">
+    <div class="text-center mb-14 space-y-3">
+      <span
+        class="font-mono text-[11px] tracking-[0.3em] uppercase text-amber-600 dark:text-amber-500/80"
+        data-aos="fade-up"
+      >
+        Archivo de Sic Mundus
+      </span>
+      <h2
+        class="text-3xl md:text-5xl font-cinzel text-amber-500 font-bold tracking-[0.05em] transition-colors uppercase"
+        data-aos="zoom-in"
+      >
+        ¿Sabías que...?
+      </h2>
+      <p
+        class="text-sm md:text-base text-stone-600 dark:text-stone-400 font-light max-w-xl mx-auto"
+        data-aos="fade-up"
+      >
+        Fragmentos del expediente de producción que pocos espectadores llegan a leer.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
+      {
+        expedientes.map((item, index) => (
+          <div
+            tabindex="0"
+            data-aos="fade-up"
+            data-aos-delay={item.delay}
+            class="group relative bg-stone-900/80 dark:bg-stone-900/70 backdrop-blur-md p-6 md:p-7 rounded-xl border border-stone-700/80 dark:border-stone-700/60 hover:border-amber-500/60 focus:border-amber-500/60 focus:outline-none shadow-xl hover:shadow-[0_0_25px_rgba(245,158,11,0.15)] focus:shadow-[0_0_25px_rgba(245,158,11,0.15)] transition-all duration-500"
+          >
+            <div class="h-px w-10 bg-amber-500/40 group-hover:w-16 group-hover:bg-amber-500 transition-all duration-300 mb-4" />
+            <span class="font-mono text-[10px] tracking-[0.25em] uppercase text-amber-500/80">
+              Expediente Nº{String(index + 1).padStart(2, '0')}
+            </span>
+            <h3 class="mt-3 font-cinzel text-base md:text-lg font-bold text-stone-100 group-hover:text-amber-400 transition-colors duration-300">
+              {item.title}
+            </h3>
+            <p class="mt-3 text-sm text-stone-300 font-light leading-relaxed">
+              {item.text}
+            </p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

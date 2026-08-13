@@ -13,6 +13,8 @@ const icons: Record<string, string> = {
   music: 'M9 19V6l12-2v13M9 19a3 3 0 11-6 0 3 3 0 016 0zm12-2a3 3 0 11-6 0 3 3 0 016 0z',
   bulb: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z',
   play: 'M14 4h6m0 0v6m0-6L10 14M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4',
+  eye: 'M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z M15 12a3 3 0 11-6 0 3 3 0 016 0z',
+  send: 'M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z',
 };
 
 const quickReplies = [
@@ -65,12 +67,44 @@ const quickReplies = [
     cta: { label: 'Ver simbología', href: '#aclaraciones' },
   },
   {
+    id: 'orden',
+    label: '¿En qué orden la veo?',
+    icon: 'calendar',
+    reply:
+      'Las tres temporadas se ven en orden, episodio a episodio — DARK no es una antología. Si vienes con dudas de la trama antes de continuar, tienes el resumen completo por temporada.',
+    cta: { label: 'Ver resumen', href: '#resumen' },
+  },
+  {
+    id: 'sic-mundus',
+    label: '¿Qué es Sic Mundus?',
+    icon: 'loop',
+    reply:
+      'La organización de viajeros del tiempo liderada por Adam, con origen en 1921. Su nombre en latín significa "y así se creó el mundo". Tienes toda la simbología de la serie explicada con calma en Aclaraciones.',
+    cta: { label: 'Ver simbología', href: '#aclaraciones' },
+  },
+  {
+    id: 'nuevo-espectador',
+    label: 'Nunca he visto la serie',
+    icon: 'eye',
+    reply:
+      'Buena decisión pasar primero por aquí. Evita Resumen y Aclaraciones por ahora — van cargados de spoilers — y empieza directamente por la serie. Vuelve cuando la termines para desentrañarla con calma.',
+    cta: { label: 'Ver DARK en Netflix', href: 'https://www.netflix.com/title/80100172', external: true },
+  },
+  {
     id: 'sobre-el-sitio',
     label: 'Sobre este sitio',
     icon: 'info',
     reply:
       'Este es un proyecto de fan hecho con cariño: resumen de temporadas, aclaraciones, árbol genealógico, banda sonora y recomendaciones. No está afiliado con Netflix.',
     cta: null,
+  },
+  {
+    id: 'sugerencia',
+    label: '¿Alguna sugerencia o fallo?',
+    icon: 'send',
+    reply:
+      'Toda ayuda es bienvenida. Escríbeme directamente por WhatsApp y lo reviso en persona.',
+    cta: { label: 'Escribir por WhatsApp', href: 'https://wa.me/34644594975?text=Hola!%20Tengo%20una%20sugerencia%20sobre%20la%20web%20de%20DARK.', external: true },
   },
   {
     id: 'ver-dark',

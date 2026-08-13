@@ -229,6 +229,7 @@ const canonicalURL = new URL(
             mute: 1,
             playsinline: 1,
             disablekb: 1,
+            cc_load_policy: 0,
           },
           events: { onReady: (e) => e.target.playVideo() },
         });
@@ -245,6 +246,7 @@ const canonicalURL = new URL(
             mute: 1,
             playsinline: 1,
             disablekb: 1,
+            cc_load_policy: 0,
           },
           events: { onReady: onHeroReady, onStateChange: onHeroStateChange },
         });
