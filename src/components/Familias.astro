@@ -2239,6 +2239,20 @@ const relationshipValidation = validateRelationships(
     applyTreeTransform(smooth);
   }
 
+  // Recentra el árbol cuando cambia el tamaño del viewport mientras el
+  // visor está abierto: en móvil, la barra de direcciones de Chrome/Safari
+  // se colapsa o reaparece al hacer scroll/tocar la pantalla, cambiando
+  // innerHeight *después* de que centerTree() ya se ejecutó al abrir. Sin
+  // este listener, el árbol queda descentrado hasta que el usuario lo
+  // arrastra a mano — este era el bug reportado en móvil.
+  let treeResizeRaf = null;
+  window.addEventListener('resize', () => {
+    const treeViewer = document.getElementById('tree-viewer');
+    if (!treeViewer || treeViewer.classList.contains('hidden')) return;
+    if (treeResizeRaf) cancelAnimationFrame(treeResizeRaf);
+    treeResizeRaf = requestAnimationFrame(() => centerTree());
+  });
+
   window.zoomIn = () => {
     treeScale = Math.min(treeScale + ZOOM_STEP, MAX_SCALE);
     applyTreeTransform();
@@ -2680,8 +2694,21 @@ const relationshipValidation = validateRelationships(
         </div>
       `;
 
+      // La primera escena añade el bloque de "insight" (ROL/CONEXIONES) vía
+      // buildCharacterInsight(), lo que la hace más alta que el resto. En
+      // móvil (viewport bajo) esa altura extra ya no cabe en 100vh: con
+      // `items-center` el panel se centra igualmente y su mitad superior
+      // queda por detrás de los botones fijos de menú/cerrar (bug reportado
+      // como "detalle bugeado" en móvil). Por eso esta escena se alinea
+      // arriba con hueco para esos botones y permite scroll interno; el
+      // resto de escenas (más cortas) mantienen el centrado vertical de
+      // siempre.
+      const sceneAlignClass = isFirst
+        ? 'items-start md:items-center overflow-y-auto md:overflow-visible pt-24 pb-8 px-8 md:pt-8 md:pb-8 md:pl-20 md:pr-16'
+        : 'items-center p-8 md:pl-20 md:pr-16';
+
       contentArea.innerHTML += `
-        <div class="scroll-scene w-full h-[100vh] flex items-center p-8 md:pl-20 md:pr-16 snap-center pointer-events-auto" data-image="${sceneImage}">
+        <div class="scroll-scene w-full h-[100vh] flex ${sceneAlignClass} snap-center pointer-events-auto" data-image="${sceneImage}">
           <div class="cinematic-panel max-w-2xl relative w-full md:w-[60%] lg:w-[48%]">
             
             ${

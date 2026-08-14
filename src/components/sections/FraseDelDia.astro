@@ -1,0 +1,180 @@
+---
+// src/components/sections/FraseDelDia.astro
+// Citas ya presentes (y ya publicadas) en Aclaraciones.astro, reempaquetadas
+// como una tarjeta rotativa para Inicio. El índice de partida se calcula en
+// servidor (output: 'server' en astro.config.mjs) a partir del día natural,
+// así que cambia cada día sin necesidad de JS ni de rebuild; las flechas
+// permiten navegar manualmente por el resto sin recargar la página.
+
+const quotes = [
+  {
+    text: '¿De dónde venimos? ¿Hacia dónde vamos? ¿Existe alguna conexión entre el pasado, presente y el futuro? ¿Es posible cambiar el transcurso de los acontecimientos o todo se mueve hacia un destino invariable?',
+    author: 'Jonas Kahnwald',
+    context: 'Monólogo de apertura',
+  },
+  {
+    text: 'Mi yo adulto quería decirme algo pero no podía porque si supieras lo que yo sé ahora no harías lo que debes hacer para que yo llegue a este preciso momento. No podría existir tal y como soy ahora, si tú no sigues el mismo camino que seguí yo.',
+    author: 'Noah',
+    context: 'Sobre el determinismo',
+  },
+  {
+    text: '¿Has oído hablar del ciclo de 33 años? Nuestros calendarios están mal. Un año no tiene 365 días. Cada 33 años, todo vuelve a ser como era. Las estrellas, los planetas y el universo entero vuelve a la misma posición.',
+    author: 'Charlotte Doppler',
+    context: 'El número 33',
+  },
+  {
+    text: 'Tu mundo y el de Eva nunca debieron existir. Nuestro pensamiento se rige por dualidades. Negro o blanco. Luz o sombra. Pero es un error: nada está completo sin una tercera dimensión.',
+    author: 'Claudia Tiedemann',
+    context: 'Los tres mundos',
+  },
+  {
+    text: 'Si supiéramos cómo termina todo, adónde nos llevará nuestro viaje: ¿tomaríamos las mismas decisiones o elegiríamos un camino distinto?',
+    author: 'Martha Nielsen',
+    context: 'Voz en off, episodio 1',
+  },
+];
+
+const dayOfEpoch = Math.floor(Date.now() / 86_400_000);
+const todayIndex = dayOfEpoch % quotes.length;
+---
+
+<section
+  id="frase-del-dia"
+  class="py-24 bg-transparent transition-colors duration-300 relative overflow-hidden"
+>
+  <div class="container mx-auto px-6">
+    <div class="text-center mb-12 space-y-3">
+      <span
+        class="font-mono text-[11px] tracking-[0.3em] uppercase text-amber-600 dark:text-amber-500/80"
+        data-aos="fade-up"
+      >
+        Archivo de Winden
+      </span>
+      <h2
+        class="text-3xl md:text-5xl font-cinzel text-amber-500 font-bold transition-colors"
+        data-aos="zoom-in"
+      >
+        Frase del Día
+      </h2>
+    </div>
+
+    <div
+      class="relative max-w-3xl mx-auto"
+      data-aos="fade-up"
+      data-quote-widget
+      data-start-index={todayIndex}
+    >
+      <svg
+        class="absolute -top-6 -left-2 md:-left-6 w-16 h-16 text-amber-500/15 dark:text-amber-500/10 pointer-events-none"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path d="M9.983 3v7.391c0 5.704-3.731 9.57-8.983 10.609l-.995-2.151c2.432-.917 3.995-3.638 3.995-5.849h-4v-10h9.983zm14.017 0v7.391c0 5.704-3.748 9.571-9 10.609l-.996-2.151c2.433-.917 3.996-3.638 3.996-5.849h-3.983v-10h9.983z" />
+      </svg>
+
+      <div class="relative min-h-[220px] md:min-h-[200px] flex items-center justify-center">
+        {
+          quotes.map((quote, index) => (
+            <blockquote
+              data-quote-slide
+              data-index={index}
+              class={`absolute inset-0 flex flex-col items-center justify-center text-center gap-6 transition-opacity duration-500 ${index === todayIndex ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+              aria-hidden={index === todayIndex ? 'false' : 'true'}
+            >
+              <p class="text-lg md:text-2xl text-stone-800 dark:text-stone-100 font-light italic leading-relaxed px-4">
+                "{quote.text}"
+              </p>
+              <footer class="flex flex-col items-center gap-1">
+                <cite class="not-italic font-cinzel text-sm md:text-base font-bold uppercase tracking-widest text-amber-600 dark:text-amber-500">
+                  {quote.author}
+                </cite>
+                <span class="text-[11px] text-stone-500 dark:text-stone-500 font-mono tracking-wide uppercase">
+                  {quote.context}
+                </span>
+              </footer>
+            </blockquote>
+          ))
+        }
+      </div>
+
+      <div class="flex items-center justify-center gap-6 mt-8">
+        <button
+          type="button"
+          data-quote-prev
+          aria-label="Frase anterior"
+          class="w-9 h-9 rounded-full border border-stone-300 dark:border-stone-700 hover:border-amber-500 flex items-center justify-center text-stone-500 dark:text-stone-400 hover:text-amber-500 transition-all duration-300"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+
+        <div class="flex items-center gap-2" data-quote-dots>
+          {
+            quotes.map((_, index) => (
+              <button
+                type="button"
+                data-quote-dot
+                data-index={index}
+                aria-label={`Ir a la frase ${index + 1}`}
+                class={`h-1.5 rounded-full transition-all duration-300 ${index === todayIndex ? 'w-6 bg-amber-500' : 'w-1.5 bg-stone-300 dark:bg-stone-700 hover:bg-amber-500/60'}`}
+              />
+            ))
+          }
+        </div>
+
+        <button
+          type="button"
+          data-quote-next
+          aria-label="Frase siguiente"
+          class="w-9 h-9 rounded-full border border-stone-300 dark:border-stone-700 hover:border-amber-500 flex items-center justify-center text-stone-500 dark:text-stone-400 hover:text-amber-500 transition-all duration-300"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const widget = document.querySelector('[data-quote-widget]');
+    if (!widget) return;
+
+    const slides = Array.from(widget.querySelectorAll('[data-quote-slide]'));
+    const dots = Array.from(widget.querySelectorAll('[data-quote-dot]'));
+    const prevBtn = widget.querySelector('[data-quote-prev]');
+    const nextBtn = widget.querySelector('[data-quote-next]');
+    const total = slides.length;
+    let current = parseInt(widget.dataset.startIndex, 10) || 0;
+
+    function showQuote(index) {
+      current = (index + total) % total;
+      slides.forEach((slide, i) => {
+        const active = i === current;
+        slide.classList.toggle('opacity-100', active);
+        slide.classList.toggle('pointer-events-auto', active);
+        slide.classList.toggle('opacity-0', !active);
+        slide.classList.toggle('pointer-events-none', !active);
+        slide.setAttribute('aria-hidden', active ? 'false' : 'true');
+      });
+      dots.forEach((dot, i) => {
+        const active = i === current;
+        dot.classList.toggle('w-6', active);
+        dot.classList.toggle('bg-amber-500', active);
+        dot.classList.toggle('w-1.5', !active);
+        dot.classList.toggle('bg-stone-300', !active);
+        dot.classList.toggle('dark:bg-stone-700', !active);
+      });
+    }
+
+    if (prevBtn) prevBtn.addEventListener('click', () => showQuote(current - 1));
+    if (nextBtn) nextBtn.addEventListener('click', () => showQuote(current + 1));
+    dots.forEach((dot) => {
+      dot.addEventListener('click', () => showQuote(parseInt(dot.dataset.index, 10) || 0));
+    });
+  });
+</script>

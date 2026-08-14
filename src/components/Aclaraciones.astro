@@ -19,23 +19,29 @@
     </div>
 
     <div
-      class="grid grid-cols-3 md:flex md:flex-wrap justify-center gap-2 md:gap-4 mb-12 md:mb-16 w-full max-w-3xl mx-auto"
+      class="relative grid grid-cols-3 md:flex md:flex-wrap justify-center gap-2 md:gap-4 mb-12 md:mb-16 w-full max-w-3xl mx-auto"
       data-aos="fade-up"
     >
+      <div
+        id="aclara-tab-pill"
+        class="absolute inset-y-0 rounded-lg md:rounded-t-lg bg-stone-300/80 dark:bg-stone-800/80 shadow-lg transition-all duration-300 ease-out z-0 opacity-0"
+        style="left: 0; width: 0;"
+      >
+      </div>
       <button
-        class="tab-btn-aclara active px-1 py-3 md:px-6 md:py-3 rounded-lg md:rounded-t-lg font-cinzel font-bold tracking-wider md:tracking-widest uppercase text-[10px] md:text-base transition-all duration-300 text-stone-900 dark:text-white border-b-2 border-amber-600 dark:border-amber-500 bg-stone-300/80 dark:bg-stone-800/80 shadow-lg"
+        class="tab-btn-aclara active relative z-10 px-1 py-3 md:px-6 md:py-3 font-cinzel font-bold tracking-wider md:tracking-widest uppercase text-[10px] md:text-base transition-colors duration-300 text-stone-900 dark:text-white border-b-2 border-amber-600 dark:border-amber-500"
         data-target="aclara-explicacion"
       >
         Explicación
       </button>
       <button
-        class="tab-btn-aclara px-1 py-3 md:px-6 md:py-3 rounded-lg md:rounded-t-lg font-cinzel font-bold tracking-wider md:tracking-widest uppercase text-[10px] md:text-base transition-all duration-300 text-stone-500 border-b-2 border-transparent hover:text-stone-700 dark:hover:text-stone-300 hover:bg-stone-300/40 dark:hover:bg-stone-900/40"
+        class="tab-btn-aclara relative z-10 px-1 py-3 md:px-6 md:py-3 font-cinzel font-bold tracking-wider md:tracking-widest uppercase text-[10px] md:text-base transition-colors duration-300 text-stone-500 border-b-2 border-transparent hover:text-stone-700 dark:hover:text-stone-300"
         data-target="aclara-simbologia"
       >
         Simbología
       </button>
       <button
-        class="tab-btn-aclara px-1 py-3 md:px-6 md:py-3 rounded-lg md:rounded-t-lg font-cinzel font-bold tracking-wider md:tracking-widest uppercase text-[10px] md:text-base transition-all duration-300 text-stone-500 border-b-2 border-transparent hover:text-stone-700 dark:hover:text-stone-300 hover:bg-stone-300/40 dark:hover:bg-stone-900/40"
+        class="tab-btn-aclara relative z-10 px-1 py-3 md:px-6 md:py-3 font-cinzel font-bold tracking-wider md:tracking-widest uppercase text-[10px] md:text-base transition-colors duration-300 text-stone-500 border-b-2 border-transparent hover:text-stone-700 dark:hover:text-stone-300"
         data-target="aclara-final"
       >
         El Final
@@ -49,6 +55,7 @@
       >
         <div
           class="text-center max-w-4xl mx-auto mb-16 space-y-4 text-stone-800 dark:text-stone-300 font-light leading-relaxed"
+          data-aos="fade-up"
         >
           <p class="italic">
             "¿De dónde venimos? ¿Hacia dónde vamos? ¿Existe alguna conexión
@@ -66,379 +73,394 @@
           </p>
         </div>
 
-        <div
-          class="case-card relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-200 dark:border-stone-800/60 hover:border-amber-500/40 bg-white/80 dark:bg-[#0a0a0a] shadow-stone-300/60 dark:shadow-none mb-12 group flex flex-col lg:block lg:min-h-[450px] transition-colors duration-500"
-        >
+        <div class="relative">
           <div
-            class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:left-1/4 overflow-hidden z-0 mask-right"
+            class="case-thread hidden lg:block gen-connector-line absolute top-4 bottom-4 z-0"
+            aria-hidden="true"
           >
-            <img
-              src="/Aclaraciones/Explicacion/1.jpg"
-              class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-1000 opacity-60 md:opacity-100 mix-blend-multiply dark:mix-blend-normal"
-            />
+          </div>
+
+          <div
+            class="case-card relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-200 dark:border-stone-800/60 hover:border-amber-500/40 bg-white/80 dark:bg-[#0a0a0a] shadow-stone-300/60 dark:shadow-none mb-12 group flex flex-col lg:block lg:min-h-[450px] transition-colors duration-500"
+            data-aos="fade-up"
+          >
             <div
-              class="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0a0a0a] via-stone-200/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+              class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:left-1/4 overflow-hidden z-0 mask-right"
+            >
+              <img
+                src="/Aclaraciones/Explicacion/1.jpg"
+                class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-1000 opacity-60 md:opacity-100 mix-blend-multiply dark:mix-blend-normal"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0a0a0a] via-stone-200/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+              >
+              </div>
+            </div>
+            <div
+              class="hidden lg:block absolute inset-0 lg:left-1/4 bg-gradient-to-r from-white via-white/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
             >
             </div>
-          </div>
-          <div
-            class="hidden lg:block absolute inset-0 lg:left-1/4 bg-gradient-to-r from-white via-white/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
-          >
-          </div>
 
-          <div
-            class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] space-y-4 flex flex-col justify-center lg:min-h-[450px]"
-          >
-            <h3
-              class="text-2xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-2"
-            >
-              El puente de Einstein-Rosen
-            </h3>
-            <p
-              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
-            >
-              Una de las bases sobre las que se asienta el argumento de la serie
-              es la posibilidad de poder viajar a través del tiempo mediante los
-              agujeros de gusano. Einstein y Rosen formularon una hipótesis
-              teórica en la que plasmaban la contingencia de que dos universos
-              pudieran estar conectados y, a través del núcleo de un agujero
-              negro, fuera posible viajar en el espacio-tiempo.
-            </p>
-            <p
-              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
-            >
-              Es así como la serie plantea cómo los personajes son capaces de
-              viajar de un tiempo o época a otro. Todo ello gracias a una
-              máquina del tiempo y de la cueva de Winden. Así, la teoría de los
-              agujeros negros sirve para establecer la estructura de la serie,
-              la cual se desarrolla en diferentes líneas narrativas: 1921, 1953,
-              1986, 2019 y 2052. Cada una pertenece a una dimensión temporal
-              diferente. De esta forma, no hay que entender el transcurso del
-              tiempo como algo lineal sino, más bien, circular.
-            </p>
-          </div>
-        </div>
-
-        <div
-          class="case-card relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-200 dark:border-stone-800/60 hover:border-amber-500/40 bg-white/80 dark:bg-[#0a0a0a] shadow-stone-300/60 dark:shadow-none mb-12 group flex flex-col lg:block lg:min-h-[450px] transition-colors duration-500"
-        >
-          <div
-            class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:w-3/4 overflow-hidden z-0 mask-left"
-          >
-            <img
-              src="/Aclaraciones/Explicacion/2.jpg"
-              class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-1000 grayscale group-hover:grayscale-0 opacity-50 lg:opacity-80 mix-blend-multiply dark:mix-blend-normal"
-            />
             <div
-              class="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0a0a0a] via-stone-200/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+              class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] space-y-4 flex flex-col justify-center lg:min-h-[450px]"
             >
+              <h3
+                class="text-2xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-2"
+              >
+                El puente de Einstein-Rosen
+              </h3>
+              <p
+                class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+              >
+                Una de las bases sobre las que se asienta el argumento de la serie
+                es la posibilidad de poder viajar a través del tiempo mediante los
+                agujeros de gusano. Einstein y Rosen formularon una hipótesis
+                teórica en la que plasmaban la contingencia de que dos universos
+                pudieran estar conectados y, a través del núcleo de un agujero
+                negro, fuera posible viajar en el espacio-tiempo.
+              </p>
+              <p
+                class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+              >
+                Es así como la serie plantea cómo los personajes son capaces de
+                viajar de un tiempo o época a otro. Todo ello gracias a una
+                máquina del tiempo y de la cueva de Winden. Así, la teoría de los
+                agujeros negros sirve para establecer la estructura de la serie,
+                la cual se desarrolla en diferentes líneas narrativas: 1921, 1953,
+                1986, 2019 y 2052. Cada una pertenece a una dimensión temporal
+                diferente. De esta forma, no hay que entender el transcurso del
+                tiempo como algo lineal sino, más bien, circular.
+              </p>
             </div>
           </div>
-          <div
-            class="hidden lg:block absolute inset-0 lg:w-3/4 bg-gradient-to-l from-white via-white/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
-          >
-          </div>
 
           <div
-            class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] lg:ml-auto space-y-4 flex flex-col justify-center lg:min-h-[450px]"
+            class="case-card relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-200 dark:border-stone-800/60 hover:border-amber-500/40 bg-white/80 dark:bg-[#0a0a0a] shadow-stone-300/60 dark:shadow-none mb-12 group flex flex-col lg:block lg:min-h-[450px] transition-colors duration-500"
+            data-aos="fade-up"
           >
-            <h3
-              class="text-2xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-2"
-            >
-              El Eterno Retorno
-            </h3>
-            <p
-              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
-            >
-              Si pudieras revivir algo que ya has vivido anteriormente
-              ¿volverías a hacer lo mismo? ¿Repetirías las mismas acciones? ¿Lo
-              harías de la misma forma?
-            </p>
-            <p
-              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
-            >
-              La serie toma la idea del eterno retorno tratada por Nietzsche en
-              su obra <em>Así habló Zaratustra</em>. En Dark el tiempo es
-              circular y los acontecimientos siguen las leyes de la causalidad.
-              No existe un principio y un fin, sino que los sucesos vuelven a
-              repetirse de manera cíclica, de la misma forma en la que
-              ocurrieron. No se pueden alterar ni cambiar los hechos.
-            </p>
-            <p
-              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
-            >
-              "El principio es el fin y el fin es el principio". Así que, aunque
-              Jonas del futuro trata de evitar el apocalipsis y Claudia intenta
-              impedir la muerte de su padre, todo vuelve a ocurrir tal cual
-              pasó.
-            </p>
             <div
-              class="border-l-4 border-amber-500 pl-4 py-2 mt-4 italic text-stone-600 dark:text-stone-400"
+              class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:w-3/4 overflow-hidden z-0 mask-left"
             >
-              "Mi yo adulto quería decirme algo pero no podía porque si supieras
-              lo que yo sé ahora no harías lo que debes hacer para que yo llegue
-              a este preciso momento. No podría existir tal y como soy ahora, si
-              tu no sigues el mismo camino que seguí yo." - Noah
+              <img
+                src="/Aclaraciones/Explicacion/2.jpg"
+                class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-1000 grayscale group-hover:grayscale-0 opacity-50 lg:opacity-80 mix-blend-multiply dark:mix-blend-normal"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0a0a0a] via-stone-200/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+              >
+              </div>
             </div>
-          </div>
-        </div>
-
-        <div
-          class="case-card relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-200 dark:border-stone-800/60 hover:border-amber-500/40 bg-white/80 dark:bg-[#0a0a0a] shadow-stone-300/60 dark:shadow-none mb-12 group flex flex-col lg:block lg:min-h-[450px] transition-colors duration-500"
-        >
-          <div
-            class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:left-1/4 overflow-hidden z-0 mask-right"
-          >
-            <img
-              src="/Aclaraciones/Explicacion/3.jpg"
-              class="w-full h-full object-cover object-[20%_center] transform group-hover:scale-105 transition-transform duration-1000 opacity-60 md:opacity-100 mix-blend-multiply dark:mix-blend-normal"
-            />
             <div
-              class="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0a0a0a] via-stone-200/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+              class="hidden lg:block absolute inset-0 lg:w-3/4 bg-gradient-to-l from-white via-white/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
             >
             </div>
-          </div>
-          <div
-            class="hidden lg:block absolute inset-0 lg:left-1/4 bg-gradient-to-r from-white via-white/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
-          >
-          </div>
 
-          <div
-            class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] space-y-4 flex flex-col justify-center lg:min-h-[450px]"
-          >
-            <h3
-              class="text-2xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-2"
-            >
-              Mito de Ariadna, Teseo y el Minotauro
-            </h3>
-            <p
-              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
-            >
-              El mito griego de Ariadna, Teseo y el Minotauro también aparece
-              representado en la serie. Según su historia, Teseo se adentra en
-              el laberinto con el fin de acabar con la vida del Minotauro.
-              Ariadna, hija del rey Minos, lo ayuda a salir del laberinto usando
-              un ovillo de hilo. Finalmente escapan juntos de Creta, aunque
-              Teseo la termina abandonando.
-            </p>
-            <p
-              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
-            >
-              En la obra de teatro de la escuela, Martha interpreta a Ariadna y
-              su hilo rojo (que también usa Jonas para guiarse en las cuevas)
-              representa la conexión entre los mundos y el destino ineludible
-              que los ata.
-            </p>
-          </div>
-        </div>
-
-        <div
-          class="case-card relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-200 dark:border-stone-800/60 hover:border-amber-500/40 bg-white/80 dark:bg-[#0a0a0a] shadow-stone-300/60 dark:shadow-none mb-12 group flex flex-col lg:block lg:min-h-[450px] transition-colors duration-500"
-        >
-          <div
-            class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:w-3/4 overflow-hidden z-0 mask-left"
-          >
-            <img
-              src="/Aclaraciones/Explicacion/4.jpg"
-              class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-1000 grayscale group-hover:grayscale-0 opacity-50 lg:opacity-80 mix-blend-multiply dark:mix-blend-normal"
-            />
             <div
-              class="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0a0a0a] via-stone-200/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+              class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] lg:ml-auto space-y-4 flex flex-col justify-center lg:min-h-[450px]"
             >
+              <h3
+                class="text-2xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-2"
+              >
+                El Eterno Retorno
+              </h3>
+              <p
+                class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+              >
+                Si pudieras revivir algo que ya has vivido anteriormente
+                ¿volverías a hacer lo mismo? ¿Repetirías las mismas acciones? ¿Lo
+                harías de la misma forma?
+              </p>
+              <p
+                class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+              >
+                La serie toma la idea del eterno retorno tratada por Nietzsche en
+                su obra <em>Así habló Zaratustra</em>. En Dark el tiempo es
+                circular y los acontecimientos siguen las leyes de la causalidad.
+                No existe un principio y un fin, sino que los sucesos vuelven a
+                repetirse de manera cíclica, de la misma forma en la que
+                ocurrieron. No se pueden alterar ni cambiar los hechos.
+              </p>
+              <p
+                class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+              >
+                "El principio es el fin y el fin es el principio". Así que, aunque
+                Jonas del futuro trata de evitar el apocalipsis y Claudia intenta
+                impedir la muerte de su padre, todo vuelve a ocurrir tal cual
+                pasó.
+              </p>
+              <div
+                class="border-l-4 border-amber-500 pl-4 py-2 mt-4 italic text-stone-600 dark:text-stone-400"
+              >
+                "Mi yo adulto quería decirme algo pero no podía porque si supieras
+                lo que yo sé ahora no harías lo que debes hacer para que yo llegue
+                a este preciso momento. No podría existir tal y como soy ahora, si
+                tu no sigues el mismo camino que seguí yo." - Noah
+              </div>
             </div>
           </div>
-          <div
-            class="hidden lg:block absolute inset-0 lg:w-3/4 bg-gradient-to-l from-white via-white/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
-          >
-          </div>
 
           <div
-            class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] lg:ml-auto space-y-4 flex flex-col justify-center lg:min-h-[450px]"
+            class="case-card relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-200 dark:border-stone-800/60 hover:border-amber-500/40 bg-white/80 dark:bg-[#0a0a0a] shadow-stone-300/60 dark:shadow-none mb-12 group flex flex-col lg:block lg:min-h-[450px] transition-colors duration-500"
+            data-aos="fade-up"
           >
-            <h3
-              class="text-2xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-2"
-            >
-              Déjà vu o error en la matriz
-            </h3>
-            <p
-              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
-            >
-              En la tercera temporada, desde el primer episodio, aparece
-              reflejada la idea de un dèjá vu o error en la matriz. De hecho,
-              nos llegamos a preguntar si la misión de Jonas esta temporada es
-              romper este error en la matriz.
-            </p>
-            <p
-              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
-            >
-              Cuando experimentamos un dèjá vú, tenemos la sensación de haber
-              vivido un suceso con anterioridad. Como espectadores, cuando
-              visualizamos el primer episodio de la tercera temporada, también
-              tenemos la sensación de haber visto todo eso. Pues asistimos a un
-              nuevo mundo, en el que sus personajes repiten los mismos errores
-              que en el mundo que ya conocíamos.
-            </p>
-            <p
-              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
-            >
-              El dèjá vu también forma parte del final de la serie durante una
-              cena en la que Hannah, tras el apagón de luces, dice estar
-              experimentando algo que ya ha visto antes.
-            </p>
-          </div>
-        </div>
-
-        <div
-          class="case-card relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-200 dark:border-stone-800/60 hover:border-amber-500/40 bg-white/80 dark:bg-[#0a0a0a] shadow-stone-300/60 dark:shadow-none mb-12 group flex flex-col lg:block lg:min-h-[450px] transition-colors duration-500"
-        >
-          <div
-            class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:left-1/4 overflow-hidden z-0 mask-right"
-          >
-            <img
-              src="/Aclaraciones/Explicacion/5.jpg"
-              class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-1000 opacity-60 md:opacity-100 mix-blend-multiply dark:mix-blend-normal"
-            />
             <div
-              class="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0a0a0a] via-stone-200/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+              class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:left-1/4 overflow-hidden z-0 mask-right"
+            >
+              <img
+                src="/Aclaraciones/Explicacion/3.jpg"
+                class="w-full h-full object-cover object-[20%_center] transform group-hover:scale-105 transition-transform duration-1000 opacity-60 md:opacity-100 mix-blend-multiply dark:mix-blend-normal"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0a0a0a] via-stone-200/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+              >
+              </div>
+            </div>
+            <div
+              class="hidden lg:block absolute inset-0 lg:left-1/4 bg-gradient-to-r from-white via-white/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
             >
             </div>
-          </div>
-          <div
-            class="hidden lg:block absolute inset-0 lg:left-1/4 bg-gradient-to-r from-white via-white/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
-          >
-          </div>
 
-          <div
-            class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] space-y-4 flex flex-col justify-center lg:min-h-[450px]"
-          >
-            <h3
-              class="text-2xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-2"
-            >
-              Universo paralelo
-            </h3>
-            <p
-              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
-            >
-              Durante las dos primeras temporadas solo conocíamos un mundo, el
-              de Adam (Jonas). Sin embargo, en la tercera temporada, asistimos a
-              un mundo “espejo” que no conocíamos, el de Eva (Martha).
-            </p>
-            <p
-              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
-            >
-              Adam cree que el “origen” es el hijo que Jonas y Martha tienen en
-              común, y su objetivo es acabar con todo para que nada se repita.
-              En este sentido, si no existe el hijo de ambos, el cual supone el
-              bucle infinito que une ambos mundos y el origen de algunos linajes
-              de la serie, muchos personajes no existen en realidad.
-            </p>
-            <p
-              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
-            >
-              Por otro lado, en estos mundos paralelos, hay pequeñas diferencias
-              en los personajes y en sus vidas, algo que conforma un árbol
-              genealógico con algunas diferencias, entre ellas la no existencia
-              de Jonas o el matrimonio de Hannah con Ulrich.
-            </p>
-          </div>
-        </div>
-
-        <div
-          class="case-card relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-200 dark:border-stone-800/60 hover:border-amber-500/40 bg-white/80 dark:bg-[#0a0a0a] shadow-stone-300/60 dark:shadow-none mb-12 group flex flex-col lg:block lg:min-h-[450px] transition-colors duration-500"
-        >
-          <div
-            class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:w-3/4 overflow-hidden z-0 mask-left"
-          >
-            <img
-              src="/Aclaraciones/Explicacion/6.jpg"
-              class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-1000 grayscale group-hover:grayscale-0 opacity-50 lg:opacity-80 mix-blend-multiply dark:mix-blend-normal"
-            />
             <div
-              class="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0a0a0a] via-stone-200/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+              class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] space-y-4 flex flex-col justify-center lg:min-h-[450px]"
             >
+              <h3
+                class="text-2xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-2"
+              >
+                Mito de Ariadna, Teseo y el Minotauro
+              </h3>
+              <p
+                class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+              >
+                El mito griego de Ariadna, Teseo y el Minotauro también aparece
+                representado en la serie. Según su historia, Teseo se adentra en
+                el laberinto con el fin de acabar con la vida del Minotauro.
+                Ariadna, hija del rey Minos, lo ayuda a salir del laberinto usando
+                un ovillo de hilo. Finalmente escapan juntos de Creta, aunque
+                Teseo la termina abandonando.
+              </p>
+              <p
+                class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+              >
+                En la obra de teatro de la escuela, Martha interpreta a Ariadna y
+                su hilo rojo (que también usa Jonas para guiarse en las cuevas)
+                representa la conexión entre los mundos y el destino ineludible
+                que los ata.
+              </p>
             </div>
           </div>
-          <div
-            class="hidden lg:block absolute inset-0 lg:w-3/4 bg-gradient-to-l from-white via-white/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
-          >
-          </div>
 
           <div
-            class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] lg:ml-auto space-y-4 flex flex-col justify-center lg:min-h-[450px]"
+            class="case-card relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-200 dark:border-stone-800/60 hover:border-amber-500/40 bg-white/80 dark:bg-[#0a0a0a] shadow-stone-300/60 dark:shadow-none mb-12 group flex flex-col lg:block lg:min-h-[450px] transition-colors duration-500"
+            data-aos="fade-up"
           >
-            <h3
-              class="text-2xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-2"
-            >
-              Gato de Schrödinger
-            </h3>
-            <p
-              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
-            >
-              ¿Se puede estar vivo y muerto a la vez? ¿Por qué Jonas muere y
-              vive al mismo tiempo? La serie muestra la paradoja que planteó
-              Erwin Schrödinger. Tannhaus es el encargado de explicarla: si
-              metemos a un gato vivo en una caja cerrada con un dispositivo
-              tóxico, hasta que no abramos la caja, el gato está vivo y muerto a
-              la vez.
-            </p>
-            <p
-              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
-            >
-              Como espectadores solo vemos dos cajas cerradas y durante un
-              tiempo no sabemos qué ha pasado ahí dentro, justo en ese instante
-              se crean dos realidades: una donde el gato vive y la otra donde
-              está muerto. En Dark asistimos a este suceso pero, en mayor
-              escala, con la creación de dos caminos donde Jonas muere salvando
-              a Martha y otro donde se convierte en Adam.
-            </p>
-          </div>
-        </div>
-
-        <div
-          class="case-card relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-200 dark:border-stone-800/60 hover:border-amber-500/40 bg-white/80 dark:bg-[#0a0a0a] shadow-stone-300/60 dark:shadow-none mb-12 group flex flex-col lg:block lg:min-h-[450px] transition-colors duration-500"
-        >
-          <div
-            class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:left-1/4 overflow-hidden z-0 mask-right"
-          >
-            <img
-              src="/Aclaraciones/Explicacion/7.jpg"
-              class="w-full h-full object-cover object-[80%_center] transform group-hover:scale-105 transition-transform duration-1000 opacity-60 md:opacity-100 mix-blend-multiply dark:mix-blend-normal"
-            />
             <div
-              class="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0a0a0a] via-stone-200/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+              class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:w-3/4 overflow-hidden z-0 mask-left"
+            >
+              <img
+                src="/Aclaraciones/Explicacion/4.jpg"
+                class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-1000 grayscale group-hover:grayscale-0 opacity-50 lg:opacity-80 mix-blend-multiply dark:mix-blend-normal"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0a0a0a] via-stone-200/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+              >
+              </div>
+            </div>
+            <div
+              class="hidden lg:block absolute inset-0 lg:w-3/4 bg-gradient-to-l from-white via-white/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
             >
             </div>
-          </div>
-          <div
-            class="hidden lg:block absolute inset-0 lg:left-1/4 bg-gradient-to-r from-white via-white/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
-          >
+
+            <div
+              class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] lg:ml-auto space-y-4 flex flex-col justify-center lg:min-h-[450px]"
+            >
+              <h3
+                class="text-2xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-2"
+              >
+                Déjà vu o error en la matriz
+              </h3>
+              <p
+                class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+              >
+                En la tercera temporada, desde el primer episodio, aparece
+                reflejada la idea de un dèjá vu o error en la matriz. De hecho,
+                nos llegamos a preguntar si la misión de Jonas esta temporada es
+                romper este error en la matriz.
+              </p>
+              <p
+                class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+              >
+                Cuando experimentamos un dèjá vú, tenemos la sensación de haber
+                vivido un suceso con anterioridad. Como espectadores, cuando
+                visualizamos el primer episodio de la tercera temporada, también
+                tenemos la sensación de haber visto todo eso. Pues asistimos a un
+                nuevo mundo, en el que sus personajes repiten los mismos errores
+                que en el mundo que ya conocíamos.
+              </p>
+              <p
+                class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+              >
+                El dèjá vu también forma parte del final de la serie durante una
+                cena en la que Hannah, tras el apagón de luces, dice estar
+                experimentando algo que ya ha visto antes.
+              </p>
+            </div>
           </div>
 
           <div
-            class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] space-y-4 flex flex-col justify-center lg:min-h-[450px]"
+            class="case-card relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-200 dark:border-stone-800/60 hover:border-amber-500/40 bg-white/80 dark:bg-[#0a0a0a] shadow-stone-300/60 dark:shadow-none mb-12 group flex flex-col lg:block lg:min-h-[450px] transition-colors duration-500"
+            data-aos="fade-up"
           >
-            <h3
-              class="text-2xl md:text-3xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-2 leading-tight"
+            <div
+              class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:left-1/4 overflow-hidden z-0 mask-right"
             >
-              Lo que sabemos es una gota, lo que ignoramos un océano
-            </h3>
-            <p
-              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+              <img
+                src="/Aclaraciones/Explicacion/5.jpg"
+                class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-1000 opacity-60 md:opacity-100 mix-blend-multiply dark:mix-blend-normal"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0a0a0a] via-stone-200/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+              >
+              </div>
+            </div>
+            <div
+              class="hidden lg:block absolute inset-0 lg:left-1/4 bg-gradient-to-r from-white via-white/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
             >
-              Esta cita de Isaac Newton aparece en cuantiosas ocasiones a lo
-              largo de esta temporada. No solo sirve para describir lo que le
-              ocurre a los personajes dentro de la serie, sino también a los
-              espectadores.
-            </p>
-            <p
-              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+            </div>
+
+            <div
+              class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] space-y-4 flex flex-col justify-center lg:min-h-[450px]"
             >
-              Y es que, esta frase, puede definir muy bien cómo nos sentimos
-              tras dos temporadas pensando que la serie planteaba viajes en el
-              tiempo en un solo mundo, ignorando que, no solo había un mundo
-              paralelo, sino también una tercera dimensión. Lo que nos reitera
-              que solo sabíamos una pequeña parte de este complejo universo.
-            </p>
+              <h3
+                class="text-2xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-2"
+              >
+                Universo paralelo
+              </h3>
+              <p
+                class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+              >
+                Durante las dos primeras temporadas solo conocíamos un mundo, el
+                de Adam (Jonas). Sin embargo, en la tercera temporada, asistimos a
+                un mundo “espejo” que no conocíamos, el de Eva (Martha).
+              </p>
+              <p
+                class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+              >
+                Adam cree que el “origen” es el hijo que Jonas y Martha tienen en
+                común, y su objetivo es acabar con todo para que nada se repita.
+                En este sentido, si no existe el hijo de ambos, el cual supone el
+                bucle infinito que une ambos mundos y el origen de algunos linajes
+                de la serie, muchos personajes no existen en realidad.
+              </p>
+              <p
+                class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+              >
+                Por otro lado, en estos mundos paralelos, hay pequeñas diferencias
+                en los personajes y en sus vidas, algo que conforma un árbol
+                genealógico con algunas diferencias, entre ellas la no existencia
+                de Jonas o el matrimonio de Hannah con Ulrich.
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="case-card relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-200 dark:border-stone-800/60 hover:border-amber-500/40 bg-white/80 dark:bg-[#0a0a0a] shadow-stone-300/60 dark:shadow-none mb-12 group flex flex-col lg:block lg:min-h-[450px] transition-colors duration-500"
+            data-aos="fade-up"
+          >
+            <div
+              class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:w-3/4 overflow-hidden z-0 mask-left"
+            >
+              <img
+                src="/Aclaraciones/Explicacion/6.jpg"
+                class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-1000 grayscale group-hover:grayscale-0 opacity-50 lg:opacity-80 mix-blend-multiply dark:mix-blend-normal"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0a0a0a] via-stone-200/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+              >
+              </div>
+            </div>
+            <div
+              class="hidden lg:block absolute inset-0 lg:w-3/4 bg-gradient-to-l from-white via-white/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
+            >
+            </div>
+
+            <div
+              class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] lg:ml-auto space-y-4 flex flex-col justify-center lg:min-h-[450px]"
+            >
+              <h3
+                class="text-2xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-2"
+              >
+                Gato de Schrödinger
+              </h3>
+              <p
+                class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+              >
+                ¿Se puede estar vivo y muerto a la vez? ¿Por qué Jonas muere y
+                vive al mismo tiempo? La serie muestra la paradoja que planteó
+                Erwin Schrödinger. Tannhaus es el encargado de explicarla: si
+                metemos a un gato vivo en una caja cerrada con un dispositivo
+                tóxico, hasta que no abramos la caja, el gato está vivo y muerto a
+                la vez.
+              </p>
+              <p
+                class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+              >
+                Como espectadores solo vemos dos cajas cerradas y durante un
+                tiempo no sabemos qué ha pasado ahí dentro, justo en ese instante
+                se crean dos realidades: una donde el gato vive y la otra donde
+                está muerto. En Dark asistimos a este suceso pero, en mayor
+                escala, con la creación de dos caminos donde Jonas muere salvando
+                a Martha y otro donde se convierte en Adam.
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="case-card relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-200 dark:border-stone-800/60 hover:border-amber-500/40 bg-white/80 dark:bg-[#0a0a0a] shadow-stone-300/60 dark:shadow-none mb-12 group flex flex-col lg:block lg:min-h-[450px] transition-colors duration-500"
+            data-aos="fade-up"
+          >
+            <div
+              class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:left-1/4 overflow-hidden z-0 mask-right"
+            >
+              <img
+                src="/Aclaraciones/Explicacion/7.jpg"
+                class="w-full h-full object-cover object-[80%_center] transform group-hover:scale-105 transition-transform duration-1000 opacity-60 md:opacity-100 mix-blend-multiply dark:mix-blend-normal"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0a0a0a] via-stone-200/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+              >
+              </div>
+            </div>
+            <div
+              class="hidden lg:block absolute inset-0 lg:left-1/4 bg-gradient-to-r from-white via-white/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
+            >
+            </div>
+
+            <div
+              class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] space-y-4 flex flex-col justify-center lg:min-h-[450px]"
+            >
+              <h3
+                class="text-2xl md:text-3xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-2 leading-tight"
+              >
+                Lo que sabemos es una gota, lo que ignoramos un océano
+              </h3>
+              <p
+                class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+              >
+                Esta cita de Isaac Newton aparece en cuantiosas ocasiones a lo
+                largo de esta temporada. No solo sirve para describir lo que le
+                ocurre a los personajes dentro de la serie, sino también a los
+                espectadores.
+              </p>
+              <p
+                class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+              >
+                Y es que, esta frase, puede definir muy bien cómo nos sentimos
+                tras dos temporadas pensando que la serie planteaba viajes en el
+                tiempo en un solo mundo, ignorando que, no solo había un mundo
+                paralelo, sino también una tercera dimensión. Lo que nos reitera
+                que solo sabíamos una pequeña parte de este complejo universo.
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -449,313 +471,352 @@
       >
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           <div
-            class="case-card relative bg-stone-100 dark:bg-stone-900 border border-stone-300 dark:border-stone-800 rounded-xl p-8 hover:border-amber-500 transition-colors duration-500 group shadow-lg"
+            class="case-card group relative bg-white/80 dark:bg-[#0a0a0a] border border-stone-200 dark:border-stone-800/60 hover:border-amber-500/40 rounded-2xl overflow-hidden shadow-2xl shadow-stone-300/60 dark:shadow-none transition-colors duration-500"
+            data-aos="fade-up"
           >
-            <img
-              src="/Aclaraciones/Simbologia/2.jpg"
-              class="w-full h-48 object-cover rounded-lg mb-6 opacity-80 group-hover:opacity-100 transition-opacity"
-            />
-            <h3
-              class="text-2xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-4"
-            >
-              El número 33
-            </h3>
-            <p
-              class="text-stone-700 dark:text-stone-400 font-light text-sm mb-3"
-            >
-              Este número está cargado de misterio y ha tenido diferentes
-              interpretaciones a lo largo de la historia. En la religión
-              cristiana representa la edad en la que Jesucristo fue crucificado.
-              En la numerología, el 33 es un número maestro que alude al
-              equilibrio, al amor y a la paz espiritual.
-            </p>
-            <p
-              class="text-stone-700 dark:text-stone-400 font-light text-sm mb-3"
-            >
-              La serie escoge este número para hacer referencia a la conclusión
-              de un periodo y el inicio de otro. Hace alusión al tiempo que
-              tarda la órbita de la luna en concordar con el sol. Así, todas las
-              líneas temporales de la serie están unidas por el número 33. Los
-              acontecimientos se repiten cuando pasa un ciclo de 33 años (1953,
-              1986, 2019).
-            </p>
-            <div
-              class="border-l-2 border-stone-400 dark:border-stone-600 pl-3 italic text-xs text-stone-500"
-            >
-              "¿Has oído hablar del ciclo de 33 años? Nuestros calendarios están
-              mal. Un año no tiene 365 días (...) Cada 33 años, todo vuelve a
-              ser como era. Las estrellas, los planetas y el universo entero
-              vuelve a la misma posición." - Charlotte Doppler.
+            <div class="relative w-full h-56 overflow-hidden">
+              <img
+                src="/Aclaraciones/Simbologia/2.jpg"
+                class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000 opacity-80 group-hover:opacity-100"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0a0a0a] via-transparent to-transparent"
+              >
+              </div>
+            </div>
+            <div class="relative p-8 pt-5 space-y-3">
+              <h3
+                class="text-2xl font-cinzel text-amber-700 dark:text-amber-500 font-bold"
+              >
+                El número 33
+              </h3>
+              <p class="text-stone-700 dark:text-stone-400 font-light text-sm">
+                Este número está cargado de misterio y ha tenido diferentes
+                interpretaciones a lo largo de la historia. En la religión
+                cristiana representa la edad en la que Jesucristo fue crucificado.
+                En la numerología, el 33 es un número maestro que alude al
+                equilibrio, al amor y a la paz espiritual.
+              </p>
+              <p class="text-stone-700 dark:text-stone-400 font-light text-sm">
+                La serie escoge este número para hacer referencia a la conclusión
+                de un periodo y el inicio de otro. Hace alusión al tiempo que
+                tarda la órbita de la luna en concordar con el sol. Así, todas las
+                líneas temporales de la serie están unidas por el número 33. Los
+                acontecimientos se repiten cuando pasa un ciclo de 33 años (1953,
+                1986, 2019).
+              </p>
+              <div
+                class="border-l-2 border-amber-500/60 pl-3 italic text-xs text-stone-500 dark:text-stone-400"
+              >
+                "¿Has oído hablar del ciclo de 33 años? Nuestros calendarios están
+                mal. Un año no tiene 365 días (...) Cada 33 años, todo vuelve a
+                ser como era. Las estrellas, los planetas y el universo entero
+                vuelve a la misma posición." - Charlotte Doppler.
+              </div>
             </div>
           </div>
 
           <div
-            class="case-card relative bg-stone-100 dark:bg-stone-900 border border-stone-300 dark:border-stone-800 rounded-xl p-8 hover:border-amber-500 transition-colors duration-500 group shadow-lg"
+            class="case-card group relative bg-white/80 dark:bg-[#0a0a0a] border border-stone-200 dark:border-stone-800/60 hover:border-amber-500/40 rounded-2xl overflow-hidden shadow-2xl shadow-stone-300/60 dark:shadow-none transition-colors duration-500"
+            data-aos="fade-up"
+            data-aos-delay="100"
           >
-            <img
-              src="/Aclaraciones/Simbologia/1.jpg"
-              class="w-full h-48 object-cover rounded-lg mb-6 opacity-80 group-hover:opacity-100 transition-opacity"
-            />
-            <h3
-              class="text-2xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-4"
-            >
-              La Triqueta
-            </h3>
-            <p
-              class="text-stone-700 dark:text-stone-400 font-light text-sm mb-3"
-            >
-              Tiene origen indoeuropeo, sin embargo, también tuvo gran
-              representación para los celtas, que lo usaron como símbolo de la
-              vida, muerte y reencarnación. En mayor medida la triqueta se puede
-              interpretar como una triple dimensión de la divinidad femenina.
-            </p>
-            <p class="text-stone-700 dark:text-stone-400 font-light text-sm">
-              En la serie aparece en el libro sobre viajes en el tiempo, en las
-              puertas que hay dentro de la cueva y en el tatuaje de Noah. Dark
-              utiliza este símbolo para explicar el bucle infinito que se crea
-              entre los periodos de tiempo (1953, 1986 y 2019). Alude a que el
-              pasado, presente y futuro están conectados e influyen entre sí.
-            </p>
+            <div class="relative w-full h-56 overflow-hidden">
+              <img
+                src="/Aclaraciones/Simbologia/1.jpg"
+                class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000 opacity-80 group-hover:opacity-100"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0a0a0a] via-transparent to-transparent"
+              >
+              </div>
+            </div>
+            <div class="relative p-8 pt-5 space-y-3">
+              <h3
+                class="text-2xl font-cinzel text-amber-700 dark:text-amber-500 font-bold"
+              >
+                La Triqueta
+              </h3>
+              <p class="text-stone-700 dark:text-stone-400 font-light text-sm">
+                Tiene origen indoeuropeo, sin embargo, también tuvo gran
+                representación para los celtas, que lo usaron como símbolo de la
+                vida, muerte y reencarnación. En mayor medida la triqueta se puede
+                interpretar como una triple dimensión de la divinidad femenina.
+              </p>
+              <p class="text-stone-700 dark:text-stone-400 font-light text-sm">
+                En la serie aparece en el libro sobre viajes en el tiempo, en las
+                puertas que hay dentro de la cueva y en el tatuaje de Noah. Dark
+                utiliza este símbolo para explicar el bucle infinito que se crea
+                entre los periodos de tiempo (1953, 1986 y 2019). Alude a que el
+                pasado, presente y futuro están conectados e influyen entre sí.
+              </p>
+            </div>
           </div>
 
           <div
-            class="case-card relative bg-stone-100 dark:bg-stone-900 border border-stone-300 dark:border-stone-800 rounded-xl p-8 hover:border-amber-500 transition-colors duration-500 group shadow-lg"
+            class="case-card group relative bg-white/80 dark:bg-[#0a0a0a] border border-stone-200 dark:border-stone-800/60 hover:border-amber-500/40 rounded-2xl overflow-hidden shadow-2xl shadow-stone-300/60 dark:shadow-none transition-colors duration-500"
+            data-aos="fade-up"
           >
-            <img
-              src="/Aclaraciones/Simbologia/3.jpg"
-              class="w-full h-48 object-cover rounded-lg mb-6 opacity-80 group-hover:opacity-100 transition-opacity"
-            />
-            <h3
-              class="text-2xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-4"
-            >
-              La Tabla de Esmeralda
-            </h3>
-            <p
-              class="text-stone-700 dark:text-stone-400 font-light text-sm mb-3"
-            >
-              Aparece tatuada en la espalda del personaje Noah y también en la
-              pared del hospital en 1986. Es un texto breve, asignado a Hermes
-              Trismegisto, que contiene textos que tratan de explicar la esencia
-              de la materia primordial y sus transmutaciones.
-            </p>
-            <p class="text-stone-700 dark:text-stone-400 font-light text-sm">
-              Es un mensaje enigmático que no puede comprenderse en una sola
-              lectura. En ella se pueden leer frases como “lo que está abajo es
-              como lo que está arriba”, lo que podría suponer una alusión, de
-              nuevo, al tiempo. Todo está conectado: “el principio es el final y
-              el final es el principio”.
-            </p>
+            <div class="relative w-full h-56 overflow-hidden">
+              <img
+                src="/Aclaraciones/Simbologia/3.jpg"
+                class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000 opacity-80 group-hover:opacity-100"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0a0a0a] via-transparent to-transparent"
+              >
+              </div>
+            </div>
+            <div class="relative p-8 pt-5 space-y-3">
+              <h3
+                class="text-2xl font-cinzel text-amber-700 dark:text-amber-500 font-bold"
+              >
+                La Tabla de Esmeralda
+              </h3>
+              <p class="text-stone-700 dark:text-stone-400 font-light text-sm">
+                Aparece tatuada en la espalda del personaje Noah y también en la
+                pared del hospital en 1986. Es un texto breve, asignado a Hermes
+                Trismegisto, que contiene textos que tratan de explicar la esencia
+                de la materia primordial y sus transmutaciones.
+              </p>
+              <p class="text-stone-700 dark:text-stone-400 font-light text-sm">
+                Es un mensaje enigmático que no puede comprenderse en una sola
+                lectura. En ella se pueden leer frases como “lo que está abajo es
+                como lo que está arriba”, lo que podría suponer una alusión, de
+                nuevo, al tiempo. Todo está conectado: “el principio es el final y
+                el final es el principio”.
+              </p>
+            </div>
           </div>
 
           <div
-            class="case-card relative bg-stone-100 dark:bg-stone-900 border border-stone-300 dark:border-stone-800 rounded-xl p-8 hover:border-amber-500 transition-colors duration-500 group shadow-lg"
+            class="case-card group relative bg-white/80 dark:bg-[#0a0a0a] border border-stone-200 dark:border-stone-800/60 hover:border-amber-500/40 rounded-2xl overflow-hidden shadow-2xl shadow-stone-300/60 dark:shadow-none transition-colors duration-500"
+            data-aos="fade-up"
+            data-aos-delay="100"
           >
-            <img
-              src="/Aclaraciones/Simbologia/4.png"
-              class="w-full h-48 object-cover object-top rounded-lg mb-6 opacity-80 group-hover:opacity-100 transition-opacity"
-            />
-            <h3
-              class="text-2xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-4"
-            >
-              Sic Mundus Creatus Est
-            </h3>
-            <p
-              class="text-stone-700 dark:text-stone-400 font-light text-sm mb-3"
-            >
-              Es una frase de etimología latina que literalmente significa: “y
-              así se creó el mundo”. Está escrita en las puertas que hay dentro
-              de la cueva, en la parte superior e inferior del símbolo de la
-              triqueta.
-            </p>
-            <p class="text-stone-700 dark:text-stone-400 font-light text-sm">
-              Por otro lado, aparece en la tabla esmeralda y da nombre a la
-              organización de “viajeros del tiempo” encabezada por Adam, que
-              tuvo su origen en 1921. Adam pretende librar una guerra contra el
-              tiempo, desea llegar a un apocalipsis y dar paso a un nuevo ciclo
-              bañado por el desastre.
-            </p>
+            <div class="relative w-full h-56 overflow-hidden">
+              <img
+                src="/Aclaraciones/Simbologia/4.png"
+                class="w-full h-full object-cover object-top transform group-hover:scale-105 transition-transform duration-1000 opacity-80 group-hover:opacity-100"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0a0a0a] via-transparent to-transparent"
+              >
+              </div>
+            </div>
+            <div class="relative p-8 pt-5 space-y-3">
+              <h3
+                class="text-2xl font-cinzel text-amber-700 dark:text-amber-500 font-bold"
+              >
+                Sic Mundus Creatus Est
+              </h3>
+              <p class="text-stone-700 dark:text-stone-400 font-light text-sm">
+                Es una frase de etimología latina que literalmente significa: “y
+                así se creó el mundo”. Está escrita en las puertas que hay dentro
+                de la cueva, en la parte superior e inferior del símbolo de la
+                triqueta.
+              </p>
+              <p class="text-stone-700 dark:text-stone-400 font-light text-sm">
+                Por otro lado, aparece en la tabla esmeralda y da nombre a la
+                organización de “viajeros del tiempo” encabezada por Adam, que
+                tuvo su origen en 1921. Adam pretende librar una guerra contra el
+                tiempo, desea llegar a un apocalipsis y dar paso a un nuevo ciclo
+                bañado por el desastre.
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
       <div id="aclara-final" class="tab-content-aclara case-counter-reset hidden animate-fade-in">
-        <div
-          class="case-card relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-200 dark:border-stone-800/60 hover:border-amber-500/40 bg-white/80 dark:bg-[#0a0a0a] shadow-stone-300/60 dark:shadow-none mb-12 group flex flex-col lg:block lg:min-h-[450px] transition-colors duration-500"
-        >
+        <div class="relative">
           <div
-            class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:left-1/4 overflow-hidden z-0 mask-right"
-          >
-            <img
-              src="/Aclaraciones/Final/11.jpg"
-              class="w-full h-full object-cover object-[80%_center] transform group-hover:scale-105 transition-transform duration-1000 opacity-60 md:opacity-100 mix-blend-multiply dark:mix-blend-normal"
-            />
-            <div
-              class="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0a0a0a] via-stone-200/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
-            >
-            </div>
-          </div>
-          <div
-            class="hidden lg:block absolute inset-0 lg:left-1/4 bg-gradient-to-r from-white via-white/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
+            class="case-thread hidden lg:block gen-connector-line absolute top-4 bottom-4 z-0"
+            aria-hidden="true"
           >
           </div>
 
           <div
-            class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] space-y-4 flex flex-col justify-center lg:min-h-[450px]"
+            class="case-card relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-200 dark:border-stone-800/60 hover:border-amber-500/40 bg-white/80 dark:bg-[#0a0a0a] shadow-stone-300/60 dark:shadow-none mb-12 group flex flex-col lg:block lg:min-h-[450px] transition-colors duration-500"
+            data-aos="fade-up"
           >
-            <h3
-              class="text-2xl md:text-4xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-4"
-            >
-              El final de Dark: Los Tres Mundos
-            </h3>
-            <p
-              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
-            >
-              El final de la serie sigue teniendo como punto de partida el
-              determinismo. Una idea que, a diferencia de las idas y venidas de
-              los personajes dentro de la serie, sigue intacta. La ficción, al
-              principio y al final nos sigue cuestionando la posibilidad o no de
-              alterar nuestro destino.
-            </p>
-            <p
-              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
-            >
-              Asimismo, la tercera temporada centra el protagonismo en Jonas y
-              Martha, quienes representan mediante Adam y Eva, sus “yo” adulto,
-              el bando de la oscuridad y el de la luz, respectivamente. Uno
-              tiene la misión de cerrar el ciclo y destruirlo. La otra de
-              impedirlo. Así es como cada uno de ellos, como una partida de
-              ajedrez, tienen a diferentes personajes en cada uno de sus bandos
-              para llegar a alcanzar sus respectivos objetivos.
-            </p>
             <div
-              class="border-l-4 border-amber-500 pl-4 py-2 my-4 italic text-stone-600 dark:text-stone-400 text-sm md:text-base"
+              class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:left-1/4 overflow-hidden z-0 mask-right"
             >
-              "Tu mundo y el de Eva nunca debieron existir. Pensaste que el
-              origen de los mundos yace en la conexión de ambos mundos. Pero, en
-              realidad, está fuera de ambos mundos. Nuestro pensamiento se rige
-              por dualidades. Negro o blanco. Luz o sombra. Tu mundo o el de
-              Eva. Pero es un error, nada está completo sin una tercera
-              dimensión." - Claudia.
+              <img
+                src="/Aclaraciones/Final/11.jpg"
+                class="w-full h-full object-cover object-[80%_center] transform group-hover:scale-105 transition-transform duration-1000 opacity-60 md:opacity-100 mix-blend-multiply dark:mix-blend-normal"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0a0a0a] via-stone-200/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+              >
+              </div>
             </div>
-            <p
-              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+            <div
+              class="hidden lg:block absolute inset-0 lg:left-1/4 bg-gradient-to-r from-white via-white/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
             >
-              Finalmente, el personaje de Claudia viene a resolver el final y a
-              revelar la existencia de otro mundo más, es decir, en realidad,
-              existen tres mundos: (Mundo de Adam, Origen y Mundo de Eva).
-            </p>
-          </div>
-        </div>
+            </div>
 
-        <div
-          class="case-card relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-200 dark:border-stone-800/60 hover:border-amber-500/40 bg-white/80 dark:bg-[#0a0a0a] shadow-stone-300/60 dark:shadow-none mb-12 group flex flex-col lg:block lg:min-h-[450px] transition-colors duration-500"
-        >
-          <div
-            class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:w-3/4 overflow-hidden z-0 mask-left"
-          >
-            <img
-              src="/Aclaraciones/Final/4.jpg"
-              class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-1000 grayscale group-hover:grayscale-0 opacity-50 lg:opacity-80 mix-blend-multiply dark:mix-blend-normal"
-            />
             <div
-              class="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0a0a0a] via-stone-200/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+              class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] space-y-4 flex flex-col justify-center lg:min-h-[450px]"
             >
+              <h3
+                class="text-2xl md:text-4xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-4"
+              >
+                El final de Dark: Los Tres Mundos
+              </h3>
+              <p
+                class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+              >
+                El final de la serie sigue teniendo como punto de partida el
+                determinismo. Una idea que, a diferencia de las idas y venidas de
+                los personajes dentro de la serie, sigue intacta. La ficción, al
+                principio y al final nos sigue cuestionando la posibilidad o no de
+                alterar nuestro destino.
+              </p>
+              <p
+                class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+              >
+                Asimismo, la tercera temporada centra el protagonismo en Jonas y
+                Martha, quienes representan mediante Adam y Eva, sus “yo” adulto,
+                el bando de la oscuridad y el de la luz, respectivamente. Uno
+                tiene la misión de cerrar el ciclo y destruirlo. La otra de
+                impedirlo. Así es como cada uno de ellos, como una partida de
+                ajedrez, tienen a diferentes personajes en cada uno de sus bandos
+                para llegar a alcanzar sus respectivos objetivos.
+              </p>
+              <div
+                class="border-l-4 border-amber-500 pl-4 py-2 my-4 italic text-stone-600 dark:text-stone-400 text-sm md:text-base"
+              >
+                "Tu mundo y el de Eva nunca debieron existir. Pensaste que el
+                origen de los mundos yace en la conexión de ambos mundos. Pero, en
+                realidad, está fuera de ambos mundos. Nuestro pensamiento se rige
+                por dualidades. Negro o blanco. Luz o sombra. Tu mundo o el de
+                Eva. Pero es un error, nada está completo sin una tercera
+                dimensión." - Claudia.
+              </div>
+              <p
+                class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+              >
+                Finalmente, el personaje de Claudia viene a resolver el final y a
+                revelar la existencia de otro mundo más, es decir, en realidad,
+                existen tres mundos: (Mundo de Adam, Origen y Mundo de Eva).
+              </p>
             </div>
-          </div>
-          <div
-            class="hidden lg:block absolute inset-0 lg:w-3/4 bg-gradient-to-l from-white via-white/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
-          >
-          </div>
-
-          <div
-            class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] lg:ml-auto space-y-4 flex flex-col justify-center lg:min-h-[450px]"
-          >
-            <h3
-              class="text-2xl md:text-4xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-4"
-            >
-              La salvación como punto de partida
-            </h3>
-            <p
-              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
-            >
-              A lo largo de la serie, hemos visto como muchos personajes se
-              mueven con la misión de alterar un destino que se sabe trágico. La
-              voz en off de Martha se escucha en el primer capítulo y nos
-              devuelve a la duda de si se puede alterar el destino o no:
-            </p>
-            <div
-              class="border-l-4 border-stone-400 dark:border-stone-600 pl-4 py-2 my-4 italic text-stone-600 dark:text-stone-400 text-sm md:text-base"
-            >
-              "Si supiéramos cómo termina todo, adonde nos llevará nuestro viaje
-              ¿tomaríamos las mismas decisiones o elegiríamos un camino
-              distinto?"
-            </div>
-            <p
-              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
-            >
-              Jonas intenta impedir la muerte de su padre y Claudia el
-              sufrimiento de su hija. En este sentido, podemos ver como todos se
-              mueven con la idea de alterar el devenir para salvar a los suyos.
-              De aquí parte todo. Tannhaus, desde el mundo origen, creó un
-              prototipo de máquina del tiempo para impedir la muerte de su hijo,
-              su nuera y su nieta. Así surgieron estas dos realidades, que
-              destruyeron su mundo.
-            </p>
-            <p
-              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
-            >
-              La misión de Claudia al final es indicarle a Adam cual es el
-              camino para deshacer el nudo y los viajes en el tiempo.
-            </p>
-          </div>
-        </div>
-
-        <div
-          class="case-card relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-200 dark:border-stone-800/60 hover:border-amber-500/40 bg-white/80 dark:bg-[#0a0a0a] shadow-stone-300/60 dark:shadow-none mb-12 group flex flex-col lg:block lg:min-h-[450px] transition-colors duration-500"
-        >
-          <div
-            class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:left-1/4 overflow-hidden z-0 mask-right"
-          >
-            <img
-              src="/Aclaraciones/Final/3.jpg"
-              class="w-full h-full object-cover object-top transform group-hover:scale-105 transition-transform duration-1000 opacity-60 md:opacity-100 mix-blend-multiply dark:mix-blend-normal"
-            />
-            <div
-              class="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0a0a0a] via-stone-200/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
-            >
-            </div>
-          </div>
-          <div
-            class="hidden lg:block absolute inset-0 lg:left-1/4 bg-gradient-to-r from-white via-white/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
-          >
           </div>
 
           <div
-            class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] space-y-4 flex flex-col justify-center lg:min-h-[450px]"
+            class="case-card relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-200 dark:border-stone-800/60 hover:border-amber-500/40 bg-white/80 dark:bg-[#0a0a0a] shadow-stone-300/60 dark:shadow-none mb-12 group flex flex-col lg:block lg:min-h-[450px] transition-colors duration-500"
+            data-aos="fade-up"
           >
-            <h3
-              class="text-2xl md:text-4xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-4"
+            <div
+              class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:w-3/4 overflow-hidden z-0 mask-left"
             >
-              El Devenir de Jonas y Martha
-            </h3>
-            <p
-              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+              <img
+                src="/Aclaraciones/Final/4.jpg"
+                class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-1000 grayscale group-hover:grayscale-0 opacity-50 lg:opacity-80 mix-blend-multiply dark:mix-blend-normal"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0a0a0a] via-stone-200/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+              >
+              </div>
+            </div>
+            <div
+              class="hidden lg:block absolute inset-0 lg:w-3/4 bg-gradient-to-l from-white via-white/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
             >
-              La última misión de Jonas y Martha es la de impedir el accidente
-              del hijo de Tannhaus para que este no cree el prototipo de máquina
-              del tiempo. Después, los jóvenes parecen desintegrarse en pequeñas
-              partículas porque, en realidad Martha y Jonas nunca llegan a
-              existir.
-            </p>
-            <p
-              class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+            </div>
+
+            <div
+              class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] lg:ml-auto space-y-4 flex flex-col justify-center lg:min-h-[450px]"
             >
-              Sin embargo, la escena final en la que Hannah (en el mundo de
-              origen) está embarazada y decide llamar a su hijo Jonas por una
-              intuición (al mirar el chubasquero amarillo), abre la posibilidad
-              de la futura existencia de un nuevo Jonas, con otro padre
-              diferente, pues Mikkel no existe.
-            </p>
+              <h3
+                class="text-2xl md:text-4xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-4"
+              >
+                La salvación como punto de partida
+              </h3>
+              <p
+                class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+              >
+                A lo largo de la serie, hemos visto como muchos personajes se
+                mueven con la misión de alterar un destino que se sabe trágico. La
+                voz en off de Martha se escucha en el primer capítulo y nos
+                devuelve a la duda de si se puede alterar el destino o no:
+              </p>
+              <div
+                class="border-l-4 border-stone-400 dark:border-stone-600 pl-4 py-2 my-4 italic text-stone-600 dark:text-stone-400 text-sm md:text-base"
+              >
+                "Si supiéramos cómo termina todo, adonde nos llevará nuestro viaje
+                ¿tomaríamos las mismas decisiones o elegiríamos un camino
+                distinto?"
+              </div>
+              <p
+                class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+              >
+                Jonas intenta impedir la muerte de su padre y Claudia el
+                sufrimiento de su hija. En este sentido, podemos ver como todos se
+                mueven con la idea de alterar el devenir para salvar a los suyos.
+                De aquí parte todo. Tannhaus, desde el mundo origen, creó un
+                prototipo de máquina del tiempo para impedir la muerte de su hijo,
+                su nuera y su nieta. Así surgieron estas dos realidades, que
+                destruyeron su mundo.
+              </p>
+              <p
+                class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+              >
+                La misión de Claudia al final es indicarle a Adam cual es el
+                camino para deshacer el nudo y los viajes en el tiempo.
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="case-card relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-200 dark:border-stone-800/60 hover:border-amber-500/40 bg-white/80 dark:bg-[#0a0a0a] shadow-stone-300/60 dark:shadow-none mb-12 group flex flex-col lg:block lg:min-h-[450px] transition-colors duration-500"
+            data-aos="fade-up"
+          >
+            <div
+              class="relative w-full h-64 lg:h-auto lg:absolute lg:inset-0 lg:left-1/4 overflow-hidden z-0 mask-right"
+            >
+              <img
+                src="/Aclaraciones/Final/3.jpg"
+                class="w-full h-full object-cover object-top transform group-hover:scale-105 transition-transform duration-1000 opacity-60 md:opacity-100 mix-blend-multiply dark:mix-blend-normal"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0a0a0a] via-stone-200/60 dark:via-[#0a0a0a]/60 to-transparent lg:hidden pointer-events-none"
+              >
+              </div>
+            </div>
+            <div
+              class="hidden lg:block absolute inset-0 lg:left-1/4 bg-gradient-to-r from-white via-white/95 dark:from-[#0a0a0a] dark:via-[#0a0a0a]/90 to-transparent pointer-events-none z-0"
+            >
+            </div>
+
+            <div
+              class="relative z-10 p-6 pt-0 lg:p-16 lg:w-[65%] space-y-4 flex flex-col justify-center lg:min-h-[450px]"
+            >
+              <h3
+                class="text-2xl md:text-4xl font-cinzel text-amber-700 dark:text-amber-500 font-bold mb-4"
+              >
+                El Devenir de Jonas y Martha
+              </h3>
+              <p
+                class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+              >
+                La última misión de Jonas y Martha es la de impedir el accidente
+                del hijo de Tannhaus para que este no cree el prototipo de máquina
+                del tiempo. Después, los jóvenes parecen desintegrarse en pequeñas
+                partículas porque, en realidad Martha y Jonas nunca llegan a
+                existir.
+              </p>
+              <p
+                class="text-stone-800 dark:text-stone-300 font-light text-sm md:text-base"
+              >
+                Sin embargo, la escena final en la que Hannah (en el mundo de
+                origen) está embarazada y decide llamar a su hijo Jonas por una
+                intuición (al mirar el chubasquero amarillo), abre la posibilidad
+                de la futura existencia de un nuevo Jonas, con otro padre
+                diferente, pues Mikkel no existe.
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -836,12 +897,29 @@
       mask-image: linear-gradient(to left, black 40%, transparent 100%);
     }
   }
+
+  /* Hilo conector entre fichas: reutiliza .gen-connector-line (definida en
+     Familias.astro, style is:global — línea ámbar con pulso) para leer la
+     columna de tarjetas como una secuencia de expediente, no bloques
+     sueltos. Solo visible en desktop, alineado con el centro del badge
+     numerado (left-1rem + mitad de 2.75rem ≈ 38px). */
+  .case-thread {
+    left: 38px;
+  }
 </style>
 
 <script is:inline>
   document.addEventListener('DOMContentLoaded', () => {
     const tabsAclara = document.querySelectorAll('.tab-btn-aclara');
     const contentsAclara = document.querySelectorAll('.tab-content-aclara');
+    const pillAclara = document.getElementById('aclara-tab-pill');
+
+    function movePillTo(tabEl) {
+      if (!pillAclara || !tabEl) return;
+      pillAclara.style.left = `${tabEl.offsetLeft}px`;
+      pillAclara.style.width = `${tabEl.offsetWidth}px`;
+      pillAclara.style.opacity = '1';
+    }
 
     function activateAclaraTab(tabTargetId) {
       contentsAclara.forEach((c) => {
@@ -851,14 +929,11 @@
 
       tabsAclara.forEach((t) => {
         t.classList.remove(
+          'active',
           'text-stone-900',
           'dark:text-white',
           'border-amber-600',
           'dark:border-amber-500',
-          'bg-stone-300/80',
-          'dark:bg-stone-800/80',
-          'shadow-[0_-4px_20px_rgba(0,0,0,0.05)]',
-          'dark:shadow-[0_-4px_20px_rgba(0,0,0,0.3)]',
         );
         t.classList.add(
           'text-stone-500',
@@ -876,6 +951,7 @@
         targetContent.classList.remove('hidden');
         targetContent.classList.add('block');
 
+        targetTab.classList.add('active');
         targetTab.classList.remove(
           'text-stone-500',
           'dark:text-stone-500',
@@ -886,11 +962,10 @@
           'dark:text-white',
           'border-amber-600',
           'dark:border-amber-500',
-          'bg-stone-300/80',
-          'dark:bg-stone-800/80',
-          'shadow-[0_-4px_20px_rgba(0,0,0,0.05)]',
-          'dark:shadow-[0_-4px_20px_rgba(0,0,0,0.3)]',
         );
+
+        movePillTo(targetTab);
+        if (typeof AOS !== 'undefined') window.setTimeout(() => AOS.refresh(), 60);
       }
     }
 
@@ -898,6 +973,11 @@
       tab.addEventListener('click', () => {
         activateAclaraTab(tab.getAttribute('data-target'));
       });
+    });
+
+    window.addEventListener('resize', () => {
+      const activeTab = document.querySelector('.tab-btn-aclara.active') || tabsAclara[0];
+      movePillTo(activeTab);
     });
 
     // Exponemos para resetear cuando se cambie la vista desde index.astro
