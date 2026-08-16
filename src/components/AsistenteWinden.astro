@@ -197,27 +197,69 @@ const quickReplies = [
       </div>
     </div>
 
-    <div class="shrink-0 border-t border-stone-800 px-3 py-3 bg-stone-950/60 max-h-[38%] overflow-y-auto custom-scrollbar">
-      <div id="asistente-quick-replies" class="grid grid-cols-2 gap-2">
-        {
-          quickReplies.map((option) => (
-            <button
-              type="button"
-              data-asistente-option={option.id}
-              class="asistente-chip flex items-center gap-2 rounded-xl border border-stone-700 bg-stone-900 px-2.5 py-2 text-left text-[11px] leading-tight font-semibold text-stone-300 hover:border-amber-500/60 hover:text-amber-500 hover:bg-stone-800 hover:-translate-y-0.5 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
-            >
-              <svg class="w-3.5 h-3.5 shrink-0 text-amber-500/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d={icons[option.icon]} />
-              </svg>
-              <span>{option.label}</span>
-            </button>
-          ))
-        }
+    <!-- La zona de sugerencias estaba limitada a `max-h-[38%]` para doce
+         opciones en dos columnas: se veían cuatro y media y había que
+         desplazarse a ciegas dentro de un panel que ya se desplaza. Sube a un
+         45% con una etiqueta que anuncia qué es y un degradado inferior que
+         hace evidente que la lista continúa. -->
+    <div class="shrink-0 border-t border-stone-800 bg-stone-950/80">
+      <p class="px-4 pt-2.5 pb-1.5 font-mono text-[9px] tracking-[0.25em] uppercase text-stone-600">
+        Preguntas frecuentes
+      </p>
+      <div class="relative">
+        <div class="max-h-[13.5rem] overflow-y-auto custom-scrollbar px-3 pb-3">
+          <div id="asistente-quick-replies" class="grid grid-cols-2 gap-2">
+            {
+              quickReplies.map((option) => (
+                <button
+                  type="button"
+                  data-asistente-option={option.id}
+                  class="asistente-chip flex items-center gap-2 rounded-xl border border-stone-700 bg-stone-900 px-2.5 py-2 text-left text-[11px] leading-tight font-semibold text-stone-300 hover:border-amber-500/60 hover:text-amber-500 hover:bg-stone-800 hover:-translate-y-0.5 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+                >
+                  <svg class="w-3.5 h-3.5 shrink-0 text-amber-500/80" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d={icons[option.icon]} />
+                  </svg>
+                  <span>{option.label}</span>
+                </button>
+              ))
+            }
+          </div>
+        </div>
+        <div
+          aria-hidden="true"
+          class="pointer-events-none absolute inset-x-0 bottom-0 h-6 bg-gradient-to-t from-stone-950 to-transparent"
+        ></div>
       </div>
     </div>
   </div>
 
-  <!-- Botón flotante -->
+  <!-- Aviso de descubrimiento: aparece una sola vez, unos segundos después de
+       cargar, y no vuelve (queda registrado en localStorage). El asistente es
+       la pieza más útil para quien llega perdido con la trama, pero un icono
+       mudo en una esquina no se pulsa; una frase corta sí. -->
+  <div
+    id="asistente-nudge"
+    class="hidden mb-3 mr-1 max-w-[15rem] items-start gap-2 rounded-2xl rounded-br-sm border border-amber-500/30 bg-stone-950/95 backdrop-blur-md px-3.5 py-2.5 shadow-2xl shadow-black/50 opacity-0 translate-y-2 transition-all duration-300"
+  >
+    <p class="text-[11px] leading-snug text-stone-300">
+      ¿Te has perdido con la trama? Pregúntame.
+    </p>
+    <button
+      type="button"
+      id="asistente-nudge-close"
+      aria-label="Descartar aviso"
+      class="shrink-0 -mt-0.5 -mr-1 p-1 rounded-full text-stone-500 hover:text-amber-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+    >
+      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Botón flotante.
+       Sube de 44px a 56px y pasa a fondo ámbar sólido: como acción primaria
+       de la columna flotante competía con el botón de WhatsApp, que era el
+       único con color de relleno y se llevaba toda la atención. -->
   <button
     type="button"
     id="asistente-toggle"
@@ -225,17 +267,20 @@ const quickReplies = [
     aria-expanded="false"
     aria-controls="asistente-panel"
     aria-label="Abrir asistente de Winden"
-    class="group relative w-11 h-11 rounded-full bg-stone-900 border border-amber-500/40 shadow-2xl shadow-black/40 flex items-center justify-center text-amber-500 hover:bg-black hover:border-amber-500 hover:-translate-y-1 active:scale-95 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+    class="group relative w-14 h-14 rounded-full bg-amber-500 text-black shadow-[0_8px_24px_-6px_rgba(245,158,11,0.65)] flex items-center justify-center hover:bg-amber-400 hover:-translate-y-1 active:scale-95 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
   >
     <span
-      class="absolute inset-0 rounded-full bg-amber-500/25 blur-md scale-90 opacity-0 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 -z-10"
+      id="asistente-ping"
+      aria-hidden="true"
+      class="absolute inset-0 rounded-full ring-2 ring-amber-500/60 pointer-events-none"
     ></span>
     <svg
       id="asistente-icon-open"
-      class="w-5 h-5 transition-transform duration-300"
+      class="w-6 h-6 transition-transform duration-300"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
+      aria-hidden="true"
     >
       <path
         stroke-linecap="round"
@@ -246,10 +291,11 @@ const quickReplies = [
     </svg>
     <svg
       id="asistente-icon-close"
-      class="hidden w-4 h-4 transition-transform duration-300"
+      class="hidden w-5 h-5 transition-transform duration-300"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
+      aria-hidden="true"
     >
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M6 18L18 6M6 6l12 12"
       ></path>
@@ -305,10 +351,30 @@ const quickReplies = [
     }
   }
 
+  /* Latido del anillo mientras el aviso está en pantalla. Solo transform y
+     opacity sobre un pseudo-anillo, y únicamente durante esos segundos:
+     nunca queda una animación corriendo de fondo el resto de la sesión. */
+  .asistente-ping-active {
+    animation: asistente-ping 2s cubic-bezier(0, 0, 0.2, 1) 3;
+  }
+  @keyframes asistente-ping {
+    0% {
+      transform: scale(1);
+      opacity: 0.8;
+    }
+    70%,
+    100% {
+      transform: scale(1.5);
+      opacity: 0;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .asistente-bubble,
     .asistente-typing-dot,
+    .asistente-ping-active,
     #asistente-panel,
+    #asistente-nudge,
     #asistente-icon-open,
     #asistente-icon-close {
       animation: none !important;
@@ -418,9 +484,78 @@ const quickReplies = [
       btn.addEventListener('click', () => handleOptionClick(btn.dataset.asistenteOption));
     });
 
+    // ===== AVISO DE DESCUBRIMIENTO (una sola vez por navegador) =====
+    const NUDGE_KEY = 'asistenteWindenNudgeVisto';
+    const nudge = document.getElementById('asistente-nudge');
+    const nudgeClose = document.getElementById('asistente-nudge-close');
+    const ping = document.getElementById('asistente-ping');
+    let nudgeTimer = null;
+
+    function hasSeenNudge() {
+      try {
+        return localStorage.getItem(NUDGE_KEY) === '1';
+      } catch {
+        // Modo privado o cookies bloqueadas: se trata como "ya visto" para no
+        // insistir en cada carga sin poder recordar nada.
+        return true;
+      }
+    }
+
+    function markNudgeSeen() {
+      try {
+        localStorage.setItem(NUDGE_KEY, '1');
+      } catch {
+        /* sin almacenamiento disponible: nada que recordar */
+      }
+    }
+
+    function hideNudge({ remember = true } = {}) {
+      if (nudgeTimer) {
+        window.clearTimeout(nudgeTimer);
+        nudgeTimer = null;
+      }
+      ping?.classList.remove('asistente-ping-active');
+      if (!nudge || nudge.classList.contains('hidden')) {
+        if (remember) markNudgeSeen();
+        return;
+      }
+      nudge.classList.add('opacity-0', 'translate-y-2');
+      window.setTimeout(() => {
+        nudge.classList.add('hidden');
+        nudge.classList.remove('flex');
+      }, 300);
+      if (remember) markNudgeSeen();
+    }
+
+    if (nudge && !hasSeenNudge()) {
+      nudgeTimer = window.setTimeout(() => {
+        if (isOpen) return;
+        nudge.classList.remove('hidden');
+        nudge.classList.add('flex');
+        ping?.classList.add('asistente-ping-active');
+        requestAnimationFrame(() =>
+          nudge.classList.remove('opacity-0', 'translate-y-2'),
+        );
+        // Si nadie lo toca, se retira solo: un aviso permanente deja de ser
+        // una sugerencia y pasa a ser un estorbo.
+        nudgeTimer = window.setTimeout(() => hideNudge(), 12000);
+      }, 6000);
+    }
+
+    nudgeClose?.addEventListener('click', () => hideNudge());
+
+    // El FAB de WhatsApp queda justo encima del panel; se aparta mientras el
+    // asistente está abierto en vez de asomar por detrás.
+    const whatsappFab = document.getElementById('whatsapp-fab');
+
     function openAsistente() {
       isOpen = true;
+      hideNudge();
       lastFocused = document.activeElement;
+      // Marca en <body> para que la regla que esconde los FAB sobre el hero
+      // no se lleve por delante un panel que el usuario tiene abierto.
+      document.body.classList.add('asistente-open');
+      whatsappFab?.classList.add('is-tucked');
       panel.classList.remove('hidden');
       panel.classList.add('flex');
       panel.setAttribute('aria-hidden', 'false');
@@ -437,6 +572,8 @@ const quickReplies = [
 
     function closeAsistente() {
       isOpen = false;
+      document.body.classList.remove('asistente-open');
+      whatsappFab?.classList.remove('is-tucked');
       panel.classList.add('opacity-0', 'scale-95', 'translate-y-2');
       panel.setAttribute('aria-hidden', 'true');
       toggleBtn.setAttribute('aria-expanded', 'false');

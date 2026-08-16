@@ -26,7 +26,7 @@
     <span class="hero-mote" style="left: 82%; animation-delay: 3.6s;"></span>
   </div>
 
-  <div class="relative z-10 text-center space-y-6 px-6 pt-16">
+  <div class="relative z-10 text-center space-y-5 md:space-y-6 px-6 pt-16">
     <div class="relative inline-block">
       <div
         class="hero-title-halo absolute inset-0 -z-10 pointer-events-none"
@@ -57,24 +57,59 @@
     >
     </div>
 
+    <!-- Ficha técnica en una sola línea. Antes eran dos píldoras con un punto
+         ámbar suelto entre ellas: tres cajas para un dato que se lee de
+         corrido. Un solo renglón con separadores tenues pesa menos y deja el
+         protagonismo al título. -->
     <div
       data-aos="fade-up"
-      data-aos-delay="700"
-      class="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 pt-2"
+      data-aos-delay="600"
+      class="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 font-mono text-[10px] md:text-[11px] tracking-[0.22em] uppercase text-stone-400"
     >
-      <span
-        class="font-mono text-[11px] md:text-xs tracking-[0.2em] uppercase text-stone-300 bg-black/40 border border-white/10 backdrop-blur-md rounded-full px-3 py-1"
+      <span>3 Temporadas</span>
+      <span aria-hidden="true" class="text-amber-500/60">·</span>
+      <span>26 Episodios</span>
+      <span aria-hidden="true" class="text-amber-500/60">·</span>
+      <span>2017–2020</span>
+      <span aria-hidden="true" class="text-amber-500/60">·</span>
+      <span class="text-amber-400/90">Misterio · Ciencia Ficción</span>
+    </div>
+
+    <!-- El hero no tenía ninguna llamada a la acción: el usuario aterrizaba
+         en una portada preciosa y su única salida era desplazarse a ciegas.
+         Dos rutas explícitas, la primaria hacia el contenido más distintivo
+         del sitio (el árbol genealógico). -->
+    <div
+      data-aos="fade-up"
+      data-aos-delay="750"
+      class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4"
+    >
+      <a
+        href="#personajes"
+        class="hero-cta group inline-flex items-center justify-center gap-2.5 w-full sm:w-auto h-12 md:h-[3.25rem] px-7 leading-none rounded-full bg-amber-500 text-black font-cinzel font-bold text-xs md:text-sm tracking-[0.18em] uppercase shadow-[0_8px_30px_-8px_rgba(245,158,11,0.7)] hover:bg-amber-400 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
       >
-        3 Temporadas · 26 Episodios · 2017–2020
-      </span>
-      <span class="hidden sm:inline-flex items-center gap-2 text-stone-500" aria-hidden="true">
-        <span class="w-1 h-1 rounded-full bg-amber-500"></span>
-      </span>
-      <span
-        class="font-mono text-[11px] md:text-xs tracking-[0.2em] uppercase text-amber-400 bg-black/40 border border-amber-500/20 backdrop-blur-md rounded-full px-3 py-1"
+        Explorar las familias
+        <svg
+          class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2.5"
+            d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+        </svg>
+      </a>
+
+      <a
+        href="#resumen"
+        class="hero-cta inline-flex items-center justify-center gap-2.5 w-full sm:w-auto h-12 md:h-[3.25rem] px-7 leading-none rounded-full border border-white/25 bg-white/5 backdrop-blur-md text-stone-100 font-cinzel font-bold text-xs md:text-sm tracking-[0.18em] uppercase hover:border-amber-500/70 hover:text-amber-400 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
       >
-        Misterio · Ciencia Ficción · Familia
-      </span>
+        Ver el resumen
+      </a>
     </div>
 
   </div>
@@ -294,6 +329,15 @@
     }
     .hero-scroll-chevron {
       animation: none;
+    }
+    .hero-cta {
+      transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+    }
+    .hero-cta:hover {
+      transform: none;
     }
   }
 </style>

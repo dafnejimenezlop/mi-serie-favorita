@@ -18,36 +18,58 @@
       </p>
     </div>
 
+    <!-- Las pestañas señalaban la activa DOS veces a la vez: con la píldora
+         deslizante y con un subrayado `border-b-2`. Dos indicadores para un
+         solo estado se estorban — la píldora se desliza y el subrayado salta,
+         y el ojo no sabe cuál seguir. Se queda solo la píldora, que además es
+         el mismo lenguaje que la navegación del header.
+         En móvil, `text-[10px]` con `tracking-wider` dejaba "Explicación" sin
+         espacio en su cuarto de fila; ahora el tracking amplio se reserva a
+         partir de `md`, donde sí hay sitio. -->
     <div
-      class="relative grid grid-cols-4 md:flex md:flex-wrap justify-center gap-2 md:gap-4 mb-12 md:mb-16 w-full max-w-3xl mx-auto"
+      role="tablist"
+      aria-label="Secciones de aclaraciones"
+      class="relative grid grid-cols-4 md:flex md:flex-nowrap justify-center gap-1 mb-12 md:mb-16 w-full max-w-lg md:w-fit md:max-w-none mx-auto p-1 rounded-xl md:rounded-full border border-stone-300/60 dark:border-stone-800/80 bg-stone-200/50 dark:bg-stone-900/50 backdrop-blur-sm"
       data-aos="fade-up"
     >
       <div
         id="aclara-tab-pill"
-        class="absolute inset-y-0 rounded-lg md:rounded-t-lg bg-stone-300/80 dark:bg-stone-800/80 shadow-lg transition-all duration-300 ease-out z-0 opacity-0"
+        class="absolute inset-y-1 rounded-lg md:rounded-full bg-amber-500 shadow-[0_2px_12px_-2px_rgba(245,158,11,0.55)] transition-all duration-300 ease-out z-0 opacity-0"
         style="left: 0; width: 0;"
       >
       </div>
       <button
-        class="tab-btn-aclara active relative z-10 px-1 py-3 md:px-6 md:py-3 font-cinzel font-bold tracking-wider md:tracking-widest uppercase text-[10px] md:text-base transition-colors duration-300 text-stone-900 dark:text-white border-b-2 border-amber-600 dark:border-amber-500"
+        role="tab"
+        aria-selected="true"
+        aria-controls="aclara-explicacion"
+        class="tab-btn-aclara active relative z-10 inline-flex items-center justify-center min-h-10 md:min-h-9 px-1.5 py-2 md:px-5 md:py-1.5 rounded-lg md:rounded-full font-cinzel font-bold tracking-normal md:tracking-[0.12em] uppercase text-[9px] md:text-xs leading-tight transition-colors duration-300 text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
         data-target="aclara-explicacion"
       >
         Explicación
       </button>
       <button
-        class="tab-btn-aclara relative z-10 px-1 py-3 md:px-6 md:py-3 font-cinzel font-bold tracking-wider md:tracking-widest uppercase text-[10px] md:text-base transition-colors duration-300 text-stone-500 border-b-2 border-transparent hover:text-stone-700 dark:hover:text-stone-300"
+        role="tab"
+        aria-selected="false"
+        aria-controls="aclara-simbologia"
+        class="tab-btn-aclara relative z-10 inline-flex items-center justify-center min-h-10 md:min-h-9 px-1.5 py-2 md:px-5 md:py-1.5 rounded-lg md:rounded-full font-cinzel font-bold tracking-normal md:tracking-[0.12em] uppercase text-[9px] md:text-xs leading-tight transition-colors duration-300 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
         data-target="aclara-simbologia"
       >
         Simbología
       </button>
       <button
-        class="tab-btn-aclara relative z-10 px-1 py-3 md:px-6 md:py-3 font-cinzel font-bold tracking-wider md:tracking-widest uppercase text-[10px] md:text-base transition-colors duration-300 text-stone-500 border-b-2 border-transparent hover:text-stone-700 dark:hover:text-stone-300"
+        role="tab"
+        aria-selected="false"
+        aria-controls="aclara-final"
+        class="tab-btn-aclara relative z-10 inline-flex items-center justify-center min-h-10 md:min-h-9 px-1.5 py-2 md:px-5 md:py-1.5 rounded-lg md:rounded-full font-cinzel font-bold tracking-normal md:tracking-[0.12em] uppercase text-[9px] md:text-xs leading-tight transition-colors duration-300 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
         data-target="aclara-final"
       >
         El Final
       </button>
       <button
-        class="tab-btn-aclara relative z-10 px-1 py-3 md:px-6 md:py-3 font-cinzel font-bold tracking-wider md:tracking-widest uppercase text-[10px] md:text-base transition-colors duration-300 text-stone-500 border-b-2 border-transparent hover:text-stone-700 dark:hover:text-stone-300"
+        role="tab"
+        aria-selected="false"
+        aria-controls="aclara-glosario"
+        class="tab-btn-aclara relative z-10 inline-flex items-center justify-center min-h-10 md:min-h-9 px-1.5 py-2 md:px-5 md:py-1.5 rounded-lg md:rounded-full font-cinzel font-bold tracking-normal md:tracking-[0.12em] uppercase text-[9px] md:text-xs leading-tight transition-colors duration-300 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
         data-target="aclara-glosario"
       >
         Glosario
@@ -95,6 +117,9 @@
             >
               <img
                 src="/Aclaraciones/Explicacion/1.jpg"
+                alt=""
+                loading="lazy"
+                decoding="async"
                 class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-1000 opacity-60 md:opacity-100 mix-blend-multiply dark:mix-blend-normal"
               />
               <div
@@ -149,6 +174,9 @@
             >
               <img
                 src="/Aclaraciones/Explicacion/2.jpg"
+                alt=""
+                loading="lazy"
+                decoding="async"
                 class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-1000 grayscale group-hover:grayscale-0 opacity-50 lg:opacity-80 mix-blend-multiply dark:mix-blend-normal"
               />
               <div
@@ -214,6 +242,9 @@
             >
               <img
                 src="/Aclaraciones/Explicacion/3.jpg"
+                alt=""
+                loading="lazy"
+                decoding="async"
                 class="w-full h-full object-cover object-[20%_center] transform group-hover:scale-105 transition-transform duration-1000 opacity-60 md:opacity-100 mix-blend-multiply dark:mix-blend-normal"
               />
               <div
@@ -264,6 +295,9 @@
             >
               <img
                 src="/Aclaraciones/Explicacion/4.jpg"
+                alt=""
+                loading="lazy"
+                decoding="async"
                 class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-1000 grayscale group-hover:grayscale-0 opacity-50 lg:opacity-80 mix-blend-multiply dark:mix-blend-normal"
               />
               <div
@@ -321,6 +355,9 @@
             >
               <img
                 src="/Aclaraciones/Explicacion/5.jpg"
+                alt=""
+                loading="lazy"
+                decoding="async"
                 class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-1000 opacity-60 md:opacity-100 mix-blend-multiply dark:mix-blend-normal"
               />
               <div
@@ -377,6 +414,9 @@
             >
               <img
                 src="/Aclaraciones/Explicacion/6.jpg"
+                alt=""
+                loading="lazy"
+                decoding="async"
                 class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-1000 grayscale group-hover:grayscale-0 opacity-50 lg:opacity-80 mix-blend-multiply dark:mix-blend-normal"
               />
               <div
@@ -429,6 +469,9 @@
             >
               <img
                 src="/Aclaraciones/Explicacion/7.jpg"
+                alt=""
+                loading="lazy"
+                decoding="async"
                 class="w-full h-full object-cover object-[80%_center] transform group-hover:scale-105 transition-transform duration-1000 opacity-60 md:opacity-100 mix-blend-multiply dark:mix-blend-normal"
               />
               <div
@@ -483,6 +526,9 @@
             <div class="relative w-full h-56 overflow-hidden">
               <img
                 src="/Aclaraciones/Simbologia/2.jpg"
+                alt=""
+                loading="lazy"
+                decoding="async"
                 class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000 opacity-80 group-hover:opacity-100"
               />
               <div
@@ -530,6 +576,9 @@
             <div class="relative w-full h-56 overflow-hidden">
               <img
                 src="/Aclaraciones/Simbologia/1.jpg"
+                alt=""
+                loading="lazy"
+                decoding="async"
                 class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000 opacity-80 group-hover:opacity-100"
               />
               <div
@@ -566,6 +615,9 @@
             <div class="relative w-full h-56 overflow-hidden">
               <img
                 src="/Aclaraciones/Simbologia/3.jpg"
+                alt=""
+                loading="lazy"
+                decoding="async"
                 class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000 opacity-80 group-hover:opacity-100"
               />
               <div
@@ -603,6 +655,9 @@
             <div class="relative w-full h-56 overflow-hidden">
               <img
                 src="/Aclaraciones/Simbologia/4.png"
+                alt=""
+                loading="lazy"
+                decoding="async"
                 class="w-full h-full object-cover object-top transform group-hover:scale-105 transition-transform duration-1000 opacity-80 group-hover:opacity-100"
               />
               <div
@@ -651,6 +706,9 @@
             >
               <img
                 src="/Aclaraciones/Final/11.jpg"
+                alt=""
+                loading="lazy"
+                decoding="async"
                 class="w-full h-full object-cover object-[80%_center] transform group-hover:scale-105 transition-transform duration-1000 opacity-60 md:opacity-100 mix-blend-multiply dark:mix-blend-normal"
               />
               <div
@@ -720,6 +778,9 @@
             >
               <img
                 src="/Aclaraciones/Final/4.jpg"
+                alt=""
+                loading="lazy"
+                decoding="async"
                 class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-1000 grayscale group-hover:grayscale-0 opacity-50 lg:opacity-80 mix-blend-multiply dark:mix-blend-normal"
               />
               <div
@@ -784,6 +845,9 @@
             >
               <img
                 src="/Aclaraciones/Final/3.jpg"
+                alt=""
+                loading="lazy"
+                decoding="async"
                 class="w-full h-full object-cover object-top transform group-hover:scale-105 transition-transform duration-1000 opacity-60 md:opacity-100 mix-blend-multiply dark:mix-blend-normal"
               />
               <div
@@ -1147,19 +1211,13 @@
         c.classList.add('hidden');
       });
 
+      // El estado activo es ahora solo la píldora ámbar + el color del texto
+      // (negro sobre ámbar, que es lo que da el contraste); ya no hay clases
+      // de borde que sincronizar.
       tabsAclara.forEach((t) => {
-        t.classList.remove(
-          'active',
-          'text-stone-900',
-          'dark:text-white',
-          'border-amber-600',
-          'dark:border-amber-500',
-        );
-        t.classList.add(
-          'text-stone-500',
-          'dark:text-stone-500',
-          'border-transparent',
-        );
+        t.classList.remove('active', 'text-black');
+        t.classList.add('text-stone-600', 'dark:text-stone-400');
+        t.setAttribute('aria-selected', 'false');
       });
 
       const targetContent = document.getElementById(tabTargetId);
@@ -1172,17 +1230,9 @@
         targetContent.classList.add('block');
 
         targetTab.classList.add('active');
-        targetTab.classList.remove(
-          'text-stone-500',
-          'dark:text-stone-500',
-          'border-transparent',
-        );
-        targetTab.classList.add(
-          'text-stone-900',
-          'dark:text-white',
-          'border-amber-600',
-          'dark:border-amber-500',
-        );
+        targetTab.classList.remove('text-stone-600', 'dark:text-stone-400');
+        targetTab.classList.add('text-black');
+        targetTab.setAttribute('aria-selected', 'true');
 
         movePillTo(targetTab);
         if (typeof AOS !== 'undefined') window.setTimeout(() => AOS.refresh(), 60);
@@ -1195,10 +1245,16 @@
       });
     });
 
-    window.addEventListener('resize', () => {
-      const activeTab = document.querySelector('.tab-btn-aclara.active') || tabsAclara[0];
+    function repositionPill() {
+      const activeTab =
+        document.querySelector('.tab-btn-aclara.active') || tabsAclara[0];
       movePillTo(activeTab);
-    });
+    }
+
+    window.addEventListener('resize', repositionPill);
+    // La píldora se mide en píxeles del texto: si la medida se toma con la
+    // fuente de reserva, queda desalineada hasta el primer resize.
+    if (document.fonts?.ready) document.fonts.ready.then(repositionPill);
 
     // Exponemos para resetear cuando se cambie la vista desde index.astro
     window.resetAclaracionesTabs = () =>

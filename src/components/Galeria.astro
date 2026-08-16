@@ -19,18 +19,37 @@ import { songs, galleryImages } from '../data/bandaSonora';
       </p>
     </div>
 
+    <!-- Galería era la tercera variante de pestaña del sitio (fondo sólido +
+         subrayado, sin píldora deslizante). Adopta el mismo control que
+         Resumen y Aclaraciones para que cambiar de sección no cambie el
+         lenguaje de la interfaz. -->
     <div
-      class="grid grid-cols-2 justify-center gap-2 md:flex md:gap-4 mb-12 md:mb-16 w-full max-w-md mx-auto"
+      id="galeria-tablist"
+      role="tablist"
+      aria-label="Banda sonora y galería"
+      class="relative grid grid-cols-2 md:flex md:flex-nowrap justify-center gap-1 mb-12 md:mb-16 w-full max-w-xs md:w-fit md:max-w-none mx-auto p-1 rounded-xl md:rounded-full border border-stone-300/60 dark:border-stone-800/80 bg-stone-200/50 dark:bg-stone-900/50 backdrop-blur-sm"
       data-aos="fade-up"
     >
+      <div
+        id="galeria-tab-pill"
+        class="absolute inset-y-1 rounded-lg md:rounded-full bg-amber-500 shadow-[0_2px_12px_-2px_rgba(245,158,11,0.55)] transition-all duration-300 ease-out z-0 opacity-0"
+        style="left: 0; width: 0;"
+      >
+      </div>
       <button
-        class="tab-btn-galeria active px-1 py-3 md:px-8 md:py-3 rounded-lg md:rounded-t-lg font-cinzel font-bold tracking-wider md:tracking-widest uppercase text-[11px] md:text-base transition-all duration-300 text-white border-b-2 border-amber-600 dark:border-amber-500 bg-stone-800 dark:bg-[#0a0a0a] shadow-lg"
+        role="tab"
+        aria-selected="true"
+        aria-controls="galeria-musica"
+        class="tab-btn-galeria active relative z-10 inline-flex items-center justify-center min-h-10 md:min-h-9 px-1.5 py-2 md:px-5 md:py-1.5 rounded-lg md:rounded-full font-cinzel font-bold tracking-normal md:tracking-[0.12em] uppercase text-[10px] md:text-xs leading-tight transition-colors duration-300 text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
         data-target="galeria-musica"
       >
         Banda Sonora
       </button>
       <button
-        class="tab-btn-galeria px-1 py-3 md:px-8 md:py-3 rounded-lg md:rounded-t-lg font-cinzel font-bold tracking-wider md:tracking-widest uppercase text-[11px] md:text-base transition-all duration-300 text-stone-500 border-b-2 border-transparent hover:text-stone-700 dark:hover:text-stone-300 hover:bg-stone-300/40 dark:hover:bg-stone-900/40"
+        role="tab"
+        aria-selected="false"
+        aria-controls="galeria-fotos"
+        class="tab-btn-galeria relative z-10 inline-flex items-center justify-center min-h-10 md:min-h-9 px-1.5 py-2 md:px-5 md:py-1.5 rounded-lg md:rounded-full font-cinzel font-bold tracking-normal md:tracking-[0.12em] uppercase text-[10px] md:text-xs leading-tight transition-colors duration-300 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
         data-target="galeria-fotos"
       >
         Fotografías
@@ -289,21 +308,24 @@ import { songs, galleryImages } from '../data/bandaSonora';
     const tabs = document.querySelectorAll('.tab-btn-galeria');
     const contents = document.querySelectorAll('.tab-content-galeria');
 
+    const pillGaleria = document.getElementById('galeria-tab-pill');
+
+    function movePillTo(tabEl) {
+      if (!pillGaleria || !tabEl) return;
+      pillGaleria.style.left = `${tabEl.offsetLeft}px`;
+      pillGaleria.style.width = `${tabEl.offsetWidth}px`;
+      pillGaleria.style.opacity = '1';
+    }
+
     function activateTab(targetId) {
       contents.forEach((c) => {
         c.classList.remove('block');
         c.classList.add('hidden');
       });
       tabs.forEach((t) => {
-        t.classList.remove(
-          'text-white',
-          'border-amber-600',
-          'dark:border-amber-500',
-          'bg-stone-800',
-          'dark:bg-[#0a0a0a]',
-          'shadow-lg',
-        );
-        t.classList.add('text-stone-500', 'border-transparent');
+        t.classList.remove('active', 'text-black');
+        t.classList.add('text-stone-600', 'dark:text-stone-400');
+        t.setAttribute('aria-selected', 'false');
       });
 
       const targetContent = document.getElementById(targetId);
@@ -311,18 +333,19 @@ import { songs, galleryImages } from '../data/bandaSonora';
       if (targetContent && targetTab) {
         targetContent.classList.remove('hidden');
         targetContent.classList.add('block');
-        targetTab.classList.remove('text-stone-500', 'border-transparent');
-        targetTab.classList.add(
-          'text-white',
-          'border-amber-600',
-          'dark:border-amber-500',
-          'bg-stone-800',
-          'dark:bg-[#0a0a0a]',
-          'shadow-lg',
-        );
+        targetTab.classList.remove('text-stone-600', 'dark:text-stone-400');
+        targetTab.classList.add('active', 'text-black');
+        targetTab.setAttribute('aria-selected', 'true');
+        movePillTo(targetTab);
       }
       if (typeof AOS !== 'undefined') setTimeout(() => AOS.refresh(), 50);
     }
+
+    function repositionPillGaleria() {
+      movePillTo(document.querySelector('.tab-btn-galeria.active') || tabs[0]);
+    }
+    window.addEventListener('resize', repositionPillGaleria);
+    if (document.fonts?.ready) document.fonts.ready.then(repositionPillGaleria);
 
     tabs.forEach((tab) => {
       tab.addEventListener('click', () => {

@@ -15,12 +15,24 @@ const relationshipValidation = validateRelationships(
   body.hide-global-ui {
     overflow: hidden !important;
   }
+  /* `.whatsapp-btn` no existía en ningún elemento: el botón de WhatsApp nunca
+     llevó esa clase, así que la regla no ocultaba nada (se salvaba solo
+     porque su z-index queda por debajo del visor). Se apunta a los ids/clases
+     reales, incluido el asistente, que tampoco estaba contemplado. */
   body.hide-global-ui footer,
   body.hide-global-ui #netflix-header,
-  body.hide-global-ui .whatsapp-btn {
+  body.hide-global-ui #whatsapp-fab,
+  body.hide-global-ui #asistente-winden-root {
     opacity: 0 !important;
     pointer-events: none !important;
     display: none !important;
+  }
+
+  /* Acordeón de linajes. Le faltaba la transición: `flex` cambiaba de 1 a 3
+     de golpe, así que el panel daba un salto seco en lugar de abrirse. Es
+     justo el gesto que vende esta pantalla, y era lo único que le faltaba. */
+  .family-card {
+    transition: flex 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
   @media (min-width: 1024px) {
@@ -32,6 +44,12 @@ const relationshipValidation = validateRelationships(
     }
     .group\/container .family-card:hover {
       flex: 3;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .family-card {
+      transition: none;
     }
   }
 
@@ -105,16 +123,78 @@ const relationshipValidation = validateRelationships(
     vertical-align: middle;
   }
 
-  /* ZOOM/PAN TREE */
-  #tree-pan-area {
-    user-select: none;
-    cursor: none;
+  /* ===== CURSOR TRIQUETA, AHORA SIN LAG =====
+     La triqueta vuelve, pero por una vía distinta. Antes era `cursor: none` +
+     un <svg> que JS reposicionaba en cada movimiento: eso NUNCA puede ir
+     sincronizado, porque el sistema operativo dibuja el cursor real fuera del
+     hilo principal mientras que el sustituto solo puede repintarse una vez
+     por frame — y más tarde aún si el hilo está ocupado. Esa distancia entre
+     "dónde está el ratón" y "dónde se pinta el ratón" era el lag.
+
+     `cursor: url(...)` no tiene ese problema: el propio navegador la usa como
+     cursor del sistema, así que la dibuja el compositor junto al puntero
+     real. Es la misma imagen, pegada al ratón, y con cero trabajo de JS.
+     El SVG va incrustado como data-URI (no hay petición de red) con un
+     contorno oscuro bajo el trazo ámbar para que se lea también sobre las
+     zonas claras de los retratos. Los números tras la url son el punto
+     activo (el "pico" del cursor), centrado en la figura.
+     Safari no soporta cursores SVG: por eso el fallback grab/grabbing. */
+  /* Las variables viven en :root para que cualquier zona inmersiva pueda
+     usarlas sin redeclararlas. */
+  :root {
+    --triqueta: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 100 100' fill='none'%3E%3Cg stroke='%23000' stroke-width='11' opacity='0.5'%3E%3Ccircle cx='50' cy='33' r='21'/%3E%3Ccircle cx='34' cy='61' r='21'/%3E%3Ccircle cx='66' cy='61' r='21'/%3E%3C/g%3E%3Cg stroke='%23f59e0b' stroke-width='6'%3E%3Ccircle cx='50' cy='33' r='21'/%3E%3Ccircle cx='34' cy='61' r='21'/%3E%3Ccircle cx='66' cy='61' r='21'/%3E%3C/g%3E%3C/svg%3E")
+      14 14;
+    --triqueta-activa: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 100 100' fill='none'%3E%3Cg stroke='%23000' stroke-width='12' opacity='0.55'%3E%3Ccircle cx='50' cy='33' r='21'/%3E%3Ccircle cx='34' cy='61' r='21'/%3E%3Ccircle cx='66' cy='61' r='21'/%3E%3C/g%3E%3Cg stroke='%23fcd34d' stroke-width='8'%3E%3Ccircle cx='50' cy='33' r='21'/%3E%3Ccircle cx='34' cy='61' r='21'/%3E%3Ccircle cx='66' cy='61' r='21'/%3E%3C/g%3E%3C/svg%3E")
+      13 13;
   }
+
+  /* La triqueta se aplica a TODO lo que hay dentro de las vistas inmersivas
+     —incluidos botones, pestañas y enlaces—, no solo al lienzo del árbol.
+     Antes se recuperaba el puntero del sistema en cuanto pasabas por encima
+     de un control, que es justo lo que rompía la ilusión. El selector `*` es
+     necesario porque `cursor` no se hereda a elementos con su propio valor
+     (los botones traen `pointer` del navegador o de Tailwind). */
   #tree-viewer,
   #tree-viewer *,
   #netflix-sidebar,
-  #netflix-sidebar * {
-    cursor: none !important;
+  #netflix-sidebar *,
+  #cinematic-viewer,
+  #cinematic-viewer *,
+  #sidebar-overlay,
+  #btn-audio-toggle {
+    cursor: var(--triqueta), default;
+  }
+
+  /* Variante "activa" para lo que se puede pulsar. */
+  #tree-viewer button,
+  #tree-viewer a,
+  #tree-viewer [role='tab'],
+  #tree-viewer [data-tree-node],
+  #tree-viewer button *,
+  #tree-viewer a *,
+  #tree-viewer [data-tree-node] *,
+  #netflix-sidebar button,
+  #netflix-sidebar a,
+  #netflix-sidebar button *,
+  #netflix-sidebar a *,
+  #cinematic-viewer button,
+  #cinematic-viewer a,
+  #cinematic-viewer button *,
+  #cinematic-viewer a *,
+  #sidebar-overlay,
+  #btn-audio-toggle,
+  #btn-audio-toggle * {
+    cursor: var(--triqueta-activa), pointer;
+  }
+
+  #tree-pan-area {
+    user-select: none;
+    cursor: var(--triqueta), grab;
+    touch-action: none;
+  }
+  #tree-pan-area.is-panning,
+  #tree-pan-area.is-panning * {
+    cursor: var(--triqueta-activa), grabbing;
   }
   /* OJO: `transform-origin: 0 0` va como estilo inline en el propio
      #tree-zoom-container (ver más abajo en el markup), no aquí — una regla
@@ -125,39 +205,95 @@ const relationshipValidation = validateRelationships(
      había antes el árbol se iba fuera de pantalla hacia la derecha/abajo:
      apenas perceptible en escritorio (escala ~0.9, aún entraba) pero roto
      en móvil, donde la escala baja a ~0.37 y el desfase supera el viewport. */
-  #tree-zoom-container {
-    transition: transform 0.08s ease-out;
-  }
+  /* SIN transición por defecto. La tenía siempre puesta (0.08s), y como el
+     arrastre reescribe el transform en cada movimiento, cada evento
+     reiniciaba una interpolación nueva: el árbol perseguía al ratón en vez de
+     ir pegado a él. Es el segundo motivo del "lag" percibido. La transición
+     ahora solo se activa puntualmente (`.smooth-reset`) para los saltos
+     discretos: botones +/− y "encajar en pantalla". */
   #tree-zoom-container.smooth-reset {
     transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 
-  /* El cursor triqueta se gestiona 100% por inline style en JS */
+  /* Conmutador de linaje dentro del visor */
+  .tree-family-chip[aria-selected='true'] {
+    background: rgba(245, 158, 11, 0.92);
+    color: #0a0a0a;
+    font-weight: 700;
+  }
 
-  /* NODO ÁRBOL: halo de luz al hover */
+  /* ===== NODO DEL ÁRBOL ===== */
   .tree-node-wrap {
     position: relative;
+    outline: none;
   }
-  .tree-node-wrap::before {
-    content: '';
-    position: absolute;
-    inset: -6px;
-    border-radius: 4px;
-    background: radial-gradient(
-      circle,
-      rgba(245, 158, 11, 0) 0%,
-      transparent 70%
-    );
-    transition: background 0.4s ease;
-    pointer-events: none;
-    z-index: 0;
+
+  .tree-node-frame {
+    box-shadow:
+      0 10px 24px -12px rgba(0, 0, 0, 0.95),
+      0 0 0 3px rgba(5, 5, 5, 0.85);
+    transition:
+      border-color 0.3s ease,
+      box-shadow 0.3s ease;
   }
-  .tree-node-wrap:hover::before {
-    background: radial-gradient(
-      circle,
-      rgba(245, 158, 11, 0.35) 0%,
-      transparent 70%
-    );
+
+  /* El anillo oscuro exterior (el tercer valor del box-shadow) es lo que
+     permite que una ficha se cruce con un conector sin que la línea parezca
+     atravesarla: recorta un margen de respiro contra el fondo. */
+  .tree-node-img {
+    filter: grayscale(1) contrast(1.05);
+    opacity: 0.72;
+    transform: scale(1);
+    transition:
+      filter 0.45s ease,
+      opacity 0.45s ease,
+      transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .tree-node-name {
+    color: rgba(214, 211, 209, 0.75);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
+    transition: color 0.3s ease;
+    /* El nombre más largo que hay que sostener es "El Desconocido": con
+       letter-spacing amplio, "DESCONOCIDO" es una sola palabra más ancha que
+       la tarjeta, no puede partirse por un espacio y quedaba cortada por el
+       `overflow:hidden` del marco. Tracking mínimo + partición de palabra
+       como red de seguridad para cualquier nombre futuro. */
+    letter-spacing: 0.01em;
+    overflow-wrap: anywhere;
+    hyphens: auto;
+  }
+
+  .tree-node-wrap:hover .tree-node-frame,
+  .tree-node-wrap:focus-visible .tree-node-frame {
+    border-color: rgba(245, 158, 11, 0.75);
+    box-shadow:
+      0 14px 30px -12px rgba(0, 0, 0, 0.95),
+      0 0 0 3px rgba(5, 5, 5, 0.85),
+      0 0 26px rgba(245, 158, 11, 0.25);
+  }
+
+  .tree-node-wrap:hover .tree-node-img,
+  .tree-node-wrap:focus-visible .tree-node-img {
+    filter: grayscale(0) contrast(1.05);
+    opacity: 1;
+    transform: scale(1.07);
+  }
+
+  .tree-node-wrap:hover .tree-node-name,
+  .tree-node-wrap:focus-visible .tree-node-name {
+    color: rgb(252, 211, 77);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tree-node-img {
+      transition: filter 0.2s ease, opacity 0.2s ease;
+      transform: none;
+    }
+    .tree-node-wrap:hover .tree-node-img,
+    .tree-node-wrap:focus-visible .tree-node-img {
+      transform: none;
+    }
   }
 
   /* TOOLTIP del nodo */
@@ -245,21 +381,76 @@ const relationshipValidation = validateRelationships(
     dominant-baseline: middle;
   }
 
-  /* Resaltado de linaje al pasar el cursor (Task 11) */
-  .complete-tree-node.is-dimmed,
-  #tree-svg-lines .tree-line.is-dimmed,
-  #tree-svg-lines polygon.is-dimmed {
-    opacity: 0.12;
-    transition: opacity 0.35s ease;
+  /* ===== CONECTORES =====
+     De base son gris piedra apagado, no ámbar. El ámbar es el recurso más
+     caro del sistema visual y estaba gastado en TODAS las líneas a la vez, lo
+     que dejaba el árbol sin jerarquía: todo gritaba igual. Reservándolo para
+     el linaje resaltado, el acento vuelve a significar algo — es exactamente
+     la lectura del árbol de Netflix. */
+  #tree-svg-lines .tree-edge {
+    stroke: rgba(168, 162, 158, 0.3);
+    stroke-width: 1.1;
+    fill: rgba(168, 162, 158, 0.3);
+    transition:
+      stroke 0.3s ease,
+      fill 0.3s ease,
+      opacity 0.3s ease;
   }
-  .complete-tree-node:not(.is-dimmed),
-  #tree-svg-lines .tree-line:not(.is-dimmed),
-  #tree-svg-lines polygon:not(.is-dimmed) {
-    transition: opacity 0.35s ease;
+  /* Los conectores de descendencia son <path> sin relleno; el fill de arriba
+     solo debe aplicar a las puntas de flecha (<polygon>). */
+  #tree-svg-lines path.tree-edge {
+    fill: none;
   }
-  .complete-tree-node.is-active .tree-node-wrap > div {
+  #tree-svg-lines .tree-edge-knot {
+    fill: rgba(168, 162, 158, 0.45);
+    transition:
+      fill 0.3s ease,
+      opacity 0.3s ease;
+  }
+  /* Jonas ↔ Martha: el único vínculo que nace resaltado, porque es el eje
+     narrativo del árbol completo. */
+  #tree-svg-lines .tree-edge--bond {
+    stroke: rgba(245, 158, 11, 0.75);
+    stroke-width: 1.5;
+  }
+
+  /* ===== RESALTADO DE LINAJE =====
+     Los selectores anteriores apuntaban a `.tree-line`, una clase que
+     drawTreeLines() no llegaba a poner en ningún elemento: las líneas nunca
+     se atenuaban, solo los nodos. Ahora los conectores llevan `.tree-edge` de
+     verdad y participan en el resaltado. */
+  #tree-nodes-container.has-lineage .complete-tree-node.is-dimmed,
+  #tree-nodes-container.has-lineage .tree-edge.is-dimmed,
+  #tree-nodes-container.has-lineage .tree-edge-knot.is-dimmed {
+    opacity: 0.1;
+  }
+  #tree-nodes-container.has-lineage .tree-edge:not(.is-dimmed) {
+    stroke: rgba(245, 158, 11, 0.8);
+    stroke-width: 1.7;
+    fill: rgba(245, 158, 11, 0.8);
+  }
+  #tree-nodes-container.has-lineage path.tree-edge:not(.is-dimmed) {
+    fill: none;
+  }
+  #tree-nodes-container.has-lineage .tree-edge-knot:not(.is-dimmed) {
+    fill: rgba(245, 158, 11, 0.9);
+  }
+  .complete-tree-node {
+    transition: opacity 0.3s ease;
+  }
+  .complete-tree-node.is-active .tree-node-wrap .tree-node-frame {
     border-color: rgba(245, 158, 11, 0.9);
-    box-shadow: 0 0 30px rgba(245, 158, 11, 0.4);
+    box-shadow:
+      0 0 0 1px rgba(245, 158, 11, 0.35),
+      0 0 34px rgba(245, 158, 11, 0.35);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #tree-svg-lines .tree-edge,
+    #tree-svg-lines .tree-edge-knot,
+    .complete-tree-node {
+      transition: none;
+    }
   }
 
   .complete-tree-node {
@@ -274,11 +465,14 @@ const relationshipValidation = validateRelationships(
     transform: translate(-50%, -50%);
   }
 
-  .complete-tree-node[data-core='1'] .tree-node-wrap > div {
-    border-color: rgba(245, 158, 11, 0.75);
+  /* Antes era `.tree-node-wrap > div`, que también alcanzaba al tooltip (es
+     otro div hijo directo) y le pintaba borde y sombra. Se apunta a la ficha. */
+  .complete-tree-node[data-core='1'] .tree-node-frame {
+    border-color: rgba(245, 158, 11, 0.7);
     box-shadow:
-      0 0 26px rgba(245, 158, 11, 0.28),
-      0 0 2px rgba(255, 255, 255, 0.35);
+      0 10px 24px -12px rgba(0, 0, 0, 0.95),
+      0 0 0 3px rgba(5, 5, 5, 0.85),
+      0 0 22px rgba(245, 158, 11, 0.24);
   }
 
   /* LÍNEAS DE GENERACIÓN CON PULSO */
@@ -573,123 +767,272 @@ const relationshipValidation = validateRelationships(
     box-shadow: 0 0 10px rgba(245, 158, 11, 0.8);
   }
 
-  /* ===== FONDO AMBIENTAL DEL ÁRBOL: "AGUAS PROFUNDAS" =====
-     Marea + ruido fractal a la deriva. Se anima únicamente transform y
-     opacity (compositor puro); el feTurbulence se rasteriza una sola vez
-     sobre un <rect> estático y a partir de ahí solo se desplaza. */
+  /* ===== FONDO DEL VISOR =====
+     Antes había tres elipses de 120vw/95vw/80vw con `filter: blur(70px)`
+     animadas en bucle, MÁS una capa a pantalla completa (200%×200%) de ruido
+     feTurbulence con `mix-blend-mode: overlay` también animada. Dos costes
+     que se pagaban en CADA frame, para siempre, aunque nadie los mirase:
+       · un blur de 70px obliga a rasterizar y desenfocar una textura enorme
+         cada vez que el elemento se mueve o escala;
+       · `mix-blend-mode` a pantalla completa fuerza al compositor a releer el
+         fondo ya pintado para poder mezclarlo.
+     Con eso corriendo de fondo, el hilo del compositor no llegaba a los
+     16 ms, y CUALQUIER interacción (mover el ratón incluido) se sentía
+     pastosa. La referencia de Netflix es justo lo contrario: un lienzo casi
+     plano que deja todo el presupuesto de render al árbol.
+
+     Ahora el mismo aire se consigue con degradados radiales pintados UNA vez
+     sobre un elemento estático: un degradado ya es suave por definición, no
+     necesita que además lo desenfoquen. Cero animación, cero blend, cero
+     filtros. El grano es un data-URI diminuto que se tesela. */
   .tree-ambient {
-    /* Aísla el repintado del fondo del resto del visor: sin esto, cada
-       frame de la marea invalidaría también el árbol que va encima.
-       `content` (= layout paint style) y NO `strict`: este último añade
-       contención de tamaño, que colapsa el contenedor a 0x0 al ser un
-       absolute inset-0 sin dimensiones propias. */
+    /* `content` (= layout paint style) y NO `strict`: este último añade
+       contención de tamaño, que en su día colapsó este contenedor a 0x0 por
+       ser un absolute inset-0 sin dimensiones propias. Se respeta el valor
+       ya verificado. */
     contain: content;
+    /* Base más oscura: el ámbar central baja de 0.07 a 0.04 y los tonos de
+       fondo caen a casi negro. Con la tormenta encima, un lienzo claro
+       "lavaba" el contraste de las fichas; hundiéndolo, los relámpagos tienen
+       de dónde destacar y el árbol recupera peso. */
+    background:
+      radial-gradient(
+        ellipse 70% 55% at 50% 42%,
+        rgba(245, 158, 11, 0.025) 0%,
+        rgba(245, 158, 11, 0.008) 45%,
+        transparent 72%
+      ),
+      radial-gradient(
+        ellipse 90% 70% at 50% 45%,
+        rgba(12, 13, 16, 0.9) 0%,
+        transparent 70%
+      ),
+      radial-gradient(ellipse 100% 85% at 50% 45%, #030304 25%, #000000 100%);
   }
 
-  .tree-tide {
+  /* Grano fino, estático y sin blend: solo rompe el banding de los
+     degradados. Se tesela cada 160px, así que el navegador rasteriza un
+     mosaico minúsculo y lo repite. */
+  .tree-grain {
     position: absolute;
-    border-radius: 50%;
-    filter: blur(70px);
+    inset: 0;
+    opacity: 0.32;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  }
+
+  /* ===== TORMENTA SOBRE WINDEN =====
+     Winden es un pueblo donde no para de llover, así que el fondo del árbol
+     se convierte en tormenta. La regla que hace que esto NO devuelva el lag
+     que acabamos de quitar: cada capa se anima solo con `transform` y
+     `opacity`, que el compositor resuelve en su propio hilo sin repintar ni
+     recalcular nada. Ni un blur animado, ni un mix-blend-mode a pantalla
+     completa, ni un filtro SVG — que era justo lo que había antes. Los
+     degradados se rasterizan UNA vez y a partir de ahí solo se desplazan. */
+
+  /* Nubes: dos frentes que cruzan a distinta velocidad. Un degradado radial
+     ya nace difuminado, así que no necesita `filter: blur()` para verse
+     algodonoso — ese era el gasto caro del fondo anterior. */
+  .storm-clouds {
+    position: absolute;
+    top: -14%;
+    left: -14%;
+    width: 128%;
+    height: 128%;
     will-change: transform;
+    background:
+      radial-gradient(
+        ellipse 38% 26% at 22% 30%,
+        rgba(96, 106, 120, 0.09),
+        transparent 62%
+      ),
+      radial-gradient(
+        ellipse 30% 20% at 68% 22%,
+        rgba(76, 86, 100, 0.08),
+        transparent 60%
+      ),
+      radial-gradient(
+        ellipse 44% 24% at 48% 68%,
+        rgba(62, 70, 82, 0.07),
+        transparent 64%
+      );
+    animation: storm-drift 54s ease-in-out infinite;
   }
-  .tree-tide--a {
-    width: 120vw;
-    height: 70vh;
-    top: -12%;
-    left: -18%;
+  .storm-clouds--far {
+    animation-duration: 86s;
+    animation-direction: reverse;
+    opacity: 0.55;
+  }
+  @keyframes storm-drift {
+    0%,
+    100% {
+      transform: translate3d(-2%, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(3%, 1.5%, 0) scale(1.08);
+    }
+  }
+
+  /* Lluvia: un patrón de rayas diagonales teselado que se desplaza en bucle.
+     El truco para que sea gratis es que el recorrido de la animación coincida
+     exactamente con el tamaño del patrón (200px), así el bucle es invisible y
+     basta con mover la capa: nunca se repinta el degradado. */
+  /* La capa se extiende solo lo justo para cubrir su propio recorrido
+     (57px a la izquierda, 200px hacia abajo), no el 200%×200% que pedía el
+     primer boceto: cada capa promovida al compositor reserva una textura de
+     su tamaño en memoria de GPU, y cuatro capas a doble viewport son decenas
+     de MB regalados en un móvil. */
+  /* El primer intento usaba `repeating-linear-gradient`, y ahí estaba el
+     fallo: un degradado repetido dibuja líneas CONTINUAS de borde a borde de
+     la pantalla. Eso no se lee como lluvia, se lee como rayas —o como una
+     película rayada—, que es exactamente lo raro que se veía.
+     La lluvia son GOTAS: trazos cortos, separados, en posiciones irregulares.
+     Así que cada cortina es ahora un mosaico SVG con trazos sueltos de
+     longitud y opacidad variadas. Sigue siendo igual de barato: el navegador
+     rasteriza el mosaico UNA vez y a partir de ahí solo desplaza la capa.
+     Los trazos van orientados según el vector de caída de cada capa, para que
+     la gota apunte hacia donde se mueve. */
+  .storm-rain {
+    position: absolute;
+    top: -260px;
+    left: -40px;
+    width: calc(100% + 140px);
+    height: calc(100% + 320px);
+    will-change: transform;
+    background-repeat: repeat;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cg stroke='%23c8dcf2' stroke-width='1' stroke-linecap='round' fill='none'%3E%3Cline x1='18' y1='4' x2='11' y2='29' opacity='.5'/%3E%3Cline x1='62' y1='30' x2='55' y2='55' opacity='.35'/%3E%3Cline x1='108' y1='12' x2='101' y2='37' opacity='.45'/%3E%3Cline x1='152' y1='48' x2='145' y2='73' opacity='.3'/%3E%3Cline x1='186' y1='20' x2='179' y2='45' opacity='.4'/%3E%3Cline x1='38' y1='72' x2='31' y2='97' opacity='.45'/%3E%3Cline x1='84' y1='96' x2='77' y2='121' opacity='.3'/%3E%3Cline x1='130' y1='64' x2='123' y2='89' opacity='.5'/%3E%3Cline x1='170' y1='108' x2='163' y2='133' opacity='.35'/%3E%3Cline x1='24' y1='128' x2='17' y2='153' opacity='.4'/%3E%3Cline x1='66' y1='156' x2='59' y2='181' opacity='.3'/%3E%3Cline x1='112' y1='138' x2='105' y2='163' opacity='.45'/%3E%3Cline x1='158' y1='168' x2='151' y2='193' opacity='.35'/%3E%3Cline x1='192' y1='146' x2='185' y2='171' opacity='.3'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    opacity: 0.5;
+    animation: storm-rain-fall 0.85s linear infinite;
+  }
+
+  /* Fondo: gotas cortas, finas y tenues — la lluvia lejana. */
+  .storm-rain--back {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cg stroke='%23a8bcd6' stroke-width='0.8' stroke-linecap='round' fill='none'%3E%3Cline x1='14' y1='10' x2='9' y2='27' opacity='.4'/%3E%3Cline x1='58' y1='34' x2='53' y2='51' opacity='.3'/%3E%3Cline x1='96' y1='6' x2='91' y2='23' opacity='.35'/%3E%3Cline x1='140' y1='44' x2='135' y2='61' opacity='.28'/%3E%3Cline x1='182' y1='18' x2='177' y2='35' opacity='.35'/%3E%3Cline x1='226' y1='52' x2='221' y2='69' opacity='.3'/%3E%3Cline x1='32' y1='84' x2='27' y2='101' opacity='.32'/%3E%3Cline x1='76' y1='112' x2='71' y2='129' opacity='.28'/%3E%3Cline x1='120' y1='92' x2='115' y2='109' opacity='.36'/%3E%3Cline x1='164' y1='126' x2='159' y2='143' opacity='.3'/%3E%3Cline x1='208' y1='100' x2='203' y2='117' opacity='.34'/%3E%3Cline x1='246' y1='136' x2='241' y2='153' opacity='.26'/%3E%3Cline x1='20' y1='166' x2='15' y2='183' opacity='.32'/%3E%3Cline x1='64' y1='196' x2='59' y2='213' opacity='.28'/%3E%3Cline x1='110' y1='176' x2='105' y2='193' opacity='.34'/%3E%3Cline x1='154' y1='212' x2='149' y2='229' opacity='.28'/%3E%3Cline x1='198' y1='186' x2='193' y2='203' opacity='.32'/%3E%3Cline x1='238' y1='226' x2='233' y2='243' opacity='.26'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 260px 260px;
+    opacity: 0.3;
+    animation-duration: 1.8s;
+  }
+
+  /* Cortina delantera: pocas gotas, largas y marcadas — las que pasan cerca
+     del objetivo y cruzan rápido. */
+  .storm-rain--front {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cg stroke='%23e4eefc' stroke-width='1.5' stroke-linecap='round' fill='none'%3E%3Cline x1='22' y1='6' x2='12' y2='34' opacity='.5'/%3E%3Cline x1='72' y1='40' x2='62' y2='68' opacity='.4'/%3E%3Cline x1='116' y1='10' x2='106' y2='38' opacity='.45'/%3E%3Cline x1='140' y1='72' x2='130' y2='100' opacity='.35'/%3E%3Cline x1='46' y1='90' x2='36' y2='118' opacity='.45'/%3E%3Cline x1='96' y1='112' x2='86' y2='140' opacity='.38'/%3E%3Cline x1='8' y1='56' x2='-2' y2='84' opacity='.35'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 150px 150px;
+    opacity: 0.42;
+    animation-duration: 0.5s;
+    animation-name: storm-rain-fall-front;
+  }
+
+  @keyframes storm-rain-fall {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-57px, 200px, 0);
+    }
+  }
+  @keyframes storm-rain-fall-front {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-52px, 150px, 0);
+    }
+  }
+
+  /* Relámpagos: destellos breves y espaciados. Solo `opacity`, y con un ciclo
+     largo (14s / 23s) para que sorprendan en vez de cansar. Los dos
+     resplandores van desfasados, así que a veces caen casi juntos y producen
+     el parpadeo doble típico de una tormenta real. */
+  .storm-flash {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
     background: radial-gradient(
-      ellipse at center,
-      rgba(245, 158, 11, 0.14) 0%,
-      rgba(245, 158, 11, 0.05) 42%,
-      transparent 70%
+      ellipse 60% 45% at 30% 15%,
+      rgba(220, 234, 255, 0.72),
+      rgba(175, 200, 240, 0.24) 40%,
+      transparent 74%
     );
-    animation: tree-tide-a 46s ease-in-out infinite;
+    animation: storm-flash 9s linear infinite;
   }
-  .tree-tide--b {
-    width: 95vw;
-    height: 85vh;
-    bottom: -22%;
-    right: -14%;
+  .storm-flash--b {
     background: radial-gradient(
-      ellipse at center,
-      rgba(120, 160, 190, 0.12) 0%,
-      rgba(70, 100, 130, 0.05) 45%,
+      ellipse 55% 40% at 76% 22%,
+      rgba(232, 242, 255, 0.62),
+      rgba(185, 205, 245, 0.2) 42%,
       transparent 72%
     );
-    animation: tree-tide-b 62s ease-in-out infinite;
+    animation-duration: 15s;
+    animation-delay: 4s;
   }
-  .tree-tide--c {
-    width: 80vw;
-    height: 60vh;
-    top: 28%;
-    left: 22%;
-    background: radial-gradient(
-      ellipse at center,
-      rgba(255, 255, 255, 0.05) 0%,
-      transparent 65%
+  /* Fogonazo a pantalla completa: el resplandor que "moja" toda la escena una
+     décima de segundo. Va aparte de los dos focos porque su gracia es que sea
+     plano y brevísimo — es lo que hace que el ojo lea relámpago y no
+     simplemente una luz que sube y baja. */
+  .storm-flash--sheet {
+    background: linear-gradient(
+      to bottom,
+      rgba(226, 238, 255, 0.5),
+      rgba(190, 210, 245, 0.18) 55%,
+      transparent 100%
     );
-    animation: tree-tide-c 38s ease-in-out infinite;
+    animation-duration: 19s;
+    animation-delay: 11s;
+    animation-name: storm-flash-sheet;
   }
-
-  @keyframes tree-tide-a {
+  @keyframes storm-flash {
     0%,
     100% {
-      transform: translate3d(0, 0, 0) scale(1);
-      opacity: 0.75;
+      opacity: 0;
     }
-    50% {
-      transform: translate3d(6vw, 4vh, 0) scale(1.14);
+    0.9% {
       opacity: 1;
     }
+    1.9% {
+      opacity: 0.12;
+    }
+    2.7% {
+      opacity: 0.82;
+    }
+    4.6% {
+      opacity: 0;
+    }
   }
-  @keyframes tree-tide-b {
+  @keyframes storm-flash-sheet {
     0%,
     100% {
-      transform: translate3d(0, 0, 0) scale(1.06);
-      opacity: 0.55;
+      opacity: 0;
     }
-    50% {
-      transform: translate3d(-7vw, -5vh, 0) scale(1);
+    0.5% {
       opacity: 0.9;
     }
-  }
-  @keyframes tree-tide-c {
-    0%,
-    100% {
-      transform: translate3d(0, 0, 0) scale(1);
-      opacity: 0.35;
+    1.4% {
+      opacity: 0;
     }
-    50% {
-      transform: translate3d(-4vw, 6vh, 0) scale(1.2);
-      opacity: 0.7;
+    2.1% {
+      opacity: 0.55;
+    }
+    3.2% {
+      opacity: 0;
     }
   }
 
-  /* Superficie del agua: el ruido se estira al doble y deriva en diagonal,
-     de modo que nunca se aprecia el borde del patrón. */
-  .tree-caustics {
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    opacity: 0.28;
-    mix-blend-mode: overlay;
-    will-change: transform;
-    animation: tree-caustics-drift 90s linear infinite;
-  }
-  @keyframes tree-caustics-drift {
-    0% {
-      transform: translate3d(0, 0, 0) scale(1);
+  /* La tormenta es ambiental: si alguien pide menos movimiento, se queda el
+     lienzo quieto (regla 3 de .clauderules). */
+  @media (prefers-reduced-motion: reduce) {
+    .storm-clouds,
+    .storm-rain,
+    .storm-flash {
+      animation: none !important;
     }
-    50% {
-      transform: translate3d(3%, -2.5%, 0) scale(1.08);
+    .storm-flash {
+      opacity: 0;
     }
-    100% {
-      transform: translate3d(0, 0, 0) scale(1);
+    .storm-rain {
+      opacity: 0.12;
     }
   }
-
 
   /* Viñeta: hunde los bordes para que el árbol respire en el centro. */
   .tree-depth {
@@ -697,17 +1040,10 @@ const relationshipValidation = validateRelationships(
     inset: 0;
     background: radial-gradient(
       ellipse at 50% 45%,
-      transparent 30%,
-      rgba(2, 2, 2, 0.5) 72%,
-      rgba(2, 2, 2, 0.82) 100%
+      transparent 34%,
+      rgba(2, 2, 2, 0.45) 74%,
+      rgba(2, 2, 2, 0.8) 100%
     );
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .tree-tide,
-    .tree-caustics {
-      animation: none !important;
-    }
   }
 
   /* Animación de barras de audio */
@@ -735,9 +1071,14 @@ const relationshipValidation = validateRelationships(
 
 <audio id="dark-ambient-audio" loop src="/audio/dark-theme.mp3"></audio>
 
+<!-- Se apilaba en `bottom-6 right-6` justo encima de los controles de zoom
+     (`bottom-8 right-8`): con z-450 contra z-160, este botón tapaba el botón
+     de alejar. Ahora vive por encima de esa columna, alineado con ella. -->
 <button
   id="btn-audio-toggle"
-  class="fixed bottom-6 right-6 z-[450] text-stone-400 hover:text-white transition-all hidden flex-col items-center justify-center group bg-black/80 w-12 h-12 rounded-full border border-stone-800 backdrop-blur-md hover:border-amber-500 shadow-xl"
+  aria-label="Activar o silenciar la música ambiental"
+  aria-pressed="false"
+  class="fixed bottom-[11.5rem] right-8 z-[450] text-stone-400 hover:text-white transition-all hidden flex-col items-center justify-center group bg-black/70 w-10 h-10 rounded-full border border-stone-600 backdrop-blur-md hover:border-amber-500 hover:text-amber-500 shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
 >
   <div
     class="flex items-end justify-center h-4 gap-[3px] overflow-hidden"
@@ -865,13 +1206,17 @@ const relationshipValidation = validateRelationships(
     >
       {
         familiasData.map((familia) => (
-          <div
-            class="family-card relative overflow-hidden rounded-xl cursor-pointer bg-stone-900 border border-stone-800 shadow-2xl flex-1 group"
+          <button
+            type="button"
+            aria-label={`Abrir el árbol genealógico de la familia ${familia.name}`}
+            class="family-card relative overflow-hidden rounded-xl cursor-pointer bg-stone-900 border border-stone-800 shadow-2xl flex-1 group text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
             style={`--family-accent: ${familia.accent};`}
             onclick={`openTreeViewer('${familia.id}')`}
           >
             <img
               src={familia.cover}
+              alt=""
+              loading="lazy"
               class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-100 transition-opacity duration-700 mix-blend-luminosity grayscale group-hover:grayscale-0"
             />
             <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
@@ -894,7 +1239,7 @@ const relationshipValidation = validateRelationships(
                 {familia.subtitle}
               </p>
             </div>
-          </div>
+          </button>
         ))
       }
     </div>
@@ -903,60 +1248,37 @@ const relationshipValidation = validateRelationships(
 
 <div
   id="tree-viewer"
-  class="fixed inset-0 z-[150] bg-[#020202] hidden opacity-0 transition-opacity duration-1000 overflow-hidden flex flex-col"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Árbol genealógico interactivo"
+  aria-hidden="true"
+  class="fixed inset-0 z-[150] bg-[#050505] hidden opacity-0 transition-opacity duration-700 overflow-hidden flex flex-col"
 >
-  <!-- Fondo ambiental "aguas profundas": capas de marea que se cruzan a
-       distintas velocidades + una textura de ruido fractal que deriva por
-       encima. Todo se anima solo con transform/opacity (barato para el
-       compositor); el filtro SVG se calcula UNA vez sobre un <rect> estático,
-       nunca por frame. -->
+  <!-- Lienzo del visor: tormenta sobre Winden. Nubes a la deriva, dos
+       cortinas de lluvia y relámpagos ocasionales. Todo se mueve únicamente
+       con transform/opacity, es decir en el hilo del compositor: no repinta
+       ni recalcula nada, así que el árbol conserva el frame entero para
+       responder al ratón — ver el bloque "TORMENTA SOBRE WINDEN" arriba. -->
   <div
     class="tree-ambient absolute inset-0 overflow-hidden pointer-events-none"
     aria-hidden="true"
   >
-    <div class="tree-tide tree-tide--a"></div>
-    <div class="tree-tide tree-tide--b"></div>
-    <div class="tree-tide tree-tide--c"></div>
-
-    <svg class="tree-caustics" preserveAspectRatio="none">
-      <defs>
-        <!-- Los dos tamaños de ola se combinan DENTRO del filtro: el oleaje
-             fino de superficie y el de fondo (frecuencia más baja = crestas
-             largas, sensación de profundidad). Al mezclarse aquí, el
-             resultado se rasteriza una sola vez y basta con una capa que
-             desplazar — antes eran dos capas con mix-blend-mode a pantalla
-             completa, y cada una obliga al navegador a releer y refundir el
-             fondo entero en cada frame. Ese era el coste que hacía notar el
-             ratón lento. -->
-        <filter id="tree-water-noise" x="0" y="0" width="100%" height="100%">
-          <feTurbulence
-            type="fractalNoise"
-            baseFrequency="0.009 0.022"
-            numOctaves="3"
-            seed="13"
-            result="fino"
-          />
-          <feTurbulence
-            type="fractalNoise"
-            baseFrequency="0.0035 0.009"
-            numOctaves="2"
-            seed="41"
-            result="fondo"
-          />
-          <feBlend in="fino" in2="fondo" mode="overlay" result="olas" />
-          <feColorMatrix in="olas" type="saturate" values="0" />
-        </filter>
-      </defs>
-      <rect width="100%" height="100%" filter="url(#tree-water-noise)" />
-    </svg>
-
-
+    <div class="storm-clouds storm-clouds--far"></div>
+    <div class="storm-clouds"></div>
+    <div class="storm-flash"></div>
+    <div class="storm-flash storm-flash--b"></div>
+    <div class="storm-flash storm-flash--sheet"></div>
+    <div class="storm-rain storm-rain--back"></div>
+    <div class="storm-rain"></div>
+    <div class="storm-rain storm-rain--front"></div>
+    <div class="tree-grain"></div>
     <div class="tree-depth"></div>
   </div>
 
   <button
     onclick="toggleSidebar()"
-    class="fixed top-8 left-8 z-[160] text-stone-400 hover:text-white transition-all group"
+    aria-label="Abrir el índice de personajes"
+    class="fixed top-8 left-8 z-[160] text-stone-400 hover:text-white transition-all group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 rounded-full"
   >
     <div
       class="w-12 h-12 rounded-full border border-stone-600 group-hover:border-white flex items-center justify-center bg-black/50 backdrop-blur-sm shadow-xl"
@@ -972,8 +1294,10 @@ const relationshipValidation = validateRelationships(
   </button>
 
   <button
+    id="tree-close-btn"
     onclick="closeTreeViewer()"
-    class="fixed top-8 right-8 z-[160] text-stone-400 hover:text-white transition-all group"
+    aria-label="Cerrar el árbol genealógico"
+    class="fixed top-8 right-8 z-[160] text-stone-400 hover:text-white transition-all group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 rounded-full"
   >
     <div
       class="w-12 h-12 rounded-full border border-stone-600 group-hover:border-white flex items-center justify-center bg-black/50 backdrop-blur-sm shadow-xl"
@@ -992,21 +1316,66 @@ const relationshipValidation = validateRelationships(
     </div>
   </button>
 
-  <!-- Título flotante arriba -->
+  <!-- Cabecera del visor: título + conmutador de linaje.
+       Antes, para pasar de una familia a otra había que salir del visor,
+       volver a la parrilla y entrar de nuevo. En la referencia de Netflix el
+       cambio de familia se hace sin abandonar el árbol, así que el
+       conmutador vive aquí dentro. -->
   <div
-    class="absolute top-6 left-1/2 -translate-x-1/2 z-[160] text-center pointer-events-none"
+    class="absolute top-4 md:top-6 inset-x-0 z-[160] flex flex-col items-center gap-3 pointer-events-none"
   >
-    <p
-      class="text-stone-500 font-mono text-[10px] tracking-[0.4em] uppercase mb-1"
-    >
-      Árbol Genealógico
-    </p>
-    <h2
-      id="tree-family-name"
-      class="font-cinzel text-3xl md:text-4xl text-white font-bold tracking-[0.2em] uppercase drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]"
-    >
-      Familia
-    </h2>
+    <!-- Solo el título necesita apartarse de los botones de las esquinas; el
+         conmutador va debajo de ellos y puede usar todo el ancho. -->
+    <div class="text-center px-20">
+      <p
+        class="text-stone-500 font-mono text-[9px] md:text-[10px] tracking-[0.4em] uppercase mb-1"
+      >
+        Árbol Genealógico
+      </p>
+      <h2
+        id="tree-family-name"
+        class="font-cinzel text-2xl md:text-4xl text-white font-bold tracking-[0.2em] uppercase"
+      >
+        Familia
+      </h2>
+    </div>
+
+    <!-- `flex-nowrap` + scroll horizontal en vez de `flex-wrap`: con seis
+         linajes en un móvil de 390px, envolver generaba tres filas de fichas
+         que se comían 100px de alto del propio árbol. Una sola fila que se
+         desliza ocupa 37px y es el patrón que ya espera cualquiera en un
+         carrusel de categorías. -->
+    <div class="w-full max-w-full px-3 overflow-x-auto hide-scrollbar pointer-events-auto">
+      <div
+        id="tree-family-switch"
+        role="tablist"
+        aria-label="Cambiar de linaje"
+        class="mx-auto flex w-max flex-nowrap items-center justify-center gap-1.5 rounded-full border border-stone-700/50 bg-black/60 backdrop-blur-md p-1"
+      >
+      {
+        familiasData.map((familia) => (
+          <button
+            type="button"
+            role="tab"
+            data-tree-family={familia.id}
+            aria-selected="false"
+            class="tree-family-chip shrink-0 rounded-full px-3 py-1.5 font-cinzel text-[9px] md:text-[10px] tracking-[0.18em] uppercase text-stone-400 hover:text-white transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+          >
+            {familia.name}
+          </button>
+        ))
+      }
+        <button
+          type="button"
+          role="tab"
+          data-tree-family="__complete"
+          aria-selected="false"
+          class="tree-family-chip shrink-0 rounded-full px-3 py-1.5 font-cinzel text-[9px] md:text-[10px] tracking-[0.18em] uppercase text-stone-400 hover:text-white transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+        >
+          Completo
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- Controles de zoom -->
@@ -1043,17 +1412,25 @@ const relationshipValidation = validateRelationships(
     class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[160] pointer-events-none"
   >
     <p
-      class="text-stone-600 font-mono text-[9px] tracking-[0.3em] uppercase flex items-center gap-2"
+      class="text-stone-500 font-mono text-[9px] tracking-[0.28em] uppercase flex flex-wrap items-center justify-center gap-x-3 gap-y-1"
     >
-      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-        ><path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11"
-        ></path></svg
-      >
-      Arrastra para mover · Rueda para zoom
+      <span class="flex items-center gap-1.5">
+        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          ><path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11"
+          ></path></svg
+        >
+        Arrastra para mover
+      </span>
+      <span aria-hidden="true" class="text-stone-700">·</span>
+      <span>Rueda para zoom</span>
+      <span aria-hidden="true" class="text-stone-700 hidden sm:inline">·</span>
+      <span class="hidden sm:inline">Pasa el cursor para ver el linaje</span>
+      <span aria-hidden="true" class="text-stone-700 hidden sm:inline">·</span>
+      <span class="hidden sm:inline">Esc para salir</span>
     </p>
   </div>
 
@@ -1076,22 +1453,6 @@ const relationshipValidation = validateRelationships(
     </div>
   </div>
 </div>
-
-<!-- Cursor triqueta — fuera de cualquier contenedor con overflow o transform -->
-<svg
-  id="tree-cursor"
-  viewBox="0 0 100 100"
-  fill="none"
-  xmlns="http://www.w3.org/2000/svg"
-  style="position:fixed;top:0;left:0;width:28px;height:28px;pointer-events:none;z-index:9999;opacity:0;will-change:transform,opacity;transform:translate3d(var(--cursor-x,-100px),var(--cursor-y,-100px),0) translate(-50%,-50%) scale(var(--cursor-scale,1));transition:opacity 0.25s ease;"
->
-  <circle cx="50" cy="33" r="22" stroke="rgba(245,158,11,0.85)" stroke-width="3"
-  ></circle>
-  <circle cx="34" cy="62" r="22" stroke="rgba(245,158,11,0.85)" stroke-width="3"
-  ></circle>
-  <circle cx="66" cy="62" r="22" stroke="rgba(245,158,11,0.85)" stroke-width="3"
-  ></circle>
-</svg>
 
 <div
   id="cinematic-viewer"
@@ -1622,7 +1983,6 @@ const relationshipValidation = validateRelationships(
     document.getElementById('familias-main-view').classList.remove('hidden');
     document.body.classList.remove('hide-global-ui');
     closeSidebarIfOpen();
-    if (treeCursor) treeCursor.style.opacity = '0';
     if (btnAudio) {
       btnAudio.classList.remove('flex');
       btnAudio.classList.add('hidden');
@@ -1642,8 +2002,11 @@ const relationshipValidation = validateRelationships(
     svg.style.width = W + 'px';
     svg.style.height = H + 'px';
 
+    // El rect del contenedor se leía DENTRO de nodeCenter(), es decir una vez
+    // por nodo (25 lecturas idénticas). Se mide una sola vez aquí.
+    const containerRect = container.getBoundingClientRect();
+
     function nodeCenter(node) {
-      const containerRect = container.getBoundingClientRect();
       const img = node.querySelector('img');
       const targetRect = (img || node).getBoundingClientRect();
       return {
@@ -1657,144 +2020,85 @@ const relationshipValidation = validateRelationships(
     const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
     svg.appendChild(defs);
 
-    // lineGrad/lineGradH (degradado) y glowLine (filtro de resplandor) eran
-    // <linearGradient>/<filter> únicos y compartidos, usando las unidades
-    // por defecto ("objectBoundingBox") — relativas al propio bounding box
-    // de CADA elemento que los usa. Por especificación SVG, un elemento con
-    // bounding box de alto O ancho CERO hace que ese efecto no se pinte en
-    // absoluto (queda invisible), aunque el elemento siga presente en el
-    // DOM con opacity/visibility normales. Una <line> de pareja
-    // perfectamente horizontal (y1 === y2, el caso normal: casi todas las
-    // parejas están definidas a la misma altura Y) o un <path> recto
-    // perfectamente vertical (isStraight, x del origen === x del hijo, el
-    // caso normal para un hijo único bajo una pareja) tienen bounding box
-    // de alto o ancho cero respectivamente — el trazo desaparecía de forma
-    // inconsistente según qué elemento cayera exactamente en ese caso
-    // degenerado. El degradado ya se corrigió generando uno propio por
-    // línea con gradientUnits="userSpaceOnUse"; el filtro de resplandor
-    // tenía exactamente el mismo problema (confirmado en vivo: quitar
-    // `filter` a una línea afectada la hacía visible de nuevo) y se corrige
-    // igual — un <filter> propio por línea con filterUnits="userSpaceOnUse"
-    // y una región calculada en coordenadas absolutas con margen fijo, en
-    // vez de un porcentaje relativo a un bbox que puede ser degenerado.
-    let gradientIdCounter = 0;
+    // ===== TRAZOS PLANOS, SIN FILTROS NI DEGRADADOS POR LÍNEA =====
+    // La versión anterior creaba, POR CADA conector, un <linearGradient> y un
+    // <filter> con feGaussianBlur propios: en el Árbol Completo eso son ~40
+    // filtros de desenfoque y ~40 degradados vivos a la vez. Un filtro SVG
+    // obliga al navegador a rasterizar ese elemento en una textura aparte, y
+    // a REHACERLA cada vez que cambia la escala — o sea, en cada paso de zoom
+    // y en cada frame de un arrastre. Era el tercer gran coste del visor.
+    //
+    // Ahora cada conector es un único <path> con trazo plano. El "resplandor"
+    // se consigue con color y grosor, que son gratis, y el acento ámbar se
+    // reserva para el linaje resaltado — que es justo como se lee el árbol de
+    // Netflix: líneas apagadas de base, brillo solo en el camino que importa.
+    // Los ids degenerados (bbox de alto o ancho cero) que obligaban a generar
+    // defs por elemento dejan de ser un problema: sin filtros ni degradados,
+    // no hay nada cuyo bounding box pueda anularse.
+    const SVG_NS = 'http://www.w3.org/2000/svg';
 
-    function makeGlowFilter(minX, maxX, minY, maxY) {
-      const filterId = `glowLine-${gradientIdCounter++}`;
-      const filter = document.createElementNS(
-        'http://www.w3.org/2000/svg',
-        'filter',
-      );
-      const pad = 12;
-      filter.setAttribute('id', filterId);
-      filter.setAttribute('filterUnits', 'userSpaceOnUse');
-      filter.setAttribute('x', minX - pad);
-      filter.setAttribute('y', minY - pad);
-      filter.setAttribute('width', maxX - minX + pad * 2);
-      filter.setAttribute('height', maxY - minY + pad * 2);
-      filter.innerHTML = `
-        <feGaussianBlur stdDeviation="1.5" result="blur"/>
-        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-      `;
-      defs.appendChild(filter);
-      return filterId;
+    function tagEdge(el, from, to) {
+      el.setAttribute('class', 'tree-edge');
+      el.dataset.from = from;
+      el.dataset.to = to;
+      return el;
     }
 
     function makeLine(x1, y1, x2, y2) {
-      const gradId = `lineGradH-${gradientIdCounter++}`;
-      const gradient = document.createElementNS(
-        'http://www.w3.org/2000/svg',
-        'linearGradient',
-      );
-      gradient.setAttribute('id', gradId);
-      gradient.setAttribute('gradientUnits', 'userSpaceOnUse');
-      gradient.setAttribute('x1', x1);
-      gradient.setAttribute('y1', y1);
-      gradient.setAttribute('x2', x2);
-      gradient.setAttribute('y2', y2);
-      gradient.innerHTML = `
-        <stop offset="0%" stop-color="rgba(245,158,11,0)" />
-        <stop offset="28%" stop-color="rgba(245,158,11,0.62)" />
-        <stop offset="72%" stop-color="rgba(245,158,11,0.62)" />
-        <stop offset="100%" stop-color="rgba(245,158,11,0)" />
-      `;
-      defs.appendChild(gradient);
-
-      const filterId = makeGlowFilter(
-        Math.min(x1, x2),
-        Math.max(x1, x2),
-        Math.min(y1, y2),
-        Math.max(y1, y2),
-      );
-
-      const el = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      const el = document.createElementNS(SVG_NS, 'line');
       el.setAttribute('x1', x1);
       el.setAttribute('y1', y1);
       el.setAttribute('x2', x2);
       el.setAttribute('y2', y2);
-      el.setAttribute('stroke', `url(#${gradId})`);
-      el.setAttribute('stroke-width', '1.1');
-      el.setAttribute('filter', `url(#${filterId})`);
+      el.setAttribute('stroke-linecap', 'round');
       return el;
     }
 
-    function makePath(d, minX, maxX, minY, maxY) {
-      const gradId = `lineGrad-${gradientIdCounter++}`;
-      const gradient = document.createElementNS(
-        'http://www.w3.org/2000/svg',
-        'linearGradient',
-      );
-      gradient.setAttribute('id', gradId);
-      gradient.setAttribute('gradientUnits', 'userSpaceOnUse');
-      gradient.setAttribute('x1', '0');
-      gradient.setAttribute('y1', minY);
-      gradient.setAttribute('x2', '0');
-      gradient.setAttribute('y2', maxY);
-      gradient.innerHTML = `
-        <stop offset="0%" stop-color="rgba(245,158,11,0.08)" />
-        <stop offset="45%" stop-color="rgba(245,158,11,0.78)" />
-        <stop offset="55%" stop-color="rgba(245,158,11,0.92)" />
-        <stop offset="100%" stop-color="rgba(245,158,11,0.08)" />
-      `;
-      defs.appendChild(gradient);
-
-      const filterId = makeGlowFilter(minX, maxX, minY, maxY);
-
-      const el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    function makePath(d) {
+      const el = document.createElementNS(SVG_NS, 'path');
       el.setAttribute('d', d);
-      el.setAttribute('stroke', `url(#${gradId})`);
-      el.setAttribute('stroke-width', '1.1');
       el.setAttribute('fill', 'none');
-      el.setAttribute('filter', `url(#${filterId})`);
+      el.setAttribute('stroke-linecap', 'round');
+      el.setAttribute('stroke-linejoin', 'round');
       return el;
     }
 
     function makeDiamond(cx, cy) {
-      const el = document.createElementNS(
-        'http://www.w3.org/2000/svg',
-        'polygon',
-      );
+      const el = document.createElementNS(SVG_NS, 'polygon');
       el.setAttribute(
         'points',
-        `${cx},${cy - 6} ${cx + 6},${cy} ${cx},${cy + 6} ${cx - 6},${cy}`,
+        `${cx},${cy - 5} ${cx + 5},${cy} ${cx},${cy + 5} ${cx - 5},${cy}`,
       );
-      el.setAttribute('fill', 'rgba(245,158,11,0.85)');
-      const filterId = makeGlowFilter(cx - 6, cx + 6, cy - 6, cy + 6);
-      el.setAttribute('filter', `url(#${filterId})`);
+      el.setAttribute('class', 'tree-edge-knot');
       return el;
     }
 
-    function makeArrow(cx, y) {
-      const el = document.createElementNS(
-        'http://www.w3.org/2000/svg',
-        'polygon',
-      );
+    function makeArrow(cx, y, from, to) {
+      const el = document.createElementNS(SVG_NS, 'polygon');
       el.setAttribute(
         'points',
-        `${cx - 4},${y - 8} ${cx + 4},${y - 8} ${cx},${y}`,
+        `${cx - 3.5},${y - 7} ${cx + 3.5},${y - 7} ${cx},${y}`,
       );
-      el.setAttribute('fill', 'rgba(245,158,11,0.6)');
-      return el;
+      return tagEdge(el, from, to);
+    }
+
+    // Codos redondeados: en vez de una esquina en ángulo recto, un pequeño
+    // arco de radio fijo. Es el detalle que separa un diagrama "de debug" de
+    // uno con acabado editorial, y no cuesta nada — sigue siendo un path.
+    function elbow(fromX, startY, toX, toY, midY) {
+      const r = Math.min(14, Math.abs(toX - fromX) / 2, Math.abs(midY - startY));
+      if (!Number.isFinite(r) || r < 2) {
+        return `M ${fromX} ${startY} L ${fromX} ${midY} L ${toX} ${midY} L ${toX} ${toY}`;
+      }
+      const dir = toX > fromX ? 1 : -1;
+      return [
+        `M ${fromX} ${startY}`,
+        `L ${fromX} ${midY - r}`,
+        `Q ${fromX} ${midY} ${fromX + dir * r} ${midY}`,
+        `L ${toX - dir * r} ${midY}`,
+        `Q ${toX} ${midY} ${toX} ${midY + r}`,
+        `L ${toX} ${toY}`,
+      ].join(' ');
     }
 
     const nodesById = new Map();
@@ -1829,8 +2133,17 @@ const relationshipValidation = validateRelationships(
       const key = [relationship.from, relationship.to].sort().join(':');
       coupleMidpoints.set(key, { x: midX, y });
 
-      svg.appendChild(makeLine(from.cx, from.mid, to.cx, to.mid));
-      svg.appendChild(makeDiamond(midX, y));
+      svg.appendChild(
+        tagEdge(
+          makeLine(from.cx, from.mid, to.cx, to.mid),
+          relationship.from,
+          relationship.to,
+        ),
+      );
+      const knot = makeDiamond(midX, y);
+      knot.dataset.from = relationship.from;
+      knot.dataset.to = relationship.to;
+      svg.appendChild(knot);
     });
 
     // Agrupa por hijo primero (no por relación individual): un hijo puede
@@ -1908,23 +2221,22 @@ const relationshipValidation = validateRelationships(
       const fromY =
         couplePoint?.y ??
         Math.max(...parentCenters.map((center) => center.bottom));
-      const startY = couplePoint ? fromY + 6 : fromY;
+      const startY = couplePoint ? fromY + 5 : fromY;
       const midY = startY + (child.top - startY) * 0.48;
       const isStraight = Math.abs(fromX - child.cx) < 4;
       const d = isStraight
         ? `M ${fromX} ${startY} L ${child.cx} ${child.top}`
-        : `M ${fromX} ${startY} L ${fromX} ${midY} L ${child.cx} ${midY} L ${child.cx} ${child.top}`;
+        : elbow(fromX, startY, child.cx, child.top, midY);
 
+      // Una relación hijo↔pareja se etiqueta con AMBOS progenitores separados
+      // por espacio, para que el resaltado de linaje pueda encenderla venga
+      // desde el hijo o desde cualquiera de los dos padres.
       svg.appendChild(
-        makePath(
-          d,
-          Math.min(fromX, child.cx),
-          Math.max(fromX, child.cx),
-          Math.min(startY, child.top),
-          Math.max(startY, child.top),
-        ),
+        tagEdge(makePath(d), group.parents.join(' '), group.child),
       );
-      svg.appendChild(makeArrow(child.cx, child.top));
+      svg.appendChild(
+        makeArrow(child.cx, child.top, group.parents.join(' '), group.child),
+      );
     });
   }
 
@@ -2020,8 +2332,13 @@ const relationshipValidation = validateRelationships(
     currentTreeMode = 'family';
     treeDrawToken++;
     document.getElementById('tree-family-name').innerText = familia.name;
+    syncFamilySwitch(familiaId);
 
     const container = document.getElementById('tree-nodes-container');
+    // El árbol por familia no usa resaltado de linaje: si venimos del Árbol
+    // Completo hay que soltar sus listeners, que si no seguirían vivos sobre
+    // este mismo contenedor reteniendo nodos ya desechados.
+    teardownLineageHighlight(container);
     container.innerHTML = '';
     container.className = 'family-tree-canvas relative';
     container.style.width = layout.width + 'px';
@@ -2061,32 +2378,58 @@ const relationshipValidation = validateRelationships(
     return true;
   }
 
+  // Ficha de personaje del árbol. Cambios de acabado respecto a la anterior:
+  //  · retrato en proporción 3/4 (no cuadrado) y más grande — a la escala a
+  //    la que se ve el árbol completo, 56px de lado dejaban las caras
+  //    irreconocibles, que es el trabajo que la ficha tiene que hacer;
+  //  · el nombre se convierte en un pie sólido, legible sobre cualquier fondo,
+  //    en vez de texto suelto de 8px;
+  //  · el `hover:scale-105` sobre el nodo entero se sustituye por un zoom
+  //    interno de la imagen: escalar el nodo movía también el punto donde
+  //    acaban los conectores, y la línea quedaba despegada de la ficha.
   function renderTreeNode(familia, char) {
     const timelineLabel =
       char.stages && char.stages[0] ? char.stages[0].timeline : '';
     const node = document.createElement('div');
     node.className =
-      'tree-node-wrap flex flex-col items-center gap-2 cursor-pointer group hover:scale-105 transition-transform duration-500 relative pointer-events-auto';
+      'tree-node-wrap group relative flex flex-col items-center pointer-events-auto';
     node.setAttribute('data-tree-node', '1');
     node.setAttribute('data-char-id', char.id);
     node.setAttribute('data-family-id', familia.id);
+    node.setAttribute('role', 'button');
+    node.setAttribute('tabindex', '0');
+    node.setAttribute('aria-label', `Ver a ${char.name}`);
     node.onclick = () => openCharacterFromTree(familia.id, char.id);
+    node.onkeydown = (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openCharacterFromTree(familia.id, char.id);
+      }
+    };
     node.innerHTML = `
       ${timelineLabel ? `<div class="tree-tooltip">${timelineLabel}</div>` : ''}
-      <div class="relative w-14 h-14 md:w-20 md:h-20 rounded-sm overflow-hidden border border-stone-700 group-hover:border-amber-500/70 shadow-2xl transition-all duration-500 z-10">
-        <img src="${char.avatar}" class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
-        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
-      </div>
-      <p class="font-cinzel text-stone-400 group-hover:text-amber-400 tracking-widest uppercase text-[8px] md:text-[9px] transition-colors text-center w-20 md:w-24 min-h-[2.4em] leading-tight z-10">
-        ${char.name}
-      </p>`;
+      <div class="tree-node-frame relative w-[62px] h-[82px] md:w-[84px] md:h-[112px] overflow-hidden rounded-[3px] border border-stone-700/80 bg-stone-900 z-10">
+        <!-- SIN loading="lazy" a propósito. scheduleTreeLinesDraw() espera a
+             img.decode() de TODOS los avatares antes de medir posiciones y
+             trazar los conectores; una imagen diferida que aún no ha
+             empezado a cargar deja esa promesa pendiente para siempre y el
+             árbol se queda sin líneas. Además estos nodos solo se crean al
+             abrir el visor, así que diferirlos no ahorraría nada. -->
+        <img src="${char.avatar}" alt="" decoding="async"
+             class="tree-node-img w-full h-full object-cover object-top">
+        <div class="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black via-black/60 to-transparent pointer-events-none"></div>
+        <p class="tree-node-name absolute inset-x-0 bottom-0 px-1 pb-1.5 font-cinzel text-stone-200 uppercase text-[7px] md:text-[9px] leading-[1.15] text-center">
+          ${char.name}
+        </p>
+      </div>`;
     return node;
   }
 
   function drawCompleteTree() {
     currentTreeMode = 'complete';
     treeDrawToken++;
-    document.getElementById('tree-family-name').innerText = 'Arbol Completo';
+    document.getElementById('tree-family-name').innerText = 'Árbol Completo';
+    syncFamilySwitch('__complete');
 
     const container = document.getElementById('tree-nodes-container');
     container.innerHTML = '';
@@ -2135,40 +2478,128 @@ const relationshipValidation = validateRelationships(
 
     container.appendChild(svgOverlay);
 
+    // setupLineageHighlight() DEBE ir dentro de onDrawn: los conectores no
+    // existen hasta que scheduleTreeLinesDraw termina su espera asíncrona
+    // (decodificación de avatares + dos frames de layout). Llamándolo aquí
+    // fuera, como estaba antes, la consulta de `.tree-edge` salía vacía y el
+    // resaltado nunca podía tocar las líneas.
+    lineageState = null;
     scheduleTreeLinesDraw(getCompleteRelationships(), svgOverlay, container, {
       onDrawn: () => {
         drawInfinityCenterpiece(svgOverlay);
+        setupLineageHighlight(container);
         centerTree();
       },
     });
-
-    setupLineageHighlight(container);
 
     return true;
   }
 
   // Al pasar el cursor sobre un personaje del Árbol Completo, resalta su
   // linaje directo (ancestros + descendientes) y atenúa el resto.
+  //
+  // Reescrito por coste: la versión anterior enganchaba mouseenter/mouseleave
+  // a CADA uno de los 25 nodos (50 listeners) y, en cada entrada, recorría los
+  // 25 nodos llamando dos veces a classList.toggle — 50 escrituras de clase
+  // por hover, la mayoría reponiendo el valor que el elemento YA tenía, y cada
+  // una invalidando estilo con una transición de opacidad detrás. Ahora:
+  //  · un único listener delegado en el contenedor;
+  //  · el linaje de cada personaje se calcula una sola vez y se memoiza;
+  //  · solo se escribe en los elementos cuyo estado cambia de verdad.
+  let lineageState = null;
+  // #tree-nodes-container SOBREVIVE a cada redibujado (solo se vacía su
+  // contenido con innerHTML = ''), así que los listeners colgados de él NO se
+  // van con sus hijos: cada visita al Árbol Completo apilaba un juego nuevo
+  // sobre los anteriores, y cada juego viejo seguía reteniendo los arrays de
+  // nodos y conectores ya desechados. Se guarda el juego activo para poder
+  // retirarlo antes de instalar el siguiente (regla 6 de .clauderules).
+  let lineageListeners = null;
+
+  function teardownLineageHighlight(container) {
+    if (!lineageListeners) return;
+    container.removeEventListener('pointerover', lineageListeners.over);
+    container.removeEventListener('pointerleave', lineageListeners.leave);
+    container.removeEventListener('pointerup', lineageListeners.up);
+    lineageListeners = null;
+    lineageState = null;
+    container.classList.remove('has-lineage');
+  }
+
   function setupLineageHighlight(container) {
-    const nodes = Array.from(container.querySelectorAll('.complete-tree-node'));
+    teardownLineageHighlight(container);
+
     const relationships = getCompleteRelationships();
+    const lineageCache = new Map();
 
-    nodes.forEach((node) => {
-      node.addEventListener('mouseenter', () => {
-        const lineage = computeLineage(node.dataset.charId, relationships);
-        nodes.forEach((other) => {
-          const inLineage = lineage.has(other.dataset.charId);
-          other.classList.toggle('is-dimmed', !inLineage);
-          other.classList.toggle('is-active', other === node);
-        });
-      });
+    const nodes = Array.from(container.querySelectorAll('.complete-tree-node'));
+    const edges = Array.from(
+      container.querySelectorAll('.tree-edge, .tree-edge-knot'),
+    );
 
-      node.addEventListener('mouseleave', () => {
-        nodes.forEach((other) => {
-          other.classList.remove('is-dimmed', 'is-active');
+    // Cada conector guarda sus extremos como ids separados por espacio (una
+    // relación puede salir de una pareja, o sea de dos padres a la vez).
+    const edgeEnds = edges.map((el) => [
+      ...(el.dataset.from || '').split(' ').filter(Boolean),
+      ...(el.dataset.to || '').split(' ').filter(Boolean),
+    ]);
+
+    function lineageFor(charId) {
+      if (!lineageCache.has(charId)) {
+        lineageCache.set(charId, computeLineage(charId, relationships));
+      }
+      return lineageCache.get(charId);
+    }
+
+    function setDim(el, dim) {
+      if (el.classList.contains('is-dimmed') === dim) return;
+      el.classList.toggle('is-dimmed', dim);
+    }
+
+    function applyLineage(charId) {
+      if (lineageState === charId) return;
+      lineageState = charId;
+
+      if (!charId) {
+        container.classList.remove('has-lineage');
+        nodes.forEach((node) => {
+          setDim(node, false);
+          node.classList.remove('is-active');
         });
+        edges.forEach((edge) => setDim(edge, false));
+        return;
+      }
+
+      const lineage = lineageFor(charId);
+      container.classList.add('has-lineage');
+      nodes.forEach((node) => {
+        setDim(node, !lineage.has(node.dataset.charId));
+        node.classList.toggle('is-active', node.dataset.charId === charId);
       });
-    });
+      // Un conector se enciende solo si TODOS sus extremos están en el linaje;
+      // si no, una línea que apenas roza el linaje quedaría brillando hacia
+      // un nodo ya atenuado.
+      edges.forEach((edge, index) => {
+        const ends = edgeEnds[index];
+        setDim(edge, !ends.length || !ends.every((id) => lineage.has(id)));
+      });
+    }
+
+    lineageListeners = {
+      over: (e) => {
+        const node = e.target.closest('.complete-tree-node');
+        applyLineage(node ? node.dataset.charId : null);
+      },
+      leave: () => applyLineage(null),
+      // El resaltado es puro hover, así que en pantallas táctiles no aporta
+      // nada y solo deja nodos apagados tras un toque. Se limpia al soltar.
+      up: (e) => {
+        if (e.pointerType !== 'mouse') applyLineage(null);
+      },
+    };
+
+    container.addEventListener('pointerover', lineageListeners.over);
+    container.addEventListener('pointerleave', lineageListeners.leave);
+    container.addEventListener('pointerup', lineageListeners.up);
   }
 
   // Centerpiece decorativo: símbolo de infinito entre Jonas y Martha, en el
@@ -2182,50 +2613,48 @@ const relationshipValidation = validateRelationships(
     const midX = (jonasPos.x + marthaPos.x) / 2;
     const midY = (jonasPos.y + marthaPos.y) / 2;
 
-    // `drawTreeLines()` ya construyó y adjuntó un <defs> a este mismo `svg`
-    // (comparten el elemento vía el parámetro svgOverlay de drawCompleteTree),
-    // pero el <filter id="glowLine"> compartido que existía antes se
-    // eliminó — cada línea ahora genera su propio filtro con
-    // filterUnits="userSpaceOnUse" (ver makeGlowFilter dentro de
-    // drawTreeLines) porque las unidades por defecto ("objectBoundingBox")
-    // no se pintan cuando el bounding box del elemento tiene ancho o alto
-    // cero. La línea Jonas–Martha y el símbolo ∞ de este centerpiece corren
-    // el mismo riesgo (línea potencialmente recta), así que se les crea su
-    // propio filtro local aquí, igual de inmune al bbox.
-    const defs = svg.querySelector('defs');
-    const filterId = 'infinityGlow';
-    if (defs && !defs.querySelector(`#${filterId}`)) {
-      const pad = 20;
-      const minX = Math.min(jonasPos.x, marthaPos.x) - pad;
-      const maxX = Math.max(jonasPos.x, marthaPos.x) + pad;
-      const minY = Math.min(jonasPos.y, marthaPos.y) - pad;
-      const maxY = Math.max(jonasPos.y, marthaPos.y) + pad;
-      const filter = document.createElementNS(
-        'http://www.w3.org/2000/svg',
-        'filter',
-      );
-      filter.setAttribute('id', filterId);
-      filter.setAttribute('filterUnits', 'userSpaceOnUse');
-      filter.setAttribute('x', minX);
-      filter.setAttribute('y', minY);
-      filter.setAttribute('width', maxX - minX);
-      filter.setAttribute('height', maxY - minY);
-      filter.innerHTML = `
-        <feGaussianBlur stdDeviation="1.5" result="blur"/>
-        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-      `;
-      defs.appendChild(filter);
-    }
+    // Sin filtro de resplandor: el visor entero dejó de usar filtros SVG (ver
+    // el bloque de trazos planos en drawTreeLines). Aquí el énfasis lo dan el
+    // color y el grosor del trazo, y el ∞ se apoya en la clase
+    // `.complete-tree-infinity`, que ya lo pinta en ámbar.
+    //
+    // El vínculo se dibuja en DOS TRAMOS con un hueco en el centro, en vez de
+    // una sola línea de Jonas a Martha: esa línea cruzaba por encima del ∞ y
+    // lo partía por la mitad. Ahora la línea llega hasta el símbolo, lo deja
+    // respirar, y continúa al otro lado. El hueco se calcula sobre el vector
+    // Jonas→Martha, así que sigue siendo correcto si algún día se mueven.
+    const INFINITY_GAP = 34;
+    const dx = marthaPos.x - jonasPos.x;
+    const dy = marthaPos.y - jonasPos.y;
+    const length = Math.hypot(dx, dy) || 1;
+    const ux = dx / length;
+    const uy = dy / length;
 
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    line.setAttribute('x1', jonasPos.x);
-    line.setAttribute('y1', jonasPos.y);
-    line.setAttribute('x2', marthaPos.x);
-    line.setAttribute('y2', marthaPos.y);
-    line.setAttribute('stroke', 'rgba(245,158,11,0.8)');
-    line.setAttribute('stroke-width', '1.4');
-    line.setAttribute('filter', `url(#${filterId})`);
-    svg.appendChild(line);
+    // Si los nodos quedaran tan juntos que el hueco se comiera la línea
+    // entera, se dibuja de un solo trazo antes que dejar tramos invertidos.
+    const segments =
+      length > INFINITY_GAP * 2 + 12
+        ? [
+            [jonasPos.x, jonasPos.y, midX - ux * INFINITY_GAP, midY - uy * INFINITY_GAP],
+            [midX + ux * INFINITY_GAP, midY + uy * INFINITY_GAP, marthaPos.x, marthaPos.y],
+          ]
+        : [[jonasPos.x, jonasPos.y, marthaPos.x, marthaPos.y]];
+
+    segments.forEach(([x1, y1, x2, y2]) => {
+      const line = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'line',
+      );
+      line.setAttribute('x1', x1);
+      line.setAttribute('y1', y1);
+      line.setAttribute('x2', x2);
+      line.setAttribute('y2', y2);
+      line.setAttribute('stroke-linecap', 'round');
+      line.setAttribute('class', 'tree-edge tree-edge--bond');
+      line.dataset.from = 'jonas';
+      line.dataset.to = 'martha';
+      svg.appendChild(line);
+    });
 
     const text = document.createElementNS(
       'http://www.w3.org/2000/svg',
@@ -2235,7 +2664,6 @@ const relationshipValidation = validateRelationships(
     text.setAttribute('y', midY);
     text.setAttribute('font-size', '46');
     text.setAttribute('class', 'complete-tree-infinity');
-    text.setAttribute('filter', `url(#${filterId})`);
     text.textContent = '∞';
     svg.appendChild(text);
   }
@@ -2252,9 +2680,11 @@ const relationshipValidation = validateRelationships(
       btnAudio.classList.add('flex');
     }
 
+    captureFocusForViewer();
     document.getElementById('familias-main-view').classList.add('hidden');
     const treeViewer = document.getElementById('tree-viewer');
     treeViewer.classList.remove('hidden');
+    treeViewer.setAttribute('aria-hidden', 'false');
     // Ver comentario en openTreeViewer(): centrar no depende de imágenes,
     // solo de que #tree-pan-area ya sea visible (lo acabamos de lograr).
     centerTree();
@@ -2288,74 +2718,6 @@ const relationshipValidation = validateRelationships(
   };
 
   // ============================
-  // CURSOR TRIQUETA EN EL ÁRBOL
-  // ============================
-  const treeCursor = document.getElementById('tree-cursor');
-  const treePanEl = document.getElementById('tree-pan-area');
-  const treeViewerEl = document.getElementById('tree-viewer');
-
-  // Seguimiento del cursor a nivel documento — así nunca se pierde.
-  //
-  // Tres detalles que aquí importan mucho, porque este handler se dispara en
-  // cada pixel que recorre el ratón:
-  //  1. La posición va por `transform` (compositor), NO por left/top, que
-  //     obligan a recalcular el layout en cada movimiento.
-  //  2. El rect del área se cachea. Antes se leía con getBoundingClientRect()
-  //     JUSTO DESPUÉS de escribir estilos, lo que forzaba un reflow síncrono
-  //     por movimiento (layout thrashing) — era el origen del lag.
-  //  3. Se escribe como mucho una vez por frame, vía rAF.
-  let panRect = null;
-  const invalidatePanRect = () => {
-    panRect = null;
-  };
-  window.addEventListener('resize', invalidatePanRect);
-  window.addEventListener('scroll', invalidatePanRect, { passive: true });
-  window.invalidateTreePanRect = invalidatePanRect;
-
-  let cursorRaf = null;
-  let cursorX = 0;
-  let cursorY = 0;
-
-  document.addEventListener('pointermove', (e) => {
-    if (!treeCursor) return;
-    cursorX = e.clientX;
-    cursorY = e.clientY;
-    if (cursorRaf) return;
-    cursorRaf = requestAnimationFrame(() => {
-      cursorRaf = null;
-      treeCursor.style.setProperty('--cursor-x', `${cursorX}px`);
-      treeCursor.style.setProperty('--cursor-y', `${cursorY}px`);
-
-      // Mostrar triqueta solo si el tree-viewer está activo y el ratón está
-      // dentro del pan-area.
-      const treeVisible =
-        !treeViewerEl.classList.contains('hidden') &&
-        !treeViewerEl.classList.contains('opacity-0');
-      if (!treeVisible) {
-        treeCursor.style.opacity = '0';
-        return;
-      }
-      if (!panRect) panRect = treePanEl.getBoundingClientRect();
-      const inside =
-        cursorX >= panRect.left &&
-        cursorX <= panRect.right &&
-        cursorY >= panRect.top &&
-        cursorY <= panRect.bottom;
-      treeCursor.style.opacity = inside ? '1' : '0';
-    });
-  });
-
-  // Asegurarse de que al cerrar el tree-viewer el cursor desaparece
-  document.addEventListener('pointerleave', () => {
-    if (treeCursor) treeCursor.style.opacity = '0';
-  });
-
-  // Sin efecto de cursor sobre el fondo: el feedback del puntero ya lo da el
-  // cursor-triqueta (ver #tree-cursor) y cualquier halo o estela añadida se
-  // leía como un artefacto pegado sobre el agua en vez de como parte de ella.
-  // El protagonismo lo lleva el propio fondo animado (.tree-ambient).
-
-  // ============================
   // ZOOM / PAN LOGIC
   // ============================
   let treeScale = 1;
@@ -2371,14 +2733,38 @@ const relationshipValidation = validateRelationships(
   const MAX_SCALE = 2.5;
   const ZOOM_STEP = 0.15;
 
+  // Cachea el nodo en vez de resolverlo por id en cada frame de arrastre.
+  let zoomContainerEl = null;
+  function getZoomContainer() {
+    if (!zoomContainerEl || !zoomContainerEl.isConnected) {
+      zoomContainerEl = document.getElementById('tree-zoom-container');
+    }
+    return zoomContainerEl;
+  }
+
   function applyTreeTransform(smooth = false) {
-    const zc = document.getElementById('tree-zoom-container');
+    const zc = getZoomContainer();
     if (!zc) return;
     if (smooth) {
       zc.classList.add('smooth-reset');
       setTimeout(() => zc.classList.remove('smooth-reset'), 420);
     }
-    zc.style.transform = `translate(${treePanX}px, ${treePanY}px) scale(${treeScale})`;
+    // translate3d en vez de translate: promueve la capa al compositor y evita
+    // que el navegador tenga que repintar el árbol en cada desplazamiento.
+    zc.style.transform = `translate3d(${treePanX}px, ${treePanY}px, 0) scale(${treeScale})`;
+  }
+
+  // Durante el arrastre solo se escribe UNA vez por frame. Sin esto, un ratón
+  // de 1000 Hz dispara ~8 escrituras de transform por frame de 60 Hz: siete
+  // de ellas se descartan sin llegar a pintarse, pero cada una obliga al
+  // navegador a recalcular estilo antes de tirarla.
+  let transformRaf = null;
+  function scheduleTreeTransform() {
+    if (transformRaf) return;
+    transformRaf = requestAnimationFrame(() => {
+      transformRaf = null;
+      applyTreeTransform();
+    });
   }
 
   // `smooth` controla si el salto a la posición centrada anima el transform
@@ -2431,120 +2817,158 @@ const relationshipValidation = validateRelationships(
     treeResizeRaf = requestAnimationFrame(() => centerTree());
   });
 
-  window.zoomIn = () => {
-    treeScale = Math.min(treeScale + ZOOM_STEP, MAX_SCALE);
-    applyTreeTransform();
-  };
-  window.zoomOut = () => {
-    treeScale = Math.max(treeScale - ZOOM_STEP, MIN_SCALE);
-    applyTreeTransform();
-  };
+  // Los botones +/− amplían respecto al CENTRO del área visible, no respecto
+  // al origen del contenido: antes, pulsar "+" escalaba desde la esquina
+  // superior izquierda y el árbol se escapaba de la pantalla. Se anima
+  // (`smooth`) porque es un salto discreto provocado por el usuario.
+  function zoomByStep(direction) {
+    const rect = getPanRect();
+    zoomAround(
+      rect.left + rect.width / 2,
+      rect.top + rect.height / 2,
+      clampScale(treeScale + direction * ZOOM_STEP),
+    );
+    applyTreeTransform(true);
+  }
+
+  window.zoomIn = () => zoomByStep(1);
+  window.zoomOut = () => zoomByStep(-1);
   window.zoomReset = () => {
     centerTree(true);
   };
 
-  // Rueda del ratón → zoom centrado en el cursor
-  document.getElementById('tree-pan-area').addEventListener(
+  const panAreaEl = document.getElementById('tree-pan-area');
+
+  // El rect del área solo cambia con resize/scroll, así que se cachea en vez
+  // de leerlo en cada evento: getBoundingClientRect() fuerza al navegador a
+  // recalcular el layout, y hacerlo desde un handler de rueda o de
+  // movimiento es el patrón clásico de "layout thrashing".
+  let panRect = null;
+  const invalidatePanRect = () => {
+    panRect = null;
+  };
+  window.addEventListener('resize', invalidatePanRect);
+  window.addEventListener('scroll', invalidatePanRect, { passive: true });
+  function getPanRect() {
+    if (!panRect) panRect = panAreaEl.getBoundingClientRect();
+    return panRect;
+  }
+
+  // Zoom alrededor de un punto concreto de la pantalla, manteniendo fijo el
+  // punto del árbol que hay bajo él. Sirve tanto para la rueda como para el
+  // pellizco táctil, así que la fórmula vive en un solo sitio.
+  function zoomAround(clientX, clientY, newScale) {
+    const rect = getPanRect();
+    const px = clientX - rect.left;
+    const py = clientY - rect.top;
+    treePanX = px - (px - treePanX) * (newScale / treeScale);
+    treePanY = py - (py - treePanY) * (newScale / treeScale);
+    treeScale = newScale;
+  }
+
+  const clampScale = (value) =>
+    Math.min(Math.max(value, MIN_SCALE), MAX_SCALE);
+
+  // Rueda del ratón → zoom centrado en el cursor. El paso es proporcional a
+  // la escala actual, de modo que acercar y alejar se sienten simétricos en
+  // vez de dar saltos enormes cuando ya estás muy cerca.
+  panAreaEl.addEventListener(
     'wheel',
     (e) => {
       e.preventDefault();
-      const delta = e.deltaY > 0 ? -ZOOM_STEP : ZOOM_STEP;
-      const newScale = Math.min(
-        Math.max(treeScale + delta, MIN_SCALE),
-        MAX_SCALE,
-      );
-
-      // Zoom relativo al punto del cursor
-      const rect = document
-        .getElementById('tree-pan-area')
-        .getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
-
-      treePanX = mouseX - (mouseX - treePanX) * (newScale / treeScale);
-      treePanY = mouseY - (mouseY - treePanY) * (newScale / treeScale);
-      treeScale = newScale;
-      applyTreeTransform();
+      const factor = Math.exp(-e.deltaY * 0.0015);
+      zoomAround(e.clientX, e.clientY, clampScale(treeScale * factor));
+      scheduleTreeTransform();
     },
     { passive: false },
   );
 
-  // Touch pinch zoom
-  let lastTouchDist = null;
-  document.getElementById('tree-pan-area').addEventListener(
-    'touchstart',
-    (e) => {
-      if (e.touches.length === 2) {
-        lastTouchDist = Math.hypot(
-          e.touches[0].clientX - e.touches[1].clientX,
-          e.touches[0].clientY - e.touches[1].clientY,
-        );
-      } else if (e.touches.length === 1) {
-        isDragging = true;
-        dragStartX = e.touches[0].clientX;
-        dragStartY = e.touches[0].clientY;
-        dragOriginPanX = treePanX;
-        dragOriginPanY = treePanY;
-      }
-    },
-    { passive: true },
-  );
+  // ===== ARRASTRE Y PELLIZCO CON PUNTEROS UNIFICADOS =====
+  // Antes había dos rutas separadas (mousedown/mousemove/mouseup por un lado,
+  // touchstart/touchmove/touchend por otro) que compartían las mismas
+  // variables de estado y podían pisarse. Los eventos de puntero cubren
+  // ratón, dedo y lápiz con un solo camino, y `setPointerCapture` garantiza
+  // que el arrastre siga llegando aunque el cursor salga del área o pase por
+  // encima de un nodo — antes, soltar fuera de la ventana dejaba `isDragging`
+  // en true y el árbol se quedaba pegado al ratón.
+  const activePointers = new Map();
+  let pinchStartDist = 0;
+  let pinchStartScale = 1;
 
-  document.getElementById('tree-pan-area').addEventListener(
-    'touchmove',
-    (e) => {
-      if (e.touches.length === 2 && lastTouchDist !== null) {
-        e.preventDefault();
-        const dist = Math.hypot(
-          e.touches[0].clientX - e.touches[1].clientX,
-          e.touches[0].clientY - e.touches[1].clientY,
-        );
-        const delta = (dist - lastTouchDist) * 0.005;
-        treeScale = Math.min(Math.max(treeScale + delta, MIN_SCALE), MAX_SCALE);
-        lastTouchDist = dist;
-        applyTreeTransform();
-      } else if (e.touches.length === 1 && isDragging) {
-        treePanX = dragOriginPanX + (e.touches[0].clientX - dragStartX);
-        treePanY = dragOriginPanY + (e.touches[0].clientY - dragStartY);
-        applyTreeTransform();
-      }
-    },
-    { passive: false },
-  );
+  function pointerMidpoint() {
+    const points = Array.from(activePointers.values());
+    return {
+      x: (points[0].x + points[1].x) / 2,
+      y: (points[0].y + points[1].y) / 2,
+    };
+  }
 
-  document.getElementById('tree-pan-area').addEventListener('touchend', () => {
-    isDragging = false;
-    lastTouchDist = null;
+  function pointerDistance() {
+    const points = Array.from(activePointers.values());
+    return Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
+  }
+
+  panAreaEl.addEventListener('pointerdown', (e) => {
+    activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+    if (activePointers.size === 2) {
+      // Empieza un pellizco: se cancela el arrastre de un dedo en curso.
+      isDragging = false;
+      panAreaEl.classList.remove('is-panning');
+      pinchStartDist = pointerDistance();
+      pinchStartScale = treeScale;
+      return;
+    }
+
+    if (activePointers.size !== 1) return;
+    // Un clic sobre un nodo abre el personaje; no debe iniciar un arrastre.
+    if (e.target.closest('[data-tree-node]')) return;
+
+    isDragging = true;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    dragOriginPanX = treePanX;
+    dragOriginPanY = treePanY;
+    panAreaEl.classList.add('is-panning');
+    panAreaEl.setPointerCapture(e.pointerId);
+    e.preventDefault();
   });
 
-  // Arrastrar con ratón
-  document
-    .getElementById('tree-pan-area')
-    .addEventListener('mousedown', (e) => {
-      if (e.target.closest('[data-tree-node]')) return;
-      isDragging = true;
-      dragStartX = e.clientX;
-      dragStartY = e.clientY;
-      dragOriginPanX = treePanX;
-      dragOriginPanY = treePanY;
-      // Solo la escala: el transform completo (posición incluida) lo compone
-      // el propio CSS a partir de las variables, así que escribirlo entero
-      // aquí dejaría la triqueta clavada en el centro de la pantalla.
-      if (treeCursor) treeCursor.style.setProperty('--cursor-scale', '0.8');
-      e.preventDefault();
-    });
+  panAreaEl.addEventListener('pointermove', (e) => {
+    if (!activePointers.has(e.pointerId)) return;
+    activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
 
-  document.addEventListener('mousemove', (e) => {
+    if (activePointers.size === 2 && pinchStartDist > 0) {
+      const mid = pointerMidpoint();
+      zoomAround(
+        mid.x,
+        mid.y,
+        clampScale((pointerDistance() / pinchStartDist) * pinchStartScale),
+      );
+      scheduleTreeTransform();
+      return;
+    }
+
     if (!isDragging) return;
     treePanX = dragOriginPanX + (e.clientX - dragStartX);
     treePanY = dragOriginPanY + (e.clientY - dragStartY);
-    applyTreeTransform();
+    scheduleTreeTransform();
   });
 
-  document.addEventListener('mouseup', () => {
-    isDragging = false;
-    if (treeCursor) treeCursor.style.setProperty('--cursor-scale', '1');
-  });
+  function endPointer(e) {
+    activePointers.delete(e.pointerId);
+    if (activePointers.size < 2) pinchStartDist = 0;
+    if (activePointers.size === 0) {
+      isDragging = false;
+      panAreaEl.classList.remove('is-panning');
+    }
+    if (panAreaEl.hasPointerCapture?.(e.pointerId)) {
+      panAreaEl.releasePointerCapture(e.pointerId);
+    }
+  }
+
+  panAreaEl.addEventListener('pointerup', endPointer);
+  panAreaEl.addEventListener('pointercancel', endPointer);
 
   // Guarda de generación para las transiciones abrir/cerrar árbol: si el
   // usuario cierra y reabre (la misma familia u otra) antes de que termine
@@ -2573,9 +2997,11 @@ const relationshipValidation = validateRelationships(
       btnAudio.classList.add('flex');
     }
 
+    captureFocusForViewer();
     document.getElementById('familias-main-view').classList.add('hidden');
     const treeViewer = document.getElementById('tree-viewer');
     treeViewer.classList.remove('hidden');
+    treeViewer.setAttribute('aria-hidden', 'false');
     // centerTree() solo necesita las dimensiones de #tree-pan-area (ya
     // visible, acabamos de quitar 'hidden' — leer offsetWidth aquí fuerza
     // un reflow síncrono que ya ve el cambio) y las de #tree-nodes-container
@@ -2595,9 +3021,9 @@ const relationshipValidation = validateRelationships(
   window.closeTreeViewer = () => {
     const viewerToken = ++treeViewerToken;
 
-    if (treeCursor) treeCursor.style.opacity = '0';
     const treeViewer = document.getElementById('tree-viewer');
     treeViewer.classList.add('opacity-0');
+    treeViewer.setAttribute('aria-hidden', 'true');
 
     setTimeout(() => {
       if (viewerToken !== treeViewerToken) return;
@@ -2608,11 +3034,115 @@ const relationshipValidation = validateRelationships(
         btnAudio.classList.remove('flex');
         btnAudio.classList.add('hidden');
       }
+      restoreFocusAfterViewer();
     }, 700);
 
     resumeAudioOnFocus = false;
     pauseSectionAudio();
   };
+
+  // ============================
+  // CONMUTADOR DE LINAJE, FOCO Y TECLADO
+  // ============================
+
+  // Marca en el conmutador qué árbol se está viendo. Se llama desde
+  // drawTree()/drawCompleteTree(), que son los dos únicos sitios donde cambia.
+  function syncFamilySwitch(activeId) {
+    document.querySelectorAll('[data-tree-family]').forEach((chip) => {
+      chip.setAttribute(
+        'aria-selected',
+        chip.dataset.treeFamily === activeId ? 'true' : 'false',
+      );
+    });
+  }
+
+  document.querySelectorAll('[data-tree-family]').forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const id = chip.dataset.treeFamily;
+      if (id === '__complete') {
+        drawCompleteTree();
+      } else {
+        drawTree(id);
+      }
+    });
+  });
+
+  // Foco: el visor es un overlay a pantalla completa, así que al abrirlo el
+  // foco debe entrar en él y al cerrarlo volver al control que lo abrió
+  // (regla 5 de .clauderules — ya se cumplía en el menú móvil, faltaba aquí).
+  let focusBeforeViewer = null;
+
+  function captureFocusForViewer() {
+    focusBeforeViewer =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+    const closeBtn = document.getElementById('tree-close-btn');
+    if (closeBtn) setTimeout(() => closeBtn.focus({ preventScroll: true }), 60);
+  }
+
+  function restoreFocusAfterViewer() {
+    if (focusBeforeViewer && focusBeforeViewer.isConnected) {
+      focusBeforeViewer.focus({ preventScroll: true });
+    }
+    focusBeforeViewer = null;
+  }
+
+  function isTreeViewerOpen() {
+    const treeViewer = document.getElementById('tree-viewer');
+    return treeViewer && !treeViewer.classList.contains('hidden');
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (!isTreeViewerOpen()) return;
+
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      if (isSidebarOpen()) {
+        closeSidebarIfOpen();
+      } else {
+        window.closeTreeViewer();
+      }
+      return;
+    }
+
+    // Con la barra lateral abierta el foco está en su lista de personajes;
+    // secuestrar las flechas ahí impediría recorrerla.
+    if (isSidebarOpen()) return;
+
+    // Teclado como alternativa real al arrastre: no todo el mundo puede
+    // sostener un botón del ratón mientras mueve el puntero.
+    const PAN_STEP = e.shiftKey ? 160 : 60;
+    switch (e.key) {
+      case 'ArrowLeft':
+        treePanX += PAN_STEP;
+        break;
+      case 'ArrowRight':
+        treePanX -= PAN_STEP;
+        break;
+      case 'ArrowUp':
+        treePanY += PAN_STEP;
+        break;
+      case 'ArrowDown':
+        treePanY -= PAN_STEP;
+        break;
+      case '+':
+      case '=':
+        zoomByStep(1);
+        return;
+      case '-':
+      case '_':
+        zoomByStep(-1);
+        return;
+      case '0':
+        centerTree(true);
+        return;
+      default:
+        return;
+    }
+    e.preventDefault();
+    applyTreeTransform(true);
+  });
 
   // ABRIR VISOR CINEMÁTICO (Snap exacto 100vh)
   function characterNameById(characterId) {

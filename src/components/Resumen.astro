@@ -49,32 +49,49 @@
       </div>
     </div>
 
+    <!-- Mismo patrón de pestañas que Aclaraciones y Galería: una sola píldora
+         ámbar como indicador (antes había píldora Y subrayado señalando lo
+         mismo), tamaño contenido en vez de estirarse a `max-w-2xl`, y
+         semántica de tablist. Que las tres secciones con pestañas del sitio
+         usen el mismo control es lo que hace que se lea como un solo
+         producto y no como tres páginas distintas. -->
     <div
-      class="relative grid grid-cols-3 md:flex md:flex-wrap justify-center gap-2 md:gap-4 mb-12 md:mb-16 w-full max-w-2xl mx-auto"
+      role="tablist"
+      aria-label="Temporadas"
+      class="relative grid grid-cols-3 md:flex md:flex-nowrap justify-center gap-1 mb-12 md:mb-16 w-full max-w-md md:w-fit md:max-w-none mx-auto p-1 rounded-xl md:rounded-full border border-stone-300/60 dark:border-stone-800/80 bg-stone-200/50 dark:bg-stone-900/50 backdrop-blur-sm"
       data-aos="fade-up"
     >
       <div
         id="resumen-tab-pill"
-        class="absolute inset-y-0 rounded-lg md:rounded-t-lg bg-stone-800 dark:bg-[#0a0a0a] shadow-lg transition-all duration-300 ease-out z-0 opacity-0"
+        class="absolute inset-y-1 rounded-lg md:rounded-full bg-amber-500 shadow-[0_2px_12px_-2px_rgba(245,158,11,0.55)] transition-all duration-300 ease-out z-0 opacity-0"
         style="left: 0; width: 0;"
       >
       </div>
       <button
-        class="tab-btn active relative z-10 px-1 py-3 md:px-6 md:py-3 font-cinzel font-bold tracking-wider md:tracking-widest uppercase text-[10px] md:text-base transition-colors duration-300 text-white border-b-2 border-amber-600 dark:border-amber-500"
+        role="tab"
+        aria-selected="true"
+        aria-controls="temp1"
+        class="tab-btn active relative z-10 inline-flex items-center justify-center min-h-10 md:min-h-9 px-1.5 py-2 md:px-5 md:py-1.5 rounded-lg md:rounded-full font-cinzel font-bold tracking-normal md:tracking-[0.12em] uppercase text-[10px] md:text-xs leading-tight transition-colors duration-300 text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
         data-target="temp1"
       >
         <span class="block md:hidden">Temp. 1</span>
         <span class="hidden md:block">Temporada 1</span>
       </button>
       <button
-        class="tab-btn relative z-10 px-1 py-3 md:px-6 md:py-3 font-cinzel font-bold tracking-wider md:tracking-widest uppercase text-[10px] md:text-base transition-colors duration-300 text-stone-500 border-b-2 border-transparent hover:text-stone-700 dark:hover:text-stone-300"
+        role="tab"
+        aria-selected="false"
+        aria-controls="temp2"
+        class="tab-btn relative z-10 inline-flex items-center justify-center min-h-10 md:min-h-9 px-1.5 py-2 md:px-5 md:py-1.5 rounded-lg md:rounded-full font-cinzel font-bold tracking-normal md:tracking-[0.12em] uppercase text-[10px] md:text-xs leading-tight transition-colors duration-300 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
         data-target="temp2"
       >
         <span class="block md:hidden">Temp. 2</span>
         <span class="hidden md:block">Temporada 2</span>
       </button>
       <button
-        class="tab-btn relative z-10 px-1 py-3 md:px-6 md:py-3 font-cinzel font-bold tracking-wider md:tracking-widest uppercase text-[10px] md:text-base transition-colors duration-300 text-stone-500 border-b-2 border-transparent hover:text-stone-700 dark:hover:text-stone-300"
+        role="tab"
+        aria-selected="false"
+        aria-controls="temp3"
+        class="tab-btn relative z-10 inline-flex items-center justify-center min-h-10 md:min-h-9 px-1.5 py-2 md:px-5 md:py-1.5 rounded-lg md:rounded-full font-cinzel font-bold tracking-normal md:tracking-[0.12em] uppercase text-[10px] md:text-xs leading-tight transition-colors duration-300 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
         data-target="temp3"
       >
         <span class="block md:hidden">Temp. 3</span>
@@ -112,6 +129,9 @@
             >
               <img
                 src="/resumen/temporada1/1.jpg"
+                alt=""
+                loading="lazy"
+                decoding="async"
                 class="w-full h-full object-cover object-top lg:object-[80%_center] transform group-hover:scale-105 transition-transform duration-1000 opacity-80 lg:opacity-100"
               />
               <div
@@ -166,6 +186,9 @@
             >
               <img
                 src="/resumen/temporada1/2.jpg"
+                alt=""
+                loading="lazy"
+                decoding="async"
                 class="w-full h-full object-cover object-top lg:object-[20%_center] transform group-hover:scale-105 transition-transform duration-1000 grayscale group-hover:grayscale-0 opacity-80 lg:opacity-80"
               />
               <div
@@ -263,6 +286,9 @@
             >
               <img
                 src="/resumen/temporada2/1.jpg"
+                alt=""
+                loading="lazy"
+                decoding="async"
                 class="w-full h-full object-cover object-top lg:object-[80%_center] transform group-hover:scale-105 transition-transform duration-1000 opacity-80 lg:opacity-100"
               />
               <div
@@ -317,6 +343,9 @@
             >
               <img
                 src="/resumen/temporada2/2.jpg"
+                alt=""
+                loading="lazy"
+                decoding="async"
                 class="w-full h-full object-cover object-top lg:object-[20%_center] transform group-hover:scale-105 transition-transform duration-1000 grayscale group-hover:grayscale-0 opacity-80 lg:opacity-80"
               />
               <div
@@ -407,6 +436,9 @@
             >
               <img
                 src="/resumen/temporada3/2.jpg"
+                alt=""
+                loading="lazy"
+                decoding="async"
                 class="w-full h-full object-cover object-top lg:object-[80%_center] transform group-hover:scale-105 transition-transform duration-1000 opacity-80 lg:opacity-100"
               />
               <div
@@ -460,6 +492,9 @@
             >
               <img
                 src="/resumen/temporada3/1.jpg"
+                alt=""
+                loading="lazy"
+                decoding="async"
                 class="w-full h-full object-cover object-top lg:object-[20%_center] transform group-hover:scale-105 transition-transform duration-1000 grayscale group-hover:grayscale-0 opacity-80 lg:opacity-80"
               />
               <div
@@ -610,10 +645,13 @@
         c.classList.add('hidden');
       });
 
+      // El estado activo lo lleva solo la píldora ámbar + el texto en negro
+      // (que es lo que da contraste sobre ella); ya no hay clases de borde
+      // que mantener sincronizadas.
       tabs.forEach((t) => {
-        t.classList.remove('active', 'text-white');
-        t.classList.add('text-stone-500', 'border-transparent');
-        t.classList.remove('border-amber-600', 'dark:border-amber-500');
+        t.classList.remove('active', 'text-black');
+        t.classList.add('text-stone-600', 'dark:text-stone-400');
+        t.setAttribute('aria-selected', 'false');
       });
 
       const targetContent = document.getElementById(tabTargetId);
@@ -626,12 +664,9 @@
         targetContent.classList.add('block');
 
         targetTab.classList.add('active');
-        targetTab.classList.remove('text-stone-500', 'border-transparent');
-        targetTab.classList.add(
-          'text-white',
-          'border-amber-600',
-          'dark:border-amber-500',
-        );
+        targetTab.classList.remove('text-stone-600', 'dark:text-stone-400');
+        targetTab.classList.add('text-black');
+        targetTab.setAttribute('aria-selected', 'true');
 
         movePillTo(targetTab);
         if (typeof AOS !== 'undefined') window.setTimeout(() => AOS.refresh(), 60);
@@ -644,10 +679,15 @@
       });
     });
 
-    window.addEventListener('resize', () => {
+    function repositionPill() {
       const activeTab = document.querySelector('.tab-btn.active') || tabs[0];
       movePillTo(activeTab);
-    });
+    }
+
+    window.addEventListener('resize', repositionPill);
+    // La píldora se mide en píxeles del texto: medirla con la fuente de
+    // reserva la deja desalineada hasta el primer resize.
+    if (document.fonts?.ready) document.fonts.ready.then(repositionPill);
 
     window.resetResumenTabs = () => activateTab('temp1');
   });

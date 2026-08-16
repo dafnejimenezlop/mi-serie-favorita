@@ -84,9 +84,13 @@ const navLinks = [
       <ul
         class="relative inline-flex items-center space-x-1 bg-stone-900/70 backdrop-blur-md rounded-full p-1 border border-stone-600/40 shadow-lg"
       >
+        <!-- La píldora anima `transform` y `width` a la vez: la clase era
+             `transition-transform`, así que al saltar entre dos enlaces de
+             distinto largo ("Inicio" → "Recomendaciones") la posición se
+             deslizaba pero el ancho pegaba un salto seco. -->
         <div
           id="nav-slider"
-          class="absolute top-1 bottom-1 rounded-full bg-stone-700 shadow-sm transition-transform duration-300 ease-out z-0 opacity-0"
+          class="absolute top-1 bottom-1 rounded-full bg-amber-500 shadow-[0_2px_12px_-2px_rgba(245,158,11,0.6)] transition-[transform,width,opacity] duration-300 ease-out z-0 opacity-0"
           style="left: 0;"
         >
         </div>
@@ -204,23 +208,28 @@ const navLinks = [
       });
     }
 
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 10) {
-        topBar.classList.remove(
-          'bg-gradient-to-b',
-          'from-black/70',
-          'to-transparent',
-        );
-        topBar.classList.add('bg-stone-900/95', 'shadow-lg');
-      } else {
-        topBar.classList.remove('bg-stone-900/95', 'shadow-lg');
-        topBar.classList.add(
-          'bg-gradient-to-b',
-          'from-black/70',
-          'to-transparent',
-        );
-      }
-    });
+    // El handler reescribía cinco clases en CADA evento de scroll, aunque el
+    // estado no hubiese cambiado — decenas de invalidaciones de estilo por
+    // gesto. Ahora solo actúa en la transición, y el listener es pasivo para
+    // que el navegador no tenga que esperar a ver si llamamos preventDefault.
+    let headerScrolled = null;
+    function syncHeaderScroll() {
+      const scrolled = window.scrollY > 10;
+      if (scrolled === headerScrolled) return;
+      headerScrolled = scrolled;
+      topBar.classList.toggle('bg-gradient-to-b', !scrolled);
+      topBar.classList.toggle('from-black/70', !scrolled);
+      topBar.classList.toggle('to-transparent', !scrolled);
+      topBar.classList.toggle('bg-stone-950/95', scrolled);
+      topBar.classList.toggle('backdrop-blur-md', scrolled);
+      topBar.classList.toggle('shadow-lg', scrolled);
+      // SIN borde inferior: #header-top-bar no es el final del header, la fila
+      // de navegación va justo debajo. Un `border-b` aquí dibuja una raya
+      // clara ENTRE las dos barras, que es exactamente el artefacto que se
+      // veía al hacer scroll. La separación ya la da la sombra.
+    }
+    window.addEventListener('scroll', syncHeaderScroll, { passive: true });
+    syncHeaderScroll();
 
     // === EL NUEVO SCRIPT DE LA PÍLDORA DESLIZANTE ===
     function updateActiveNav() {
@@ -231,11 +240,14 @@ const navLinks = [
 
       let activeFound = false;
 
-      // Actualizar Desktop con la píldora
+      // Actualizar Desktop con la píldora. El texto activo pasa a negro
+      // porque la píldora ahora es ámbar: blanco sobre ámbar no llegaba al
+      // contraste mínimo (regla 5).
       desktopLinks.forEach((link) => {
         if (link.getAttribute('href') === currentHash) {
-          link.classList.add('text-white');
+          link.classList.add('text-black');
           link.classList.remove('text-stone-300');
+          link.setAttribute('aria-current', 'page');
 
           if (slider) {
             // Calculamos cuánto mide la palabra y a qué distancia está de la izquierda
@@ -247,8 +259,9 @@ const navLinks = [
           }
           activeFound = true;
         } else {
-          link.classList.remove('text-white');
+          link.classList.remove('text-black');
           link.classList.add('text-stone-300');
+          link.removeAttribute('aria-current');
         }
       });
 
@@ -282,6 +295,13 @@ const navLinks = [
     setTimeout(updateActiveNav, 100);
     window.addEventListener('hashchange', updateActiveNav);
     window.addEventListener('resize', updateActiveNav); // Recalcular si redimensionas ventana
+    // La píldora se dimensiona midiendo el ancho del enlace activo. Si esa
+    // medida se toma con la fuente de reserva y la tipografía definitiva
+    // llega después, la píldora queda con el ancho equivocado hasta el
+    // primer resize. Recalcular al terminar de cargar las fuentes lo corrige.
+    if (document.fonts?.ready) {
+      document.fonts.ready.then(updateActiveNav);
+    }
 
     function openMenu() {
       mobileMenu.setAttribute('aria-hidden', 'false');
@@ -307,5 +327,15 @@ const navLinks = [
     if (menuClose) menuClose.addEventListener('click', closeMenu);
     if (menuOverlay) menuOverlay.addEventListener('click', closeMenu);
     mobileLinks.forEach((link) => link.addEventListener('click', closeMenu));
+
+    // Cerrar con Escape y devolver el foco: el panel móvil cumplía el resto
+    // del contrato de la regla 5 (aria-hidden, aria-expanded) pero se quedaba
+    // atrapado sin salida de teclado.
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      if (!mobileMenu || mobileMenu.getAttribute('aria-hidden') !== 'false') return;
+      closeMenu();
+      menuToggle?.focus();
+    });
   });
 </script>

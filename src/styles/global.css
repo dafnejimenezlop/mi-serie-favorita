@@ -1,17 +1,217 @@
 /* src/styles/global.css */
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Open+Sans:wght@400;600&display=swap');
 @import 'tailwindcss';
 
 /* Activa el modo oscuro por clase en Tailwind v4 */
 @variant dark (&:where(.dark, .dark *));
 
+/* === TIPOGRAFÍA COMO TOKEN DE TEMA ===
+   `font-cinzel` se usa en ~190 sitios (nav, botones, etiquetas de pestaña,
+   nombres del árbol, pies de tarjeta...) pero NUNCA estuvo definida: en
+   Tailwind v4 las utilidades `font-*` salen del namespace `--font-*` de
+   `@theme`, y aquí no había ningún `@theme`. Resultado: la clase no
+   generaba CSS y solo h1–h4 recibían Cinzel — por el selector de elemento
+   de más abajo, no por la clase. Todo el resto (spans, <p>, <button>,
+   <cite>, <a>) se veía en Open Sans pese a pedir Cinzel explícitamente.
+   Definirla aquí es lo que devuelve la voz tipográfica de marca al sitio. */
+@theme {
+  --font-sans: 'Open Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-cinzel: 'Cinzel', ui-serif, Georgia, serif;
+
+  /* Acento único del sitio (ámbar). Se declara como token para poder
+     referenciarlo desde CSS plano (resplandores, bordes de foco, líneas del
+     árbol) sin repetir el literal rgb en cada archivo. */
+  --color-accent: oklch(0.769 0.188 70.08); /* == amber-500 */
+}
+
+/* Superficies y acentos en RGB crudo, para usarlos dentro de
+   rgba()/color-mix() en los <style> de componente sin depender de Tailwind. */
+:root {
+  --accent-rgb: 245 158 11;
+  --surface-950: #0a0a0a;
+  --surface-900: #141414;
+  --surface-void: #050505;
+}
+
 html,
 body {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Open Sans', ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
+
 h1,
 h2,
 h3,
 h4 {
-  font-family: 'Cinzel', serif;
+  font-family: 'Cinzel', ui-serif, Georgia, serif;
+}
+
+/* Desplazamiento suave para los saltos de ancla internos (#sinopsis,
+   #ciclos...), con `scroll-padding-top` para que el header fijo no tape el
+   título de destino. Se anula bajo prefers-reduced-motion. */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 7rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+::selection {
+  background: rgb(var(--accent-rgb) / 0.3);
+  color: #fff;
+}
+
+/* Anillo de foco coherente en todo el sitio. Solo `:focus-visible`, para no
+   dibujarlo en clics de ratón. Los componentes que ya declaran su propio
+   `focus-visible:ring-*` de Tailwind lo sobrescriben sin conflicto. */
+:where(a, button, [role='button'], input, select, textarea, summary):focus-visible {
+  outline: 2px solid rgb(var(--accent-rgb) / 0.9);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Barra de desplazamiento global en tono del sitio (la clase
+   `.custom-scrollbar` de Familias/Asistente sigue mandando en sus paneles).
+   IMPORTANTE: el ANCHO se declara fuera de cualquier condición de tema y solo
+   cambian los colores. Si la anchura dependiera de `.dark`, alternar el tema
+   cambiaría el ancho de la barra y, con él, el del área de contenido: la
+   página entera daría un salto lateral en cada clic del interruptor. */
+@media (min-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+  }
+
+  /* Carril con una fina línea vertical al centro: el "hilo" por el que corre
+     el pulgar. Es lo que le da carácter propio en vez de parecer la barra por
+     defecto pintada de otro color. */
+  ::-webkit-scrollbar-track {
+    background:
+      linear-gradient(
+          to right,
+          transparent calc(50% - 0.5px),
+          rgba(120, 113, 108, 0.35) calc(50% - 0.5px),
+          rgba(120, 113, 108, 0.35) calc(50% + 0.5px),
+          transparent calc(50% + 0.5px)
+        )
+        no-repeat,
+      #e7e5e4;
+  }
+
+  /* Pulgar ámbar con degradado vertical y un borde del color del carril, que
+     lo deja "flotando" en vez de tocar los bordes. */
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+      180deg,
+      rgb(var(--accent-rgb) / 0.55),
+      rgb(var(--accent-rgb) / 0.85)
+    );
+    border: 3px solid #e7e5e4;
+    border-radius: 999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(
+      180deg,
+      rgb(var(--accent-rgb) / 0.85),
+      rgb(var(--accent-rgb))
+    );
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: #e7e5e4;
+  }
+
+  .dark ::-webkit-scrollbar-track {
+    background:
+      linear-gradient(
+          to right,
+          transparent calc(50% - 0.5px),
+          rgba(120, 113, 108, 0.28) calc(50% - 0.5px),
+          rgba(120, 113, 108, 0.28) calc(50% + 0.5px),
+          transparent calc(50% + 0.5px)
+        )
+        no-repeat,
+      #0a0a0a;
+  }
+  .dark ::-webkit-scrollbar-thumb {
+    border-color: #0a0a0a;
+  }
+  .dark ::-webkit-scrollbar-corner {
+    background: #0a0a0a;
+  }
+}
+
+/* Firefox no soporta ::-webkit-scrollbar y necesita las propiedades estándar.
+   PERO ojo con el orden de precedencia: desde Chrome 121, si `scrollbar-width`
+   o `scrollbar-color` están declaradas, Chromium cambia al renderizado
+   ESTÁNDAR de la barra e IGNORA por completo las reglas ::-webkit-scrollbar.
+   Al declararlas para todos, la barra personalizada de arriba (11px, carril
+   con hilo central, pulgar en degradado) no llegaba a verse nunca: lo que se
+   veía era la barra fina nativa de Chrome, solo que recoloreada — o sea, "la
+   del navegador" en vez de la nuestra.
+   Con `@supports not selector(::-webkit-scrollbar)` estas propiedades quedan
+   reservadas a los navegadores que NO entienden el pseudo-elemento (Firefox),
+   y en Chromium manda nuestra barra. */
+@supports not selector(::-webkit-scrollbar) {
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--accent-rgb) / 0.7) #e7e5e4;
+  }
+  html.dark {
+    scrollbar-color: rgb(var(--accent-rgb) / 0.7) #0a0a0a;
+  }
+}
+
+/* Bloqueo de scroll mientras hay una capa modal encima (cargador inicial,
+   modal de vídeo). Sin esto la página seguía desplazándose por detrás del
+   overlay, que es justo lo que no debe pasar. */
+body.scroll-lock {
+  overflow: hidden;
+}
+
+/* ===== BOTONES FLOTANTES POR DEBAJO DEL HERO =====
+   En Inicio, los FAB de asistente y WhatsApp se recortaban sobre el hero a
+   pantalla completa y le robaban protagonismo justo en la primera impresión.
+   Ahora aparecen en cuanto el hero deja de dominar la pantalla. En el resto
+   de vistas el hero ni existe, así que se ven desde el principio.
+
+   Estas reglas van aquí y no en el <style> de BaseLayout porque apuntan a
+   elementos de OTROS componentes (AsistenteWinden.astro, Whatsapp.astro), y
+   Astro acota los estilos de cada componente con su propio
+   `data-astro-cid-*`: escritas allí, el selector nunca llegaba a casar.
+
+   `.asistente-open` es la excepción: si el panel está desplegado, no se
+   esconde bajo los pies del usuario. */
+#asistente-winden-root,
+#whatsapp-fab {
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+body.hero-in-view:not(.asistente-open) #asistente-winden-root,
+body.hero-in-view #whatsapp-fab {
+  opacity: 0;
+  transform: translateY(14px) scale(0.92);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #asistente-winden-root,
+  #whatsapp-fab {
+    transition-duration: 0.01ms;
+  }
+}
+
+/* Evita que una imagen rota deje el típico icono + alt descolocado dentro de
+   las tarjetas de personaje/galería (regla 7 de .clauderules: nunca un <img>
+   roto a la vista). */
+img {
+  color: transparent;
 }

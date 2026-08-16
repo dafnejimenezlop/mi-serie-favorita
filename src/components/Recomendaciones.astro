@@ -60,7 +60,7 @@ const byAffinityDesc = [...recommendations].sort((a, b) => b.affinity - a.affini
         type="button"
         data-reco-filter="todas"
         aria-pressed="true"
-        class="reco-filter-btn active px-4 py-2 rounded-full font-cinzel text-[10px] md:text-xs font-bold tracking-[0.15em] uppercase transition-all duration-300 border border-amber-500 bg-amber-500 text-black shadow-lg shadow-amber-500/20"
+        class="reco-filter-btn active px-4 py-2 rounded-full font-cinzel text-[10px] md:text-xs font-bold tracking-[0.15em] uppercase transition-all duration-300 border border-amber-500 bg-amber-500 text-black shadow-lg shadow-amber-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
       >
         Todas
       </button>
@@ -70,7 +70,7 @@ const byAffinityDesc = [...recommendations].sort((a, b) => b.affinity - a.affini
             type="button"
             data-reco-filter={platform}
             aria-pressed="false"
-            class="reco-filter-btn px-4 py-2 rounded-full font-cinzel text-[10px] md:text-xs font-bold tracking-[0.15em] uppercase transition-all duration-300 border border-stone-400/50 dark:border-stone-700 text-stone-600 dark:text-stone-400 hover:border-amber-500/60 hover:text-amber-600 dark:hover:text-amber-500"
+            class="reco-filter-btn px-4 py-2 rounded-full font-cinzel text-[10px] md:text-xs font-bold tracking-[0.15em] uppercase transition-all duration-300 border border-stone-400/50 dark:border-stone-700 text-stone-600 dark:text-stone-400 hover:border-amber-500/60 hover:text-amber-600 dark:hover:text-amber-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
           >
             {platform}
           </button>

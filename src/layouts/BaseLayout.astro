@@ -24,7 +24,9 @@ const canonicalURL = new URL(
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/prueba2.ico" />
+    <!-- El `type` debe coincidir con la extensión real (regla 5): estaba
+         declarado como image/svg+xml apuntando a un .ico. -->
+    <link rel="icon" type="image/x-icon" href="/prueba2.ico" />
     <title>{title}</title>
     <meta name="description" content={description} />
 
@@ -37,6 +39,20 @@ const canonicalURL = new URL(
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content="/prueba.png" />
+
+    <!-- Las fuentes se cargaban con `@import url(...)` desde global.css, lo
+         que serializa las descargas: el navegador tiene que bajar y parsear
+         global.css ANTES de descubrir siquiera la petición a Google Fonts.
+         Como <link> en el <head> se descubre en el primer parseo y arranca en
+         paralelo. Se añaden además los pesos 400/700 de Cinzel: el sitio usa
+         `font-bold` sobre Cinzel por todas partes y solo se cargaba el 600,
+         así que el navegador lo estaba engordando sintéticamente. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap"
+    />
 
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
 
@@ -61,7 +77,99 @@ const canonicalURL = new URL(
       window.localStorage.setItem('theme', theme);
     </script>
 
-    <style>
+    <!-- Seguro contra bloqueo permanente: `scroll-lock` y el cargador se
+         pintan desde el servidor, y quien los retira es JavaScript. Sin JS
+         (desactivado, o si el script falla al cargar) la página se quedaría
+         congelada para siempre. Este <noscript> devuelve el scroll y esconde
+         el cargador en ese escenario. -->
+    <noscript>
+      <style>
+        body.scroll-lock {
+          overflow: visible !important;
+        }
+        #global-loader {
+          display: none !important;
+        }
+        body.hero-in-view #asistente-winden-root,
+        body.hero-in-view #whatsapp-fab {
+          opacity: 1 !important;
+          pointer-events: auto !important;
+          transform: none !important;
+        }
+      </style>
+    </noscript>
+
+    <!-- `is:global` es imprescindible aquí: Astro acota por defecto los
+         estilos de cada componente con un atributo `data-astro-cid-*`, así que
+         una regla como `body.hero-in-view #asistente-winden-root` escrita en
+         este archivo NO alcanzaba a ese botón — vive en AsistenteWinden.astro,
+         que lleva otro cid. Las reglas de #scroll-progress sí funcionaban por
+         casualidad: ese elemento se declara aquí mismo. -->
+    <style is:global>
+      /* ===== BARRA DE PROGRESO DE LECTURA ===== */
+      #scroll-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        z-index: 60; /* por encima del header (z-50), por debajo de modales */
+        pointer-events: none;
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      #scroll-progress span {
+        display: block;
+        height: 100%;
+        width: 100%;
+        transform-origin: 0 50%;
+        /* La variable la escribe el JS de respaldo; con soporte nativo de
+           scroll-timeline ni se usa. */
+        transform: scaleX(var(--scroll-progress, 0));
+        background: linear-gradient(
+          90deg,
+          rgba(245, 158, 11, 0.25) 0%,
+          rgba(245, 158, 11, 0.85) 55%,
+          #fde68a 100%
+        );
+        box-shadow: 0 0 14px rgba(245, 158, 11, 0.55);
+      }
+
+      /* Donde el navegador soporta animaciones guiadas por scroll, la barra se
+         mueve SIN JavaScript y fuera del hilo principal: el compositor la
+         interpola solo, así que no hay ni un listener de scroll compitiendo
+         con el resto de la página. El bloque @supports deja el camino de JS
+         intacto como respaldo para Safari/Firefox. */
+      @supports (animation-timeline: scroll()) {
+        #scroll-progress span {
+          transform: scaleX(0);
+          animation: scroll-progress-grow linear both;
+          animation-timeline: scroll(root block);
+        }
+        @keyframes scroll-progress-grow {
+          to {
+            transform: scaleX(1);
+          }
+        }
+      }
+
+      /* En los visores inmersivos del árbol la página no hace scroll, así que
+         la barra no tendría nada que indicar. */
+      body.hide-global-ui #scroll-progress {
+        opacity: 0;
+      }
+
+      /* Las reglas de los botones flotantes viven en global.css: cruzan
+         componentes (AsistenteWinden.astro y Whatsapp.astro) y este bloque,
+         aun con is:global, depende del pipeline de estilos de Astro. Una hoja
+         .css importada nunca se acota, así que es su sitio natural. */
+
+      @media (prefers-reduced-motion: reduce) {
+        #scroll-progress span {
+          box-shadow: none;
+        }
+      }
+
       /* Animación perfecta del trazado del símbolo de infinito */
       .infinity-path {
         stroke-dasharray: 100;
@@ -82,9 +190,21 @@ const canonicalURL = new URL(
     </style>
   </head>
 
+  <!-- `scroll-lock` y `hero-in-view` ya vienen puestas desde el servidor: el
+       cargador cubre la pantalla desde el primer pixel pintado, y en Inicio el
+       hero también, así que esperar a que corra el JS dejaría un instante en
+       el que la página se puede desplazar por detrás del overlay o en el que
+       los FAB parpadean sobre el hero. Ambas las retira el script. -->
   <body
-    class="bg-stone-200 text-stone-900 dark:bg-[#141414] dark:text-stone-100 transition-colors duration-300 font-sans overflow-x-hidden w-full relative"
+    class="scroll-lock hero-in-view bg-stone-200 text-stone-900 dark:bg-[#141414] dark:text-stone-100 transition-colors duration-300 font-sans overflow-x-hidden w-full relative"
   >
+    <!-- Barra de progreso de lectura. Es "dinámica" en el sentido literal:
+         crece con el scroll. El degradado va de ámbar apagado a ámbar claro,
+         y como la barra se ESCALA (no se le cambia el ancho), el extremo
+         brillante viaja siempre pegado a la punta — de ahí la sensación de
+         cabeza luminosa sin necesidad de un segundo elemento. -->
+    <div id="scroll-progress" aria-hidden="true"><span></span></div>
+
     <div
       id="global-loader"
       class="fixed inset-0 z-[9999] bg-[#141414] flex flex-col items-center justify-center transition-opacity duration-1000 ease-out"
@@ -133,6 +253,10 @@ const canonicalURL = new URL(
 
     <div
       id="videoModal"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Tráiler de DARK"
+      aria-hidden="true"
       class="fixed inset-0 z-[100] hidden flex-col items-center justify-center bg-black/95 backdrop-blur-lg opacity-0 transition-opacity duration-500 p-4"
     >
       <button
@@ -158,6 +282,40 @@ const canonicalURL = new URL(
         <div id="youtube-modal-player" class="w-full h-full"></div>
       </div>
     </div>
+
+    <script is:inline>
+      // Respaldo de la barra de progreso SOLO donde no hay scroll-timeline
+      // nativo (hoy: Safari y Firefox). Si el navegador lo soporta, no se
+      // registra ningún listener: la animación la lleva el compositor.
+      (() => {
+        const supportsScrollTimeline =
+          window.CSS &&
+          CSS.supports &&
+          CSS.supports('animation-timeline: scroll()');
+        if (supportsScrollTimeline) return;
+
+        const bar = document.querySelector('#scroll-progress span');
+        if (!bar) return;
+
+        let raf = null;
+        const update = () => {
+          raf = null;
+          const doc = document.documentElement;
+          const max = doc.scrollHeight - window.innerHeight;
+          const progress = max > 0 ? Math.min(window.scrollY / max, 1) : 0;
+          bar.style.setProperty('--scroll-progress', progress.toFixed(4));
+        };
+        // Una escritura por frame como mucho: el evento de scroll puede
+        // dispararse muchas veces entre dos repintados.
+        const onScroll = () => {
+          if (!raf) raf = requestAnimationFrame(update);
+        };
+
+        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('resize', onScroll, { passive: true });
+        update();
+      })();
+    </script>
 
     <script is:inline src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script is:inline>
@@ -217,16 +375,32 @@ const canonicalURL = new URL(
         });
       }
 
+      // Retirar el cargador y devolver el scroll. Se centraliza aquí porque
+      // ahora hay DOS caminos que pueden dispararlo (el vídeo listo o la
+      // salvaguarda por tiempo) y ambos deben desbloquear la página.
+      var loaderHidden = false;
+      function hideGlobalLoader() {
+        if (loaderHidden) return;
+        loaderHidden = true;
+        const loader = document.getElementById('global-loader');
+        if (loader) {
+          loader.classList.add('opacity-0', 'pointer-events-none');
+          setTimeout(() => loader.remove(), 1000);
+        }
+        document.body.classList.remove('scroll-lock');
+      }
+
+      // SALVAGUARDA: el cargador solo se quitaba cuando el vídeo del hero
+      // empezaba a reproducirse. Si YouTube está bloqueado, va lento o el
+      // usuario está sin conexión, ese evento no llega nunca — y desde que el
+      // cargador bloquea el scroll, quedarse ahí colgado dejaría la página
+      // congelada. A los 6s se retira pase lo que pase.
+      setTimeout(hideGlobalLoader, 6000);
+
       function onHeroStateChange(event) {
         if (event.data === 1 && !isVideoLoaded) {
           isVideoLoaded = true;
-          setTimeout(() => {
-            const loader = document.getElementById('global-loader');
-            if (loader) {
-              loader.classList.add('opacity-0', 'pointer-events-none');
-              setTimeout(() => loader.remove(), 1000);
-            }
-          }, 1000);
+          setTimeout(hideGlobalLoader, 1000);
         }
       }
 
@@ -277,36 +451,93 @@ const canonicalURL = new URL(
         const btnCloseModal = document.getElementById('btnCloseModal');
         const videoModal = document.getElementById('videoModal');
 
-        if (btnModal) {
-          btnModal.addEventListener('click', () => {
-            videoModal.classList.remove('hidden');
-            videoModal.classList.add('flex');
-            setTimeout(() => videoModal.classList.remove('opacity-0'), 10);
-            if (heroPlayer && typeof heroPlayer.pauseVideo === 'function')
-              heroPlayer.pauseVideo();
-            if (modalPlayer && typeof modalPlayer.playVideo === 'function')
-              modalPlayer.playVideo();
-          });
+        function openVideoModal() {
+          videoModal.classList.remove('hidden');
+          videoModal.classList.add('flex');
+          videoModal.setAttribute('aria-hidden', 'false');
+          // La página no debe desplazarse por detrás del modal.
+          document.body.classList.add('scroll-lock');
+          setTimeout(() => videoModal.classList.remove('opacity-0'), 10);
+          if (heroPlayer && typeof heroPlayer.pauseVideo === 'function')
+            heroPlayer.pauseVideo();
+          if (modalPlayer && typeof modalPlayer.playVideo === 'function')
+            modalPlayer.playVideo();
+          btnCloseModal?.focus();
         }
 
-        if (btnCloseModal) {
-          btnCloseModal.addEventListener('click', () => {
-            videoModal.classList.add('opacity-0');
-            setTimeout(() => {
-              videoModal.classList.add('hidden');
-              videoModal.classList.remove('flex');
-            }, 500);
-            if (modalPlayer && typeof modalPlayer.pauseVideo === 'function')
-              modalPlayer.pauseVideo();
-            if (
-              isPlaying &&
-              heroPlayer &&
-              typeof heroPlayer.playVideo === 'function'
-            )
-              heroPlayer.playVideo();
-          });
+        function closeVideoModal() {
+          videoModal.classList.add('opacity-0');
+          videoModal.setAttribute('aria-hidden', 'true');
+          document.body.classList.remove('scroll-lock');
+          setTimeout(() => {
+            videoModal.classList.add('hidden');
+            videoModal.classList.remove('flex');
+          }, 500);
+          if (modalPlayer && typeof modalPlayer.pauseVideo === 'function')
+            modalPlayer.pauseVideo();
+          if (
+            isPlaying &&
+            heroPlayer &&
+            typeof heroPlayer.playVideo === 'function'
+          )
+            heroPlayer.playVideo();
+          btnModal?.focus();
         }
 
+        if (btnModal) btnModal.addEventListener('click', openVideoModal);
+        if (btnCloseModal)
+          btnCloseModal.addEventListener('click', closeVideoModal);
+
+        // Escape cierra el modal (regla 5): era el único overlay del sitio sin
+        // salida de teclado.
+        document.addEventListener('keydown', (e) => {
+          if (e.key !== 'Escape') return;
+          if (!videoModal || videoModal.classList.contains('hidden')) return;
+          closeVideoModal();
+        });
+
+        // ===== FAB POR DEBAJO DEL HERO =====
+        // Se observa el hero: mientras ocupe buena parte de la pantalla, los
+        // botones flotantes se retiran. Un IntersectionObserver no cuesta nada
+        // (lo resuelve el navegador fuera del hilo principal), a diferencia de
+        // escuchar el scroll y medir en cada evento.
+        const heroEl = document.getElementById('inicio');
+        if (heroEl && 'IntersectionObserver' in window) {
+          // El hero solo cuenta si además está REALMENTE renderizado. Las
+          // secciones del sitio se muestran/ocultan con `hidden` desde
+          // index.astro, y al pasar a Resumen o Galería el hero queda en
+          // display:none: apoyarse solo en el observador dejaba la clase
+          // pegada y los botones flotantes invisibles en el resto de vistas.
+          // `offsetParent === null` detecta ese caso de forma exacta.
+          const heroIsRendered = () => heroEl.offsetParent !== null;
+
+          let heroIntersecting = true;
+          const syncHeroState = () => {
+            document.body.classList.toggle(
+              'hero-in-view',
+              heroIntersecting && heroIsRendered(),
+            );
+          };
+
+          const heroObserver = new IntersectionObserver(
+            ([entry]) => {
+              heroIntersecting = entry.isIntersecting;
+              syncHeroState();
+            },
+            // Se considera "dominando la pantalla" mientras se vea más de un
+            // 45% del hero; por debajo de eso ya estás leyendo contenido.
+            { threshold: 0.45 },
+          );
+          heroObserver.observe(heroEl);
+
+          // Al cambiar de vista el observador puede tardar un frame en
+          // reevaluar; reevaluamos nosotros en el acto para que los botones no
+          // parpadeen al navegar.
+          window.addEventListener('hashchange', syncHeroState);
+          syncHeroState();
+        } else {
+          document.body.classList.remove('hero-in-view');
+        }
       });
     </script>
   </body>
