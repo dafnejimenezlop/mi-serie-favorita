@@ -50,35 +50,59 @@
         <div class="pt-2 h-px w-24 bg-amber-500 transition-colors"></div>
       </div>
 
-      <img
-        src="/maquina.jpg"
-        alt="Póster Cinemático de Winden"
-        class="rounded border border-stone-200 dark:border-stone-900 shadow-2xl dark:shadow-amber-900/10 transition duration-300 filter grayscale hover:grayscale-0 w-full object-cover"
-      />
+      <div class="relative group">
+        <div
+          class="absolute -inset-2 rounded bg-amber-500/0 group-hover:bg-amber-500/10 blur-xl transition-all duration-700 pointer-events-none"
+          aria-hidden="true"
+        >
+        </div>
+        <img
+          src="/maquina.jpg"
+          alt="Póster Cinemático de Winden"
+          class="relative rounded border border-stone-200 dark:border-stone-900 group-hover:border-amber-500/40 shadow-2xl dark:shadow-amber-900/10 transition duration-300 filter grayscale hover:grayscale-0 w-full object-cover"
+        />
+      </div>
     </div>
 
     <div
-      class="space-y-12 bg-stone-50 dark:bg-stone-900/40 p-6 md:p-12 rounded-lg border border-stone-200 dark:border-stone-800 shadow-xl w-full order-1 lg:order-2"
+      class="relative space-y-12 bg-stone-50 dark:bg-stone-900/40 p-6 md:p-12 rounded-lg border border-stone-200 dark:border-stone-800 hover:border-amber-500/30 shadow-xl hover:shadow-[0_0_40px_rgba(245,158,11,0.08)] w-full order-1 lg:order-2 transition-all duration-500"
       data-aos="fade-left"
       data-aos-duration="1000"
       data-aos-delay="300"
     >
+      <span
+        class="absolute top-4 right-4 md:top-6 md:right-6 font-mono text-[9px] tracking-[0.25em] uppercase text-stone-400/70 dark:text-stone-600"
+        aria-hidden="true"
+      >
+        Expediente #01
+      </span>
+
       <div class="space-y-6 text-center">
         <img
           src="/hola.jpg"
-          class="h-120 w-auto object-contain mx-auto rounded"
+          class="h-120 w-auto object-contain mx-auto rounded drop-shadow-[0_0_25px_rgba(245,158,11,0.15)]"
           alt="Dark Logo Mini"
         />
+
+        <p
+          class="font-mono text-[10px] tracking-[0.3em] uppercase text-stone-500 dark:text-stone-500"
+        >
+          Valoración de la Comunidad
+        </p>
 
         <div
           class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:space-x-8"
         >
           <h3
-            class="text-6xl font-cinzel font-bold text-amber-950 dark:text-amber-300"
+            id="ratings-score"
+            data-target-score="4.6"
+            class="ratings-score-count text-6xl font-cinzel font-bold text-amber-950 dark:text-amber-300 tabular-nums"
           >
-            4.6
+            0.0
           </h3>
-          <div class="flex text-amber-500 space-x-0.5">
+          <div
+            class="flex text-amber-500 space-x-0.5 transition-transform duration-300 hover:scale-110"
+          >
             <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"
               ><path
                 d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
@@ -119,7 +143,9 @@
       <div
         class="space-y-4 pt-8 border-t border-amber-900/50 dark:border-amber-500/50 w-full"
       >
-        <div class="flex items-center space-x-2 md:space-x-4 w-full">
+        <div
+          class="flex items-center space-x-2 md:space-x-4 w-full rounded-lg px-2 -mx-2 py-1 transition-colors duration-300 hover:bg-amber-500/5"
+        >
           <div
             class="w-24 md:w-32 shrink-0 flex items-center justify-between text-xs md:text-sm font-semibold font-mono"
           >
@@ -144,13 +170,16 @@
             class="flex-1 h-2.5 md:h-3 bg-stone-200 dark:bg-stone-800 rounded-full overflow-hidden"
           >
             <div
-              class="h-full bg-emerald-500 transition-all duration-1000 w-[60%]"
+              class="rating-bar rating-bar-shimmer relative h-full bg-amber-600 transition-all duration-1000 ease-out w-0"
+              data-target-width="60%"
             >
             </div>
           </div>
         </div>
 
-        <div class="flex items-center space-x-2 md:space-x-4 w-full">
+        <div
+          class="flex items-center space-x-2 md:space-x-4 w-full rounded-lg px-2 -mx-2 py-1 transition-colors duration-300 hover:bg-amber-500/5"
+        >
           <div
             class="w-24 md:w-32 shrink-0 flex items-center justify-between text-xs md:text-sm font-semibold font-mono"
           >
@@ -175,13 +204,16 @@
             class="flex-1 h-2.5 md:h-3 bg-stone-200 dark:bg-stone-800 rounded-full overflow-hidden"
           >
             <div
-              class="h-full bg-blue-500 transition-all duration-1000 w-[30%]"
+              class="rating-bar h-full bg-amber-500 transition-all duration-1000 ease-out w-0"
+              data-target-width="30%"
             >
             </div>
           </div>
         </div>
 
-        <div class="flex items-center space-x-2 md:space-x-4 w-full">
+        <div
+          class="flex items-center space-x-2 md:space-x-4 w-full rounded-lg px-2 -mx-2 py-1 transition-colors duration-300 hover:bg-amber-500/5"
+        >
           <div
             class="w-24 md:w-32 shrink-0 flex items-center justify-between text-xs md:text-sm font-semibold font-mono"
           >
@@ -206,13 +238,16 @@
             class="flex-1 h-2.5 md:h-3 bg-stone-200 dark:bg-stone-800 rounded-full overflow-hidden"
           >
             <div
-              class="h-full bg-amber-500 transition-all duration-1000 w-[15%]"
+              class="rating-bar h-full bg-amber-500/80 transition-all duration-1000 ease-out w-0"
+              data-target-width="15%"
             >
             </div>
           </div>
         </div>
 
-        <div class="flex items-center space-x-2 md:space-x-4 w-full">
+        <div
+          class="flex items-center space-x-2 md:space-x-4 w-full rounded-lg px-2 -mx-2 py-1 transition-colors duration-300 hover:bg-amber-500/5"
+        >
           <div
             class="w-24 md:w-32 shrink-0 flex items-center justify-between text-xs md:text-sm font-semibold font-mono"
           >
@@ -237,13 +272,16 @@
             class="flex-1 h-2.5 md:h-3 bg-stone-200 dark:bg-stone-800 rounded-full overflow-hidden"
           >
             <div
-              class="h-full bg-orange-500 transition-all duration-1000 w-[10%]"
+              class="rating-bar h-full bg-amber-500/60 transition-all duration-1000 ease-out w-0"
+              data-target-width="10%"
             >
             </div>
           </div>
         </div>
 
-        <div class="flex items-center space-x-2 md:space-x-4 w-full">
+        <div
+          class="flex items-center space-x-2 md:space-x-4 w-full rounded-lg px-2 -mx-2 py-1 transition-colors duration-300 hover:bg-amber-500/5"
+        >
           <div
             class="w-24 md:w-32 shrink-0 flex items-center justify-between text-xs md:text-sm font-semibold font-mono"
           >
@@ -267,7 +305,10 @@
           <div
             class="flex-1 h-2.5 md:h-3 bg-stone-200 dark:bg-stone-800 rounded-full overflow-hidden"
           >
-            <div class="h-full bg-red-600 transition-all duration-1000 w-[5%]">
+            <div
+              class="rating-bar h-full bg-amber-500/40 transition-all duration-1000 ease-out w-0"
+              data-target-width="5%"
+            >
             </div>
           </div>
         </div>
@@ -275,3 +316,90 @@
     </div>
   </div>
 </section>
+
+<style>
+  .rating-bar-shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      100deg,
+      transparent 20%,
+      rgba(255, 255, 255, 0.35) 50%,
+      transparent 80%
+    );
+    background-size: 200% 100%;
+    animation: rating-bar-sheen 3.5s ease-in-out infinite;
+  }
+  @keyframes rating-bar-sheen {
+    0% {
+      background-position: 150% 0;
+    }
+    60%,
+    100% {
+      background-position: -50% 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rating-bar-shimmer::after {
+      animation: none;
+      display: none;
+    }
+  }
+</style>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const bars = document.querySelectorAll('.rating-bar');
+    if (!bars.length) return;
+
+    const reduceMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const track = entry.target;
+          const bar = track.querySelector('.rating-bar');
+          if (!bar) return;
+          if (reduceMotion) bar.style.transitionDuration = '0ms';
+          bar.style.width = bar.dataset.targetWidth || '0%';
+          observer.unobserve(track);
+        });
+      },
+      { threshold: 0.4 },
+    );
+
+    bars.forEach((bar) => observer.observe(bar.parentElement));
+
+    const scoreEl = document.getElementById('ratings-score');
+    if (scoreEl) {
+      const target = parseFloat(scoreEl.dataset.targetScore || '0');
+      if (reduceMotion) {
+        scoreEl.textContent = target.toFixed(1);
+      } else {
+        const scoreObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              const duration = 1200;
+              const start = performance.now();
+              function tick(now) {
+                const progress = Math.min((now - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                scoreEl.textContent = (target * eased).toFixed(1);
+                if (progress < 1) requestAnimationFrame(tick);
+              }
+              requestAnimationFrame(tick);
+              scoreObserver.unobserve(scoreEl);
+            });
+          },
+          { threshold: 0.5 },
+        );
+        scoreObserver.observe(scoreEl);
+      }
+    }
+  });
+</script>

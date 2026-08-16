@@ -40,7 +40,7 @@ const destinos = [
 
 <section
   id="explora"
-  class="py-24 bg-stone-100 dark:bg-stone-950/20 transition-colors duration-300 border-t border-stone-200 dark:border-stone-900"
+  class="py-24 bg-transparent transition-colors duration-300"
 >
   <div class="container mx-auto px-6">
     <div class="text-center mb-14 space-y-3">
@@ -74,9 +74,16 @@ const destinos = [
               >
                 {String(index + 1).padStart(2, '0')}
               </span>
-              <span class="explore-icon w-12 h-12 rounded-full border border-stone-300 dark:border-stone-700 group-hover:border-amber-500/60 flex items-center justify-center text-stone-500 dark:text-stone-400 group-hover:text-amber-500 transition-all duration-300">
+              <span class="explore-icon w-12 h-12 rounded-full border border-stone-300 dark:border-stone-700 group-hover:border-amber-500/60 flex items-center justify-center text-stone-500 dark:text-stone-400 group-hover:text-amber-500 group-hover:rotate-6 group-active:scale-90 transition-all duration-300">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d={destino.icon} />
+                  <path
+                    class="explore-icon-path"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.6"
+                    pathLength="1"
+                    d={destino.icon}
+                  />
                 </svg>
               </span>
               <span class="font-cinzel text-sm md:text-base font-bold uppercase tracking-wide text-stone-800 dark:text-stone-100">
@@ -98,9 +105,34 @@ const destinos = [
   .group:focus-visible .explore-icon {
     box-shadow: 0 0 16px rgba(245, 158, 11, 0.35);
   }
+
+  /* Trazo del icono "dibujándose" al interactuar: pathLength="1" normaliza
+     la longitud real del path a 1, así el mismo dasharray/dashoffset sirve
+     para cualquier icono sin medir cada uno a mano. */
+  .explore-icon-path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 0.5s ease-out;
+  }
+  .group:hover .explore-icon-path,
+  .group:focus-visible .explore-icon-path {
+    animation: explore-icon-draw 0.6s ease-out;
+  }
+  @keyframes explore-icon-draw {
+    from {
+      stroke-dashoffset: 1;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .explore-card {
       transition: none !important;
+    }
+    .explore-icon-path {
+      animation: none !important;
     }
   }
 </style>

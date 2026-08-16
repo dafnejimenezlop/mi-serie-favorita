@@ -8,6 +8,12 @@ import { recommendations, platformFilters } from '../data/recomendaciones';
 const initial = recommendations.reduce((best, item) =>
   item.affinity > best.affinity ? item : best,
 );
+
+const platformsCount = new Set(recommendations.map((r) => r.platform.name)).size;
+const avgAffinity = Math.round(
+  recommendations.reduce((sum, r) => sum + r.affinity, 0) / recommendations.length,
+);
+const byAffinityDesc = [...recommendations].sort((a, b) => b.affinity - a.affinity);
 ---
 
 <div class="pt-40 md:pt-48 pb-24 relative z-10 w-full min-h-screen">
@@ -25,6 +31,22 @@ const initial = recommendations.reduce((best, item) =>
         viajes en el tiempo y pueblos con demasiados secretos. Elige una
         carátula del carril — el panel de la izquierda cambia con ella.
       </p>
+
+      <div
+        class="flex flex-wrap items-center justify-center gap-2"
+        data-aos="fade-up"
+        data-aos-delay="100"
+      >
+        <span class="font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase text-stone-600 dark:text-stone-400 border border-stone-300/70 dark:border-stone-800 rounded-full px-3 py-1">
+          {recommendations.length} Títulos
+        </span>
+        <span class="font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase text-stone-600 dark:text-stone-400 border border-stone-300/70 dark:border-stone-800 rounded-full px-3 py-1">
+          {platformsCount} Plataformas
+        </span>
+        <span class="font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase text-amber-700 dark:text-amber-500 border border-amber-500/30 rounded-full px-3 py-1">
+          {avgAffinity}% Afinidad Media
+        </span>
+      </div>
     </div>
 
     <!-- Filtro por plataforma -->
@@ -234,6 +256,83 @@ const initial = recommendations.reduce((best, item) =>
         </p>
       </div>
     </div>
+
+    <!-- ===== Catálogo completo ===== -->
+    <div class="mt-16 md:mt-24">
+      <div class="flex items-center gap-6 mb-8 md:mb-10" data-aos="fade-up">
+        <h3 class="text-xl md:text-3xl font-cinzel text-stone-800 dark:text-stone-100 font-bold uppercase tracking-widest whitespace-nowrap">
+          Catálogo Completo
+        </h3>
+        <div class="h-[1px] flex-grow bg-gradient-to-r from-stone-400 dark:from-stone-700 to-transparent"></div>
+        <p id="reco-grid-count" class="font-mono text-[10px] md:text-xs tracking-widest uppercase text-stone-500 whitespace-nowrap">
+          {recommendations.length} títulos
+        </p>
+      </div>
+
+      <div
+        id="reco-grid"
+        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-5"
+      >
+        {
+          byAffinityDesc.map((item, index) => (
+            <button
+              type="button"
+              data-reco-item={item.id}
+              data-platform={item.platform.name}
+              aria-pressed={item.id === initial.id ? 'true' : 'false'}
+              class="reco-rail-card reco-grid-card group relative flex flex-col text-left rounded-xl overflow-hidden border border-stone-800 bg-stone-900/60 transition-all duration-300 ease-out hover:-translate-y-1 hover:border-amber-500/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+              data-aos="fade-up"
+              data-aos-delay={Math.min(index * 40, 400)}
+            >
+              <div class="relative w-full aspect-[2/3] overflow-hidden bg-stone-950">
+                {item.cover ? (
+                  <img
+                    src={item.cover}
+                    alt=""
+                    loading="lazy"
+                    class="w-full h-full object-cover grayscale-[40%] transition-all duration-500 group-hover:scale-105"
+                  />
+                ) : (
+                  <div class="reco-cover-fallback w-full h-full flex items-center justify-center bg-gradient-to-br from-stone-900 to-stone-950">
+                    <span class="font-cinzel text-4xl font-bold text-amber-500/25">{item.title.charAt(0)}</span>
+                  </div>
+                )}
+                <div class="reco-rail-card-glow absolute inset-0 border-2 border-amber-500 rounded-xl opacity-0 transition-opacity duration-300" />
+
+                <span class="absolute top-2 left-2 font-mono text-[9px] tracking-widest text-stone-300/80 group-hover:text-amber-400 transition-colors duration-300">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <div class="absolute top-1.5 right-1.5 flex items-center gap-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 px-1.5 py-0.5">
+                  <svg class="w-2.5 h-2.5 text-amber-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z" />
+                  </svg>
+                  <span class="font-mono text-[9px] tracking-wide text-stone-200">{item.affinity}%</span>
+                </div>
+
+                <div class="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black via-black/70 to-transparent opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300 pointer-events-none">
+                  <p class="text-[10px] text-stone-300 font-light leading-snug line-clamp-4">
+                    {item.hook}
+                  </p>
+                </div>
+              </div>
+              <div class="px-2.5 py-2">
+                <p class="font-cinzel text-[11px] font-bold text-stone-200 uppercase tracking-wide truncate">
+                  {item.title}
+                </p>
+                <p class="text-[10px] font-mono text-stone-500 truncate">{item.platform.name}</p>
+              </div>
+            </button>
+          ))
+        }
+      </div>
+
+      <p
+        id="reco-grid-empty"
+        class="hidden text-center text-stone-500 dark:text-stone-500 font-mono text-sm tracking-wide py-10"
+      >
+        No hay títulos para esta plataforma todavía.
+      </p>
+    </div>
   </div>
 </div>
 
@@ -295,12 +394,17 @@ const initial = recommendations.reduce((best, item) =>
     const spotlightLink = document.getElementById('reco-spotlight-link');
     const spotlightPlatform = document.getElementById('reco-spotlight-platform');
     const spotlightTags = document.getElementById('reco-spotlight-tags');
-    const railCards = document.querySelectorAll('[data-reco-item]');
+    const spotlight = document.getElementById('reco-spotlight');
+    const allCards = document.querySelectorAll('[data-reco-item]');
+    const railCards = document.querySelectorAll('#reco-rail [data-reco-item]');
+    const gridCards = document.querySelectorAll('#reco-grid [data-reco-item]');
     const rail = document.getElementById('reco-rail');
     const railPrev = document.getElementById('reco-rail-prev');
     const railNext = document.getElementById('reco-rail-next');
     const railCount = document.getElementById('reco-rail-count');
     const emptyState = document.getElementById('reco-empty-state');
+    const gridCount = document.getElementById('reco-grid-count');
+    const gridEmpty = document.getElementById('reco-grid-empty');
     const filterButtons = document.querySelectorAll('[data-reco-filter]');
 
     if (!spotlightImg || !rail) return;
@@ -349,14 +453,19 @@ const initial = recommendations.reduce((best, item) =>
     function selectItem(id) {
       const item = recommendations.find((r) => r.id === id);
       if (!item) return;
-      railCards.forEach((card) => {
+      allCards.forEach((card) => {
         card.setAttribute('aria-pressed', card.dataset.recoItem === id ? 'true' : 'false');
       });
       renderSpotlight(item);
     }
 
-    railCards.forEach((card) => {
-      card.addEventListener('click', () => selectItem(card.dataset.recoItem));
+    allCards.forEach((card) => {
+      card.addEventListener('click', () => {
+        selectItem(card.dataset.recoItem);
+        if (card.closest('#reco-grid')) {
+          spotlight?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
     });
 
     function updateRailNav() {
@@ -386,18 +495,31 @@ const initial = recommendations.reduce((best, item) =>
 
     function applyFilter(platform) {
       currentPlatform = platform;
-      let visibleCount = 0;
       let firstVisible = null;
+
+      let railVisible = 0;
       railCards.forEach((card) => {
         const matches = platform === 'todas' || card.dataset.platform === platform;
         card.classList.toggle('hidden', !matches);
         if (matches) {
-          visibleCount += 1;
+          railVisible += 1;
           if (!firstVisible) firstVisible = card;
         }
       });
-      if (railCount) railCount.textContent = `${visibleCount} título${visibleCount === 1 ? '' : 's'}`;
-      if (emptyState) emptyState.classList.toggle('hidden', visibleCount > 0);
+      if (railCount) railCount.textContent = `${railVisible} título${railVisible === 1 ? '' : 's'}`;
+      if (emptyState) emptyState.classList.toggle('hidden', railVisible > 0);
+
+      let gridVisible = 0;
+      gridCards.forEach((card) => {
+        const matches = platform === 'todas' || card.dataset.platform === platform;
+        card.classList.toggle('hidden', !matches);
+        if (matches) {
+          gridVisible += 1;
+          if (!firstVisible) firstVisible = card;
+        }
+      });
+      if (gridCount) gridCount.textContent = `${gridVisible} título${gridVisible === 1 ? '' : 's'}`;
+      if (gridEmpty) gridEmpty.classList.toggle('hidden', gridVisible > 0);
 
       const activeCard = document.querySelector('[data-reco-item][aria-pressed="true"]');
       if (activeCard && activeCard.classList.contains('hidden') && firstVisible) {

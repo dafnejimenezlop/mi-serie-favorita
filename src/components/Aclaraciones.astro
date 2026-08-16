@@ -19,7 +19,7 @@
     </div>
 
     <div
-      class="relative grid grid-cols-3 md:flex md:flex-wrap justify-center gap-2 md:gap-4 mb-12 md:mb-16 w-full max-w-3xl mx-auto"
+      class="relative grid grid-cols-4 md:flex md:flex-wrap justify-center gap-2 md:gap-4 mb-12 md:mb-16 w-full max-w-3xl mx-auto"
       data-aos="fade-up"
     >
       <div
@@ -45,6 +45,12 @@
         data-target="aclara-final"
       >
         El Final
+      </button>
+      <button
+        class="tab-btn-aclara relative z-10 px-1 py-3 md:px-6 md:py-3 font-cinzel font-bold tracking-wider md:tracking-widest uppercase text-[10px] md:text-base transition-colors duration-300 text-stone-500 border-b-2 border-transparent hover:text-stone-700 dark:hover:text-stone-300"
+        data-target="aclara-glosario"
+      >
+        Glosario
       </button>
     </div>
 
@@ -820,11 +826,225 @@
           </div>
         </div>
       </div>
+
+      <div
+        id="aclara-glosario"
+        class="tab-content-aclara hidden animate-fade-in"
+      >
+        <div
+          class="text-center max-w-3xl mx-auto mb-12 space-y-3 text-stone-800 dark:text-stone-300 font-light leading-relaxed"
+          data-aos="fade-up"
+        >
+          <p>
+            Los términos clave de Winden, a mano, para no perder el hilo
+            mientras lees el resto de expedientes.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {
+            [
+              {
+                term: 'El Nudo',
+                tag: 'Lugar',
+                def: 'El punto exacto de las cuevas de Winden donde las tres épocas (1953, 1986, 2019) y, más tarde, los tres mundos se cruzan. Es el corazón físico de todos los viajes en el tiempo.',
+                icon: 'M13.828 10.172a4 4 0 010 5.656l-3 3a4 4 0 01-5.656-5.656l1.5-1.5M10.172 13.828a4 4 0 010-5.656l3-3a4 4 0 015.656 5.656l-1.5 1.5',
+              },
+              {
+                term: 'La Partícula de Dios',
+                tag: 'Objeto',
+                def: 'Material de origen desconocido hallado en el núcleo de la central nuclear. Emite una energía capaz de detener el tiempo por completo; es la clave para fabricar la máquina del tiempo.',
+                icon: 'M9 18h6M10 21h4M12 3a6 6 0 00-3.6 10.8c.6.45 1.1 1.2 1.1 2.2h5c0-1 .5-1.75 1.1-2.2A6 6 0 0012 3z',
+              },
+              {
+                term: 'El Origen',
+                tag: 'Concepto',
+                def: 'El hijo que Jonas y Martha nunca llegan a tener. Su existencia (o inexistencia) es la raíz de la paradoja que conecta y sostiene los tres mundos.',
+                icon: 'target',
+              },
+              {
+                term: 'Los Viajeros',
+                tag: 'Rol',
+                def: 'Nombre con el que se conoce a quienes se desplazan entre épocas usando el nudo o la máquina del tiempo, ya sea de forma involuntaria o como miembros de Sic Mundus.',
+                icon: 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7',
+              },
+              {
+                term: 'Mundo de Adán / Mundo de Eva',
+                tag: 'Dualidad',
+                def: 'Las dos realidades paralelas reveladas en la tercera temporada: la de Jonas (Adam), regida por la oscuridad, y la de Martha (Eva), regida por la luz.',
+                icon: 'worlds',
+              },
+              {
+                term: 'El Apocalipsis',
+                tag: 'Evento',
+                def: 'El suceso del 27 de junio de 2020 que arrasa Winden en el mundo de Adam. Su causa y su repetición cíclica motivan casi todas las decisiones de los personajes.',
+                icon: 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z',
+              },
+              {
+                term: 'Winden',
+                tag: 'Lugar',
+                def: 'El pequeño pueblo alemán, rodeado de bosque, donde transcurre toda la serie. Su central nuclear, su comisaría y su instituto se repiten, casi idénticos, en las tres épocas.',
+                icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
+              },
+              {
+                term: 'La Máquina del Tiempo',
+                tag: 'Objeto',
+                def: 'El prototipo construido por H.G. Tannhaus para impedir la muerte de su familia. Su fracaso es, en realidad, el origen de los tres mundos y de todos los viajes posteriores.',
+                icon: 'gear',
+              },
+              {
+                term: 'El Bucle',
+                tag: 'Concepto',
+                def: 'La estructura circular del tiempo en Dark: los mismos sucesos —muertes, desapariciones, decisiones— se repiten sin final ni principio verdaderos, ciclo tras ciclo de 33 años.',
+                icon: 'infinity',
+              },
+              {
+                term: 'Sic Mundus (La Orden)',
+                tag: 'Organización',
+                def: 'La secta de viajeros del tiempo fundada en 1921 y liderada por Adam. Su objetivo declarado es el conocimiento absoluto; el real, provocar el apocalipsis que cierre el ciclo.',
+                icon: 'order',
+              },
+              {
+                term: 'Las Cuevas',
+                tag: 'Lugar',
+                def: 'La red de túneles bajo el bosque de Winden que conecta con el nudo. Bajo tierra, sus marcas y símbolos —la triqueta, Sic Mundus— llevan generaciones esperando a ser descubiertos.',
+                icon: 'cave',
+              },
+              {
+                term: '1921 — La Fundación',
+                tag: 'Evento',
+                def: 'El año en que Adam funda Sic Mundus junto a los primeros discípulos, sentando las bases de todo lo que ocurrirá —o ya ha ocurrido— en 1953, 1986 y 2019.',
+                icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',
+              },
+            ].map((entry) => (
+              <div
+                tabindex="0"
+                class="glossary-card group relative flex flex-col gap-4 bg-white/80 dark:bg-[#0a0a0a] border border-stone-200 dark:border-stone-800/60 hover:border-amber-500/50 focus-visible:border-amber-500/50 rounded-xl p-6 shadow-lg shadow-stone-300/40 dark:shadow-none hover:-translate-y-1 focus-visible:-translate-y-1 outline-none focus-visible:ring-2 focus-visible:ring-amber-400 transition-all duration-500"
+                data-aos="fade-up"
+              >
+                <div class="flex items-center gap-3">
+                  <span class="glossary-icon shrink-0 w-11 h-11 rounded-full border border-stone-300 dark:border-stone-700 group-hover:border-amber-500/60 group-focus-visible:border-amber-500/60 flex items-center justify-center text-stone-500 dark:text-stone-400 group-hover:text-amber-500 group-focus-visible:text-amber-500 group-hover:rotate-6 group-focus-visible:rotate-6 group-active:scale-90 transition-all duration-300">
+                    {entry.icon === 'target' ? (
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <circle class="glossary-icon-path" pathLength="1" cx="12" cy="12" r="7.2" stroke-width="1.6" />
+                        <circle class="glossary-icon-path" pathLength="1" cx="12" cy="12" r="3.4" stroke-width="1.6" />
+                        <circle cx="12" cy="12" r="0.9" fill="currentColor" stroke="none" />
+                      </svg>
+                    ) : entry.icon === 'worlds' ? (
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <circle class="glossary-icon-path" pathLength="1" cx="9" cy="12" r="6" stroke-width="1.6" />
+                        <circle class="glossary-icon-path" pathLength="1" cx="15" cy="12" r="6" stroke-width="1.6" />
+                      </svg>
+                    ) : entry.icon === 'gear' ? (
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                          class="glossary-icon-path"
+                          pathLength="1"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="1.4"
+                          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                        />
+                        <circle class="glossary-icon-path" pathLength="1" cx="12" cy="12" r="2.6" stroke-width="1.4" />
+                      </svg>
+                    ) : entry.icon === 'infinity' ? (
+                      <svg class="glossary-icon-pulse w-5 h-5" fill="currentColor" stroke="none" viewBox="0 0 24 24">
+                        <path d="M18.178 8c5.096 0 5.096 8 0 8-5.095 0-7.133-8-12.229-8-5.096 0-5.096 8 0 8 5.096 0 7.133-8 12.229-8z" />
+                      </svg>
+                    ) : entry.icon === 'order' ? (
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path class="glossary-icon-path" pathLength="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M12 4L21 19H3L12 4z" />
+                        <circle class="glossary-icon-path" pathLength="1" cx="12" cy="14.5" r="2" stroke-width="1.4" />
+                      </svg>
+                    ) : entry.icon === 'cave' ? (
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path class="glossary-icon-path" pathLength="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M4 20h16M6 20V10a6 6 0 1112 0v10" />
+                      </svg>
+                    ) : (
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path class="glossary-icon-path" pathLength="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d={entry.icon} />
+                      </svg>
+                    )}
+                  </span>
+                  <div>
+                    <h3 class="font-cinzel text-base md:text-lg text-stone-900 dark:text-stone-100 group-hover:text-amber-600 dark:group-hover:text-amber-500 group-focus-visible:text-amber-600 dark:group-focus-visible:text-amber-500 font-bold tracking-wide leading-tight transition-colors duration-300">
+                      {entry.term}
+                    </h3>
+                    <span class="font-mono text-[9px] uppercase tracking-widest text-amber-600/70 dark:text-amber-500/60">
+                      {entry.tag}
+                    </span>
+                  </div>
+                </div>
+                <p class="text-stone-700 dark:text-stone-400 font-light text-sm leading-relaxed">
+                  {entry.def}
+                </p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
 <style>
+  .glossary-card:hover,
+  .glossary-card:focus-visible {
+    box-shadow: 0 0 30px rgba(245, 158, 11, 0.12);
+  }
+  .group:hover .glossary-icon,
+  .group:focus-visible .glossary-icon {
+    box-shadow: 0 0 14px rgba(245, 158, 11, 0.3);
+  }
+
+  /* Icono "dibujándose" al interactuar — mismo truco que .explore-icon-path
+     en Explore.astro (pathLength="1" normaliza cualquier path/circle a
+     longitud 1, así el mismo dasharray/dashoffset vale para todos). */
+  .glossary-icon-path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+  .group:hover .glossary-icon-path,
+  .group:focus-visible .glossary-icon-path {
+    animation: glossary-icon-draw 0.6s ease-out;
+  }
+  @keyframes glossary-icon-draw {
+    from {
+      stroke-dashoffset: 1;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  /* El símbolo de infinito es un relleno sólido, no un trazo: no se puede
+     "dibujar" con dashoffset, así que responde con un pulso en su lugar. */
+  .group:hover .glossary-icon-pulse,
+  .group:focus-visible .glossary-icon-pulse {
+    animation: glossary-icon-pulse 0.5s ease-out;
+  }
+  @keyframes glossary-icon-pulse {
+    0% {
+      transform: scale(0.8);
+    }
+    60% {
+      transform: scale(1.15);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .glossary-card {
+      transition: none !important;
+    }
+    .glossary-icon-path,
+    .glossary-icon-pulse {
+      animation: none !important;
+    }
+  }
+
   .animate-fade-in {
     animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }

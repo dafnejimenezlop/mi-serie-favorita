@@ -18,14 +18,29 @@
   >
   </div>
 
+  <div class="hero-motes absolute inset-0 pointer-events-none z-[2]" aria-hidden="true">
+    <span class="hero-mote" style="left: 12%; animation-delay: 0s;"></span>
+    <span class="hero-mote" style="left: 28%; animation-delay: 2.4s;"></span>
+    <span class="hero-mote" style="left: 47%; animation-delay: 4.8s;"></span>
+    <span class="hero-mote" style="left: 66%; animation-delay: 1.2s;"></span>
+    <span class="hero-mote" style="left: 82%; animation-delay: 3.6s;"></span>
+  </div>
+
   <div class="relative z-10 text-center space-y-6 px-6 pt-16">
-    <h1
-      class="text-6xl md:text-9xl font-cinzel text-amber-500 font-bold tracking-widest drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]"
-      data-aos="zoom-in"
-      data-aos-duration="1500"
-    >
-      DARK
-    </h1>
+    <div class="relative inline-block">
+      <div
+        class="hero-title-halo absolute inset-0 -z-10 pointer-events-none"
+        aria-hidden="true"
+      >
+      </div>
+      <h1
+        class="hero-title-flicker relative text-6xl md:text-9xl font-cinzel text-amber-500 font-bold tracking-widest drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]"
+        data-aos="zoom-in"
+        data-aos-duration="1500"
+      >
+        DARK
+      </h1>
+    </div>
     <p
       class="text-lg md:text-3xl font-light text-stone-100 tracking-[0.15em] font-cinzel max-w-3xl mx-auto drop-shadow-lg"
       data-aos="fade-up"
@@ -33,6 +48,14 @@
     >
       LA CUESTIÓN NO ES CÓMO, SINO CUÁNDO.
     </p>
+
+    <div
+      class="h-px w-16 md:w-24 mx-auto bg-gradient-to-r from-transparent via-amber-500/70 to-transparent"
+      data-aos="fade-up"
+      data-aos-delay="600"
+      aria-hidden="true"
+    >
+    </div>
 
     <div
       data-aos="fade-up"
@@ -154,6 +177,87 @@
 </section>
 
 <style>
+  .hero-mote {
+    position: absolute;
+    bottom: -10%;
+    width: 3px;
+    height: 3px;
+    border-radius: 9999px;
+    background: rgba(245, 158, 11, 0.5);
+    box-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
+    animation: hero-mote-rise 12s ease-in infinite;
+  }
+  @keyframes hero-mote-rise {
+    0% {
+      transform: translateY(0) translateX(0);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.8;
+    }
+    90% {
+      opacity: 0.3;
+    }
+    100% {
+      transform: translateY(-110vh) translateX(20px);
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-motes {
+      display: none;
+    }
+  }
+
+  .hero-title-halo {
+    background: radial-gradient(
+      ellipse at center,
+      rgba(245, 158, 11, 0.35) 0%,
+      rgba(245, 158, 11, 0.12) 45%,
+      transparent 75%
+    );
+    filter: blur(30px);
+    transform: scale(1.4);
+    animation: hero-halo-breathe 5s ease-in-out infinite;
+  }
+  @keyframes hero-halo-breathe {
+    0%,
+    100% {
+      opacity: 0.6;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  .hero-title-flicker {
+    animation: hero-title-flicker 7s ease-in-out infinite;
+  }
+  @keyframes hero-title-flicker {
+    0%,
+    19%,
+    21%,
+    28%,
+    100% {
+      text-shadow:
+        0 5px 5px rgba(0, 0, 0, 0.8),
+        0 0 30px rgba(245, 158, 11, 0.35);
+    }
+    20% {
+      text-shadow:
+        0 5px 5px rgba(0, 0, 0, 0.8),
+        0 0 8px rgba(245, 158, 11, 0.15);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-title-halo {
+      animation: none;
+      opacity: 0.8;
+    }
+    .hero-title-flicker {
+      animation: none;
+    }
+  }
   .hero-scroll-hint {
     opacity: 0;
     animation: hero-scroll-hint-in 0.8s ease-out 1.2s forwards;

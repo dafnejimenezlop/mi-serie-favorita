@@ -17,8 +17,6 @@ const relationshipValidation = validateRelationships(
   }
   body.hide-global-ui footer,
   body.hide-global-ui #netflix-header,
-  body.hide-global-ui #btnScrollToTop,
-  body.hide-global-ui #btnScrollToBottom,
   body.hide-global-ui .whatsapp-btn {
     opacity: 0 !important;
     pointer-events: none !important;
@@ -118,6 +116,15 @@ const relationshipValidation = validateRelationships(
   #netflix-sidebar * {
     cursor: none !important;
   }
+  /* OJO: `transform-origin: 0 0` va como estilo inline en el propio
+     #tree-zoom-container (ver más abajo en el markup), no aquí — una regla
+     de hoja de estilos no puede ganarle al inline. TODA la matemática de
+     zoom/pan (centerTree, rueda, pinch, arrastre) asume ese origen: p.ej.
+     centerTree() calcula panX = (areaW - contW*scale)/2, que solo centra si
+     el escalado no desplaza además el contenido. Con el `center center` que
+     había antes el árbol se iba fuera de pantalla hacia la derecha/abajo:
+     apenas perceptible en escritorio (escala ~0.9, aún entraba) pero roto
+     en móvil, donde la escala baja a ~0.37 y el desfase supera el viewport. */
   #tree-zoom-container {
     transition: transform 0.08s ease-out;
   }
@@ -566,28 +573,141 @@ const relationshipValidation = validateRelationships(
     box-shadow: 0 0 10px rgba(245, 158, 11, 0.8);
   }
 
-  /* ANIMACIÓN DE FONDO DEL ÁRBOL */
-  @keyframes slow-spin {
-    from {
-      transform: rotate(0deg);
+  /* ===== FONDO AMBIENTAL DEL ÁRBOL: "AGUAS PROFUNDAS" =====
+     Marea + ruido fractal a la deriva. Se anima únicamente transform y
+     opacity (compositor puro); el feTurbulence se rasteriza una sola vez
+     sobre un <rect> estático y a partir de ahí solo se desplaza. */
+  .tree-ambient {
+    /* Aísla el repintado del fondo del resto del visor: sin esto, cada
+       frame de la marea invalidaría también el árbol que va encima.
+       `content` (= layout paint style) y NO `strict`: este último añade
+       contención de tamaño, que colapsa el contenedor a 0x0 al ser un
+       absolute inset-0 sin dimensiones propias. */
+    contain: content;
+  }
+
+  .tree-tide {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(70px);
+    will-change: transform;
+  }
+  .tree-tide--a {
+    width: 120vw;
+    height: 70vh;
+    top: -12%;
+    left: -18%;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(245, 158, 11, 0.14) 0%,
+      rgba(245, 158, 11, 0.05) 42%,
+      transparent 70%
+    );
+    animation: tree-tide-a 46s ease-in-out infinite;
+  }
+  .tree-tide--b {
+    width: 95vw;
+    height: 85vh;
+    bottom: -22%;
+    right: -14%;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(120, 160, 190, 0.12) 0%,
+      rgba(70, 100, 130, 0.05) 45%,
+      transparent 72%
+    );
+    animation: tree-tide-b 62s ease-in-out infinite;
+  }
+  .tree-tide--c {
+    width: 80vw;
+    height: 60vh;
+    top: 28%;
+    left: 22%;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(255, 255, 255, 0.05) 0%,
+      transparent 65%
+    );
+    animation: tree-tide-c 38s ease-in-out infinite;
+  }
+
+  @keyframes tree-tide-a {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+      opacity: 0.75;
     }
-    to {
-      transform: rotate(360deg);
+    50% {
+      transform: translate3d(6vw, 4vh, 0) scale(1.14);
+      opacity: 1;
     }
   }
-  @keyframes slow-spin-reverse {
-    from {
-      transform: rotate(360deg);
+  @keyframes tree-tide-b {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1.06);
+      opacity: 0.55;
     }
-    to {
-      transform: rotate(0deg);
+    50% {
+      transform: translate3d(-7vw, -5vh, 0) scale(1);
+      opacity: 0.9;
     }
   }
-  .animate-slow-spin {
-    animation: slow-spin 60s linear infinite;
+  @keyframes tree-tide-c {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+      opacity: 0.35;
+    }
+    50% {
+      transform: translate3d(-4vw, 6vh, 0) scale(1.2);
+      opacity: 0.7;
+    }
   }
-  .animate-slow-spin-reverse {
-    animation: slow-spin-reverse 40s linear infinite;
+
+  /* Superficie del agua: el ruido se estira al doble y deriva en diagonal,
+     de modo que nunca se aprecia el borde del patrón. */
+  .tree-caustics {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    opacity: 0.28;
+    mix-blend-mode: overlay;
+    will-change: transform;
+    animation: tree-caustics-drift 90s linear infinite;
+  }
+  @keyframes tree-caustics-drift {
+    0% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(3%, -2.5%, 0) scale(1.08);
+    }
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+  }
+
+
+  /* Viñeta: hunde los bordes para que el árbol respire en el centro. */
+  .tree-depth {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse at 50% 45%,
+      transparent 30%,
+      rgba(2, 2, 2, 0.5) 72%,
+      rgba(2, 2, 2, 0.82) 100%
+    );
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tree-tide,
+    .tree-caustics {
+      animation: none !important;
+    }
   }
 
   /* Animación de barras de audio */
@@ -785,22 +905,53 @@ const relationshipValidation = validateRelationships(
   id="tree-viewer"
   class="fixed inset-0 z-[150] bg-[#020202] hidden opacity-0 transition-opacity duration-1000 overflow-hidden flex flex-col"
 >
-  <div class="absolute inset-0 overflow-hidden opacity-30">
-    <div
-      class="absolute w-[200vw] h-[200vh] -top-[50%] -left-[50%] bg-[radial-gradient(ellipse_at_center,_rgba(245,158,11,0.05)_0%,_rgba(0,0,0,0)_60%)] animate-slow-spin"
-    >
-    </div>
-    <div
-      class="absolute w-[150vw] h-[150vh] top-0 left-0 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.02)_0%,_rgba(0,0,0,0)_50%)] animate-slow-spin-reverse"
-    >
-    </div>
-  </div>
-
+  <!-- Fondo ambiental "aguas profundas": capas de marea que se cruzan a
+       distintas velocidades + una textura de ruido fractal que deriva por
+       encima. Todo se anima solo con transform/opacity (barato para el
+       compositor); el filtro SVG se calcula UNA vez sobre un <rect> estático,
+       nunca por frame. -->
   <div
-    id="mouse-glow"
-    class="pointer-events-none fixed inset-0 opacity-80 transition-all duration-100 ease-out mix-blend-screen"
-    style="background: radial-gradient(circle 400px at 50% 50%, rgba(245, 158, 11, 0.1), transparent 70%);"
+    class="tree-ambient absolute inset-0 overflow-hidden pointer-events-none"
+    aria-hidden="true"
   >
+    <div class="tree-tide tree-tide--a"></div>
+    <div class="tree-tide tree-tide--b"></div>
+    <div class="tree-tide tree-tide--c"></div>
+
+    <svg class="tree-caustics" preserveAspectRatio="none">
+      <defs>
+        <!-- Los dos tamaños de ola se combinan DENTRO del filtro: el oleaje
+             fino de superficie y el de fondo (frecuencia más baja = crestas
+             largas, sensación de profundidad). Al mezclarse aquí, el
+             resultado se rasteriza una sola vez y basta con una capa que
+             desplazar — antes eran dos capas con mix-blend-mode a pantalla
+             completa, y cada una obliga al navegador a releer y refundir el
+             fondo entero en cada frame. Ese era el coste que hacía notar el
+             ratón lento. -->
+        <filter id="tree-water-noise" x="0" y="0" width="100%" height="100%">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.009 0.022"
+            numOctaves="3"
+            seed="13"
+            result="fino"
+          />
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.0035 0.009"
+            numOctaves="2"
+            seed="41"
+            result="fondo"
+          />
+          <feBlend in="fino" in2="fondo" mode="overlay" result="olas" />
+          <feColorMatrix in="olas" type="saturate" values="0" />
+        </filter>
+      </defs>
+      <rect width="100%" height="100%" filter="url(#tree-water-noise)" />
+    </svg>
+
+
+    <div class="tree-depth"></div>
   </div>
 
   <button
@@ -915,7 +1066,7 @@ const relationshipValidation = validateRelationships(
     <div
       id="tree-zoom-container"
       class="absolute"
-      style="transform-origin: center center; will-change: transform;"
+      style="transform-origin: 0 0; will-change: transform;"
     >
       <div
         id="tree-nodes-container"
@@ -932,7 +1083,7 @@ const relationshipValidation = validateRelationships(
   viewBox="0 0 100 100"
   fill="none"
   xmlns="http://www.w3.org/2000/svg"
-  style="position:fixed;top:0;left:0;width:28px;height:28px;pointer-events:none;z-index:9999;opacity:0;transform:translate(-50%,-50%);transition:opacity 0.25s ease, transform 0.1s ease;"
+  style="position:fixed;top:0;left:0;width:28px;height:28px;pointer-events:none;z-index:9999;opacity:0;will-change:transform,opacity;transform:translate3d(var(--cursor-x,-100px),var(--cursor-y,-100px),0) translate(-50%,-50%) scale(var(--cursor-scale,1));transition:opacity 0.25s ease;"
 >
   <circle cx="50" cy="33" r="22" stroke="rgba(245,158,11,0.85)" stroke-width="3"
   ></circle>
@@ -2104,9 +2255,11 @@ const relationshipValidation = validateRelationships(
     document.getElementById('familias-main-view').classList.add('hidden');
     const treeViewer = document.getElementById('tree-viewer');
     treeViewer.classList.remove('hidden');
+    // Ver comentario en openTreeViewer(): centrar no depende de imágenes,
+    // solo de que #tree-pan-area ya sea visible (lo acabamos de lograr).
+    centerTree();
     setTimeout(() => {
       treeViewer.classList.remove('opacity-0');
-      setTimeout(centerTree, 250);
     }, 50);
 
     playSectionAudio();
@@ -2141,27 +2294,55 @@ const relationshipValidation = validateRelationships(
   const treePanEl = document.getElementById('tree-pan-area');
   const treeViewerEl = document.getElementById('tree-viewer');
 
-  // Seguimiento del cursor a nivel documento — así nunca se pierde
+  // Seguimiento del cursor a nivel documento — así nunca se pierde.
+  //
+  // Tres detalles que aquí importan mucho, porque este handler se dispara en
+  // cada pixel que recorre el ratón:
+  //  1. La posición va por `transform` (compositor), NO por left/top, que
+  //     obligan a recalcular el layout en cada movimiento.
+  //  2. El rect del área se cachea. Antes se leía con getBoundingClientRect()
+  //     JUSTO DESPUÉS de escribir estilos, lo que forzaba un reflow síncrono
+  //     por movimiento (layout thrashing) — era el origen del lag.
+  //  3. Se escribe como mucho una vez por frame, vía rAF.
+  let panRect = null;
+  const invalidatePanRect = () => {
+    panRect = null;
+  };
+  window.addEventListener('resize', invalidatePanRect);
+  window.addEventListener('scroll', invalidatePanRect, { passive: true });
+  window.invalidateTreePanRect = invalidatePanRect;
+
+  let cursorRaf = null;
+  let cursorX = 0;
+  let cursorY = 0;
+
   document.addEventListener('pointermove', (e) => {
     if (!treeCursor) return;
-    treeCursor.style.left = e.clientX + 'px';
-    treeCursor.style.top = e.clientY + 'px';
+    cursorX = e.clientX;
+    cursorY = e.clientY;
+    if (cursorRaf) return;
+    cursorRaf = requestAnimationFrame(() => {
+      cursorRaf = null;
+      treeCursor.style.setProperty('--cursor-x', `${cursorX}px`);
+      treeCursor.style.setProperty('--cursor-y', `${cursorY}px`);
 
-    // Mostrar triqueta solo si el tree-viewer está activo y el ratón está en el pan-area
-    const treeVisible =
-      !treeViewerEl.classList.contains('hidden') &&
-      !treeViewerEl.classList.contains('opacity-0');
-    if (!treeVisible) {
-      treeCursor.style.opacity = '0';
-      return;
-    }
-    const rect = treePanEl.getBoundingClientRect();
-    const inside =
-      e.clientX >= rect.left &&
-      e.clientX <= rect.right &&
-      e.clientY >= rect.top &&
-      e.clientY <= rect.bottom;
-    treeCursor.style.opacity = inside ? '1' : '0';
+      // Mostrar triqueta solo si el tree-viewer está activo y el ratón está
+      // dentro del pan-area.
+      const treeVisible =
+        !treeViewerEl.classList.contains('hidden') &&
+        !treeViewerEl.classList.contains('opacity-0');
+      if (!treeVisible) {
+        treeCursor.style.opacity = '0';
+        return;
+      }
+      if (!panRect) panRect = treePanEl.getBoundingClientRect();
+      const inside =
+        cursorX >= panRect.left &&
+        cursorX <= panRect.right &&
+        cursorY >= panRect.top &&
+        cursorY <= panRect.bottom;
+      treeCursor.style.opacity = inside ? '1' : '0';
+    });
   });
 
   // Asegurarse de que al cerrar el tree-viewer el cursor desaparece
@@ -2169,13 +2350,10 @@ const relationshipValidation = validateRelationships(
     if (treeCursor) treeCursor.style.opacity = '0';
   });
 
-  document.getElementById('tree-viewer').addEventListener('mousemove', (e) => {
-    // Glow del ratón
-    const x = (e.clientX / window.innerWidth) * 100;
-    const y = (e.clientY / window.innerHeight) * 100;
-    document.getElementById('mouse-glow').style.background =
-      `radial-gradient(circle 450px at ${x}% ${y}%, rgba(245, 158, 11, 0.15), transparent 70%)`;
-  });
+  // Sin efecto de cursor sobre el fondo: el feedback del puntero ya lo da el
+  // cursor-triqueta (ver #tree-cursor) y cualquier halo o estela añadida se
+  // leía como un artefacto pegado sobre el agua en vez de como parte de ella.
+  // El protagonismo lo lleva el propio fondo animado (.tree-ambient).
 
   // ============================
   // ZOOM / PAN LOGIC
@@ -2349,8 +2527,10 @@ const relationshipValidation = validateRelationships(
       dragStartY = e.clientY;
       dragOriginPanX = treePanX;
       dragOriginPanY = treePanY;
-      if (treeCursor)
-        treeCursor.style.transform = 'translate(-50%, -50%) scale(0.8)';
+      // Solo la escala: el transform completo (posición incluida) lo compone
+      // el propio CSS a partir de las variables, así que escribirlo entero
+      // aquí dejaría la triqueta clavada en el centro de la pantalla.
+      if (treeCursor) treeCursor.style.setProperty('--cursor-scale', '0.8');
       e.preventDefault();
     });
 
@@ -2363,8 +2543,7 @@ const relationshipValidation = validateRelationships(
 
   document.addEventListener('mouseup', () => {
     isDragging = false;
-    if (treeCursor)
-      treeCursor.style.transform = 'translate(-50%, -50%) scale(1)';
+    if (treeCursor) treeCursor.style.setProperty('--cursor-scale', '1');
   });
 
   // Guarda de generación para las transiciones abrir/cerrar árbol: si el
@@ -2397,14 +2576,17 @@ const relationshipValidation = validateRelationships(
     document.getElementById('familias-main-view').classList.add('hidden');
     const treeViewer = document.getElementById('tree-viewer');
     treeViewer.classList.remove('hidden');
+    // centerTree() solo necesita las dimensiones de #tree-pan-area (ya
+    // visible, acabamos de quitar 'hidden' — leer offsetWidth aquí fuerza
+    // un reflow síncrono que ya ve el cambio) y las de #tree-nodes-container
+    // (fijadas por JS en drawTree(), antes de crear ninguna imagen). No
+    // depende en absoluto de que las imágenes carguen, así que podemos
+    // centrar ya mismo, sin esperar nada — evita el hueco en el que el
+    // árbol se veía vacío/descentrado hasta interactuar con él.
+    centerTree();
     setTimeout(() => {
       if (viewerToken !== treeViewerToken) return;
       treeViewer.classList.remove('opacity-0');
-      // Esperar a que el DOM esté pintado + las líneas SVG calculadas antes de centrar
-      setTimeout(() => {
-        if (viewerToken !== treeViewerToken) return;
-        centerTree();
-      }, 250);
     }, 50);
 
     playSectionAudio();
@@ -2954,25 +3136,47 @@ const relationshipValidation = validateRelationships(
             });
 
             const newImgSrc = entry.target.getAttribute('data-image');
+
+            // CUALQUIER escena que entra invalida un cambio de fondo que
+            // siguiera pendiente. Antes solo lo hacía la rama del cambio
+            // real: si volvías a la escena anterior dentro de la ventana de
+            // 600ms, esa escena entraba por la rama "misma imagen" (porque
+            // dataset.current aún no se había actualizado), no cancelaba
+            // nada, y el cambio en vuelo acababa pintando la imagen de una
+            // escena que ya habías abandonado.
+            const bgToken = ++cinematicBgToken;
+
             if (newImgSrc === 'none') {
               bgImage.style.opacity = '0';
               bgImage.dataset.current = 'none';
             } else if (newImgSrc && bgImage.dataset.current !== newImgSrc) {
               bgImage.style.opacity = '0';
-              const bgToken = ++cinematicBgToken;
               const revealDirection = cinematicScrollDirection;
-              setTimeout(() => {
-                // Si el usuario ya avanzó a otra escena mientras esta
-                // esperaba, este cambio quedó obsoleto: no pisar la imagen
-                // correcta con una vieja.
+              // Se marca el destino YA, no dentro del temporizador, para que
+              // las escenas que entren después comparen contra la imagen a la
+              // que vamos y no contra la que estamos dejando atrás.
+              bgImage.dataset.current = newImgSrc;
+
+              // Se espera A LA VEZ al fundido de salida y a que la imagen
+              // esté decodificada. Asignar `src` sin haber decodificado hace
+              // que el <img> siga mostrando la anterior durante unos frames
+              // ya con opacity:1 — el efecto de "imagen pillada" / imagen que
+              // no corresponde a la escena.
+              const preload = new Image();
+              preload.src = newImgSrc;
+              const decoded = preload.decode
+                ? preload.decode().catch(() => {})
+                : Promise.resolve();
+              const faded = new Promise((resolve) => setTimeout(resolve, 600));
+
+              Promise.all([decoded, faded]).then(() => {
                 if (bgToken !== cinematicBgToken) return;
                 bgImage.src = newImgSrc;
                 bgImage.style.opacity = '1';
-                bgImage.dataset.current = newImgSrc;
                 playRippleEffect();
                 playDirectionalReveal(revealDirection);
-              }, 600);
-            } else if (newImgSrc && bgImage.dataset.current === newImgSrc) {
+              });
+            } else if (newImgSrc) {
               bgImage.style.opacity = '1';
             }
           } else {

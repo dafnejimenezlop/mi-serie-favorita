@@ -1,0 +1,91 @@
+---
+// src/components/sections/Countdown.astro
+// Complemento directo de "Los Tres Ciclos del Tiempo" (Timeline.astro): si
+// el patrón de 33 años se repite, calcula cuánto falta para la próxima
+// ventana a partir del apocalipsis de la serie (27 de junio de 2020). Todo
+// se calcula en servidor (output: 'server'), igual que el índice de
+// FraseDelDia.astro, así que no necesita JS en cliente.
+
+const CICLO_APOCALIPSIS = new Date('2020-06-27T00:00:00Z');
+const CICLO_DIAS = 33 * 365 + 8; // 33 años, contando bisiestos del periodo
+
+const proximoCiclo = new Date(
+  CICLO_APOCALIPSIS.getTime() + CICLO_DIAS * 86_400_000,
+);
+
+const diffMs = proximoCiclo.getTime() - Date.now();
+const diasTotales = Math.max(0, Math.ceil(diffMs / 86_400_000));
+const anios = Math.floor(diasTotales / 365);
+const diasRestantes = diasTotales % 365;
+
+const fechaProximoCiclo = proximoCiclo.toLocaleDateString('es-ES', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+---
+
+<section
+  id="proximo-ciclo"
+  class="py-24 bg-transparent transition-colors duration-300 relative overflow-hidden"
+>
+  <div class="container mx-auto px-6">
+    <div
+      class="relative max-w-2xl mx-auto text-center rounded-2xl border border-stone-300/70 dark:border-stone-800 bg-white/70 dark:bg-stone-900/50 backdrop-blur-md p-8 md:p-14 shadow-2xl"
+      data-aos="zoom-in"
+    >
+      <span
+        class="inline-flex items-center gap-2 font-mono text-[10px] md:text-[11px] tracking-[0.3em] uppercase text-amber-600 dark:text-amber-500/80 mb-4"
+      >
+        <span class="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse" aria-hidden="true"
+        ></span>
+        Ciclo de 33 años
+      </span>
+
+      <h2
+        class="text-2xl md:text-4xl font-cinzel text-amber-500 font-bold uppercase tracking-wide mb-8"
+      >
+        Cuenta Atrás al Próximo Ciclo
+      </h2>
+
+      <div class="flex items-center justify-center gap-4 sm:gap-8 mb-8">
+        <div>
+          <p
+            class="text-4xl md:text-6xl font-cinzel font-bold text-stone-900 dark:text-stone-100 tabular-nums"
+          >
+            {anios}
+          </p>
+          <p
+            class="text-[10px] md:text-xs uppercase tracking-widest text-stone-500 mt-1"
+          >
+            Años
+          </p>
+        </div>
+        <span class="text-xl md:text-2xl text-amber-500/40 -mt-4" aria-hidden="true">·</span>
+        <div>
+          <p
+            class="text-4xl md:text-6xl font-cinzel font-bold text-stone-900 dark:text-stone-100 tabular-nums"
+          >
+            {diasRestantes}
+          </p>
+          <p
+            class="text-[10px] md:text-xs uppercase tracking-widest text-stone-500 mt-1"
+          >
+            Días
+          </p>
+        </div>
+      </div>
+
+      <p
+        class="text-sm md:text-base text-stone-600 dark:text-stone-400 font-light leading-relaxed max-w-md mx-auto"
+      >
+        El 27 de junio de 2020 fue el día del apocalipsis en Winden. Si el
+        ciclo de 33 años vuelve a repetirse, la próxima ventana se abrirá el{' '}
+        <span class="text-amber-600 dark:text-amber-500 font-medium">
+          {fechaProximoCiclo}
+        </span>.
+      </p>
+    </div>
+  </div>
+</section>

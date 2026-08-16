@@ -129,7 +129,12 @@ import { songs, galleryImages } from '../data/bandaSonora';
         <div class="h-[1px] w-12 md:w-24 bg-gradient-to-l from-transparent to-amber-600" />
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 auto-rows-[110px] sm:auto-rows-[130px] lg:auto-rows-[150px] gap-2.5 md:gap-3">
+      {/* grid-flow-dense: las fotos destacadas ocupan 2x2 y, cuando no caben
+          en las columnas que quedan de la fila, la colocación automática las
+          empuja a la fila siguiente dejando huecos vacíos en el mosaico.
+          Con `dense` el navegador retrocede y rellena esos huecos con las
+          fotos pequeñas posteriores. */}
+      <div class="grid grid-flow-dense grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 auto-rows-[110px] sm:auto-rows-[130px] lg:auto-rows-[150px] gap-2.5 md:gap-3">
         {
           galleryImages.map((image, index) => (
             <button

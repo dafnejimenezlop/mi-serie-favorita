@@ -49,7 +49,9 @@ export const galleryImages: { src: string; alt: string; featured?: boolean }[] =
   { src: '/galeria/3.jpg', alt: 'Jonas camina solo de noche por un sendero del bosque, junto a un cartel de "zona cerrada"', featured: true },
   { src: '/galeria/4.jpg', alt: 'Tres adolescentes en alerta frente a unas puertas, con gesto de tensión' },
   { src: '/galeria/5.jpg', alt: 'Tres jóvenes observando algo con inquietud entre la multitud' },
+  { src: '/galeria/6.jpg', alt: 'Primer plano de un joven con capucha y un pañuelo cubriéndole el rostro, frente a una pared de hormigón húmedo', featured: true },
   { src: '/galeria/7.jpg', alt: 'Una figura con equipo de protección camina por una carretera junto a bloques de edificios en ruinas y humeantes' },
+  { src: '/galeria/8.jpg', alt: 'Una mujer, de espaldas, escribe en el panel de investigación de la comisaría, con los nombres de Erik Obendorf y Mikkel Nielsen' },
   { src: '/galeria/9.jpg', alt: 'Vista aérea de la central nuclear de Winden, arrasada dentro de un cráter calcinado', featured: true },
   { src: '/galeria/10.jpg', alt: 'Primer plano de un rostro tras la visera de un traje de protección, iluminado en tonos fríos' },
   { src: '/galeria/11.jpg', alt: 'Tres jóvenes en un claro al atardecer; una de ellas, con el ojo amoratado, sostiene a otra más pequeña' },
@@ -65,5 +67,7 @@ export const galleryImages: { src: string; alt: string; featured?: boolean }[] =
   { src: '/galeria/21.jpg', alt: 'Dos jóvenes rodeados de pósters de bandas, uno con chubasquero amarillo y otro con jersey estampado' },
   { src: '/galeria/22.jpg', alt: 'Un hombre, de espaldas y sin camisa, graba una fecha en una pared de hormigón' },
   { src: '/galeria/23.jpg', alt: 'Dos hombres mayores conversan en una sala común iluminada por el sol' },
+  { src: '/galeria/24.jpg', alt: 'Tres figuras de distintas edades, en pie e inmóviles, dentro de una biblioteca de madera iluminada por apliques' },
   { src: '/galeria/OIP.jpg', alt: 'Un niño señala una mano tendida a través de un muro cubierto de papel con estampado de conejos' },
+  { src: '/galeria/25.jpg', alt: 'Díptico de Jonas y Martha, ambos con chubasquero amarillo, reflejados uno frente al otro: él en una cueva de tonos fríos, ella en otra de tonos cálidos' },
 ];
