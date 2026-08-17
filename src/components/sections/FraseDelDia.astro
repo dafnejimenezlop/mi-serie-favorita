@@ -118,14 +118,18 @@ const todayIndex = dayOfEpoch % quotes.length;
           type="button"
           data-quote-prev
           aria-label="Frase anterior"
-          class="w-9 h-9 rounded-full border border-stone-300 dark:border-stone-700 hover:border-amber-500 flex items-center justify-center text-stone-500 dark:text-stone-400 hover:text-amber-500 transition-all duration-300"
+          class="w-11 h-11 rounded-full border border-stone-300 dark:border-stone-700 hover:border-amber-500 flex items-center justify-center text-stone-600 dark:text-stone-400 hover:text-amber-500 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
 
-        <div class="flex items-center gap-2" data-quote-dots>
+        {/* El punto medía 6x6 px: imposible de acertar con el dedo. La marca
+            visual sigue siendo la misma, pero ahora vive dentro de un botón
+            de 44px de alto (el mínimo recomendado para tacto), así que la
+            zona pulsable es grande sin que cambie el diseño. */}
+        <div class="flex items-center" data-quote-dots>
           {
             quotes.map((_, index) => (
               <button
@@ -133,8 +137,14 @@ const todayIndex = dayOfEpoch % quotes.length;
                 data-quote-dot
                 data-index={index}
                 aria-label={`Ir a la frase ${index + 1}`}
-                class={`h-1.5 rounded-full transition-all duration-300 ${index === todayIndex ? 'w-6 bg-amber-500' : 'w-1.5 bg-stone-300 dark:bg-stone-700 hover:bg-amber-500/60'}`}
-              />
+                aria-current={index === todayIndex ? 'true' : 'false'}
+                class="group grid place-items-center w-6 h-11 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 rounded-md"
+              >
+                <span
+                  data-quote-dot-mark
+                  class={`block h-1.5 rounded-full transition-all duration-300 ${index === todayIndex ? 'w-6 bg-amber-500' : 'w-1.5 bg-stone-300 dark:bg-stone-700 group-hover:bg-amber-500/60'}`}
+                />
+              </button>
             ))
           }
         </div>
@@ -143,7 +153,7 @@ const todayIndex = dayOfEpoch % quotes.length;
           type="button"
           data-quote-next
           aria-label="Frase siguiente"
-          class="w-9 h-9 rounded-full border border-stone-300 dark:border-stone-700 hover:border-amber-500 flex items-center justify-center text-stone-500 dark:text-stone-400 hover:text-amber-500 transition-all duration-300"
+          class="w-11 h-11 rounded-full border border-stone-300 dark:border-stone-700 hover:border-amber-500 flex items-center justify-center text-stone-600 dark:text-stone-400 hover:text-amber-500 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -176,13 +186,18 @@ const todayIndex = dayOfEpoch % quotes.length;
         slide.classList.toggle('pointer-events-none', !active);
         slide.setAttribute('aria-hidden', active ? 'false' : 'true');
       });
+      // Las clases de estado van en la MARCA interna, no en el botón: el
+      // botón ahora solo aporta el área táctil de 44px y no debe cambiar de
+      // tamaño al activarse.
       dots.forEach((dot, i) => {
         const active = i === current;
-        dot.classList.toggle('w-6', active);
-        dot.classList.toggle('bg-amber-500', active);
-        dot.classList.toggle('w-1.5', !active);
-        dot.classList.toggle('bg-stone-300', !active);
-        dot.classList.toggle('dark:bg-stone-700', !active);
+        const mark = dot.querySelector('[data-quote-dot-mark]') || dot;
+        mark.classList.toggle('w-6', active);
+        mark.classList.toggle('bg-amber-500', active);
+        mark.classList.toggle('w-1.5', !active);
+        mark.classList.toggle('bg-stone-300', !active);
+        mark.classList.toggle('dark:bg-stone-700', !active);
+        dot.setAttribute('aria-current', active ? 'true' : 'false');
       });
     }
 

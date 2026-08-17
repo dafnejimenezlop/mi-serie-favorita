@@ -81,6 +81,25 @@ html {
    cambian los colores. Si la anchura dependiera de `.dark`, alternar el tema
    cambiaría el ancho de la barra y, con él, el del área de contenido: la
    página entera daría un salto lateral en cada clic del interruptor. */
+/* ===== LA PÁGINA NO MUESTRA BARRA VERTICAL =====
+   El indicador de posición del sitio es la barra de progreso superior
+   (#scroll-progress). Teniendo esa, la barra vertical del navegador es un
+   segundo indicador redundante, y además es el único elemento de la interfaz
+   que no controlamos. Se oculta SOLO en la página; los paneles internos que
+   sí hacen scroll (transcripción del asistente, barra lateral del árbol,
+   carril de recomendaciones) conservan la suya, porque ahí sí hace falta
+   saber que hay más contenido.
+   `scrollbar-width: none` funciona en Chromium y Firefox; la regla
+   ::-webkit-scrollbar queda como respaldo para versiones antiguas. La página
+   sigue siendo desplazable con rueda, teclado y gesto táctil. */
+html {
+  scrollbar-width: none;
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
 @media (min-width: 768px) {
   ::-webkit-scrollbar {
     width: 11px;
@@ -147,26 +166,13 @@ html {
   }
 }
 
-/* Firefox no soporta ::-webkit-scrollbar y necesita las propiedades estándar.
-   PERO ojo con el orden de precedencia: desde Chrome 121, si `scrollbar-width`
-   o `scrollbar-color` están declaradas, Chromium cambia al renderizado
-   ESTÁNDAR de la barra e IGNORA por completo las reglas ::-webkit-scrollbar.
-   Al declararlas para todos, la barra personalizada de arriba (11px, carril
-   con hilo central, pulgar en degradado) no llegaba a verse nunca: lo que se
-   veía era la barra fina nativa de Chrome, solo que recoloreada — o sea, "la
-   del navegador" en vez de la nuestra.
-   Con `@supports not selector(::-webkit-scrollbar)` estas propiedades quedan
-   reservadas a los navegadores que NO entienden el pseudo-elemento (Firefox),
-   y en Chromium manda nuestra barra. */
-@supports not selector(::-webkit-scrollbar) {
-  html {
-    scrollbar-width: thin;
-    scrollbar-color: rgb(var(--accent-rgb) / 0.7) #e7e5e4;
-  }
-  html.dark {
-    scrollbar-color: rgb(var(--accent-rgb) / 0.7) #0a0a0a;
-  }
-}
+/* Nota sobre precedencia, por si algún día se vuelve a estilar la barra de la
+   página: desde Chrome 121, declarar `scrollbar-width` o `scrollbar-color` en
+   un elemento hace que Chromium use el renderizado ESTÁNDAR de la barra e
+   ignore por completo las reglas ::-webkit-scrollbar de ESE elemento. Aquí lo
+   aprovechamos a favor (una sola declaración oculta la barra en los dos
+   motores), pero es la razón por la que no se pueden mezclar ambas técnicas
+   sobre el mismo elemento esperando que convivan. */
 
 /* Bloqueo de scroll mientras hay una capa modal encima (cargador inicial,
    modal de vídeo). Sin esto la página seguía desplazándose por detrás del

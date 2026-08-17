@@ -48,6 +48,11 @@ const ciclos = [
       >
       </div>
 
+      {/* Las tarjetas son oscuras en AMBOS temas por diseño: el ámbar
+          brillante de los años solo funciona sobre fondo oscuro. Pero al 60%
+          de opacidad, sobre la página clara quedaban en un gris medio y el
+          texto stone-300 caía a 4.0:1. Al 88% vuelven a ser una superficie
+          oscura de verdad en los dos modos. */}
       <div
         class="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12 relative z-10"
       >
@@ -55,7 +60,7 @@ const ciclos = [
           ciclos.map((ciclo) => (
             <div
               tabindex="0"
-              class="relative group bg-stone-950/60 dark:bg-black/60 backdrop-blur-md p-8 md:p-10 rounded-xl border border-stone-800 hover:border-amber-500/60 focus:border-amber-500/60 focus:outline-none shadow-xl hover:shadow-[0_0_30px_rgba(245,158,11,0.15)] focus:shadow-[0_0_30px_rgba(245,158,11,0.15)] transition-all duration-500 overflow-hidden min-h-[320px] flex flex-col items-center cursor-pointer"
+              class="relative group bg-stone-950/88 dark:bg-black/60 backdrop-blur-md p-8 md:p-10 rounded-xl border border-stone-800 hover:border-amber-500/60 focus:border-amber-500/60 focus:outline-none shadow-xl hover:shadow-[0_0_30px_rgba(245,158,11,0.15)] focus:shadow-[0_0_30px_rgba(245,158,11,0.15)] transition-all duration-500 overflow-hidden min-h-[320px] flex flex-col items-center cursor-pointer"
               data-aos="fade-up"
               data-aos-delay={ciclo.delay}
             >
@@ -68,15 +73,15 @@ const ciclos = [
                   {ciclo.year}
                 </h3>
 
-                <p class="text-amber-600/80 group-hover:text-amber-400 group-focus:text-amber-400 mt-4 tracking-[0.2em] uppercase text-sm font-bold transition-colors duration-500">
+                <p class="text-amber-500 group-hover:text-amber-300 group-focus:text-amber-400 mt-4 tracking-[0.2em] uppercase text-sm font-bold transition-colors duration-500">
                   {ciclo.title}
                 </p>
-                <p class="text-xs text-stone-500 mt-2 font-mono uppercase tracking-wider group-hover:opacity-0 group-focus:opacity-0 transition-opacity duration-300">
+                <p class="text-xs text-stone-400 mt-2 font-mono uppercase tracking-wider group-hover:opacity-0 group-focus:opacity-0 transition-opacity duration-300">
                   {ciclo.shortDesc}
                 </p>
 
                 <div class="md:hidden mt-6 transition-all duration-300 group-hover:opacity-0 group-focus:opacity-0 group-hover:invisible group-focus:invisible">
-                  <p class="text-[10px] text-amber-500/50 uppercase tracking-widest font-bold animate-pulse">
+                  <p class="text-[10px] text-amber-500/80 uppercase tracking-widest font-bold animate-pulse">
                     Toca para revelar
                   </p>
                 </div>
@@ -96,7 +101,7 @@ const ciclos = [
 
     <div data-aos="fade-in" data-aos-delay="600">
       <p
-        class="text-stone-500 font-cinzel italic tracking-widest text-sm md:text-base"
+        class="text-stone-600 dark:text-stone-500 font-cinzel italic tracking-widest text-sm md:text-base"
       >
         "El principio es el fin, y el fin es el principio."
       </p>
