@@ -2,9 +2,14 @@
 // src/components/sections/Hero.astro
 ---
 
+<!-- `h-screen` es 100vh, y en movil 100vh incluye la franja que Chrome y
+     Safari ocupan con su propia barra: los controles de video de `bottom-6`
+     caian justo debajo del borde visible hasta que el navegador colapsaba su
+     interfaz. `100svh` (small viewport height) mide el hueco realmente
+     visible en el peor caso, que es exactamente lo que hace falta aqui. -->
 <section
   id="inicio"
-  class="relative h-screen flex items-center justify-center overflow-hidden bg-black"
+  class="relative min-h-[100svh] flex items-center justify-center overflow-hidden bg-black"
 >
   <div
     class="absolute top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-40 z-0"

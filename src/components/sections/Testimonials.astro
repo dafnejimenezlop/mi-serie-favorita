@@ -1,17 +1,41 @@
 ---
 // src/components/sections/Testimonials.astro
 
+// Esta era la unica seccion del sitio con un segundo (y tercero, y sexto)
+// color de acento: esmeralda, azul, rosa, lima y cian saturados de Tailwind,
+// contra la regla 2 — acento unico ambar, sin mas color que la semantica ya
+// establecida. Los seis testimonios pasan a tres intensidades del mismo
+// ambar: mantienen el ritmo visual del tablon sin romper la paleta.
+const TONOS = {
+  destacado: {
+    borde: 'border-amber-500/50',
+    texto: 'text-amber-700 dark:text-amber-400',
+    fondo: 'bg-amber-500/15',
+    punto: 'bg-amber-500',
+  },
+  medio: {
+    borde: 'border-amber-500/25',
+    texto: 'text-amber-800 dark:text-amber-300/90',
+    fondo: 'bg-amber-500/10',
+    punto: 'bg-amber-400',
+  },
+  tenue: {
+    borde: 'border-stone-300 dark:border-white/10',
+    texto: 'text-stone-700 dark:text-stone-300',
+    fondo: 'bg-stone-500/10',
+    punto: 'bg-stone-400 dark:bg-stone-500',
+  },
+};
+
 const reviews = [
   {
     author: 'H.G. Tannhaus',
     role: 'Creador del aparato',
     date: '21 de Junio, 1986',
     comment: 'Esencial. El apocalipsis ha llegado, y es hermoso.',
-    rating: 3,
-    colorClass: 'border-emerald-500/50',
-    textClass: 'text-emerald-700 dark:text-emerald-400',
-    bgClass: 'bg-emerald-500/15',
-    dotClass: 'bg-emerald-500',
+    // Tenia 3 de 5 puntos para una reseña que empieza por "Esencial".
+    rating: 5,
+    tono: 'medio',
     rotate: '-rotate-1',
   },
   {
@@ -21,10 +45,7 @@ const reviews = [
     comment:
       'La mejor serie que he visto en mi corta vida. Sic Mundus Creatus Est.',
     rating: 5,
-    colorClass: 'border-amber-500/50',
-    textClass: 'text-amber-700 dark:text-amber-400',
-    bgClass: 'bg-amber-500/15',
-    dotClass: 'bg-amber-500',
+    tono: 'destacado',
     rotate: 'rotate-1',
   },
   {
@@ -34,10 +55,7 @@ const reviews = [
     comment:
       'Todo está conectado. Un viaje cinemático que me dejó sin aliento. Jamás volverás a ver el tiempo de la misma manera. Necesito verla otra vez para entenderla.',
     rating: 4,
-    colorClass: 'border-blue-500/50',
-    textClass: 'text-blue-700 dark:text-blue-400',
-    bgClass: 'bg-blue-500/15',
-    dotClass: 'bg-blue-500',
+    tono: 'tenue',
     rotate: '-rotate-2',
   },
   {
@@ -46,10 +64,7 @@ const reviews = [
     date: '27 de Junio, 2052',
     comment: 'El final es el principio. Una obra maestra del suspense alemán.',
     rating: 5,
-    colorClass: 'border-rose-500/50',
-    textClass: 'text-rose-700 dark:text-rose-400',
-    bgClass: 'bg-rose-500/15',
-    dotClass: 'bg-rose-500',
+    tono: 'destacado',
     rotate: 'rotate-2',
   },
   {
@@ -59,10 +74,7 @@ const reviews = [
     comment:
       'Recomiendo esta serie a todo el mundo. Es un viaje emocional y mental que no olvidarás. No os arrepentiréis de verla.',
     rating: 5,
-    colorClass: 'border-lime-500/50',
-    textClass: 'text-lime-700 dark:text-lime-400',
-    bgClass: 'bg-lime-500/15',
-    dotClass: 'bg-lime-500',
+    tono: 'tenue',
     rotate: '-rotate-1',
   },
   {
@@ -72,10 +84,7 @@ const reviews = [
     comment:
       '¿Alguna vez os habéis preguntado por qué la serie de Dark es tan popular? Es simple: es una obra maestra del cine y la televisión.',
     rating: 5,
-    colorClass: 'border-cyan-500/50',
-    textClass: 'text-cyan-700 dark:text-cyan-400',
-    bgClass: 'bg-cyan-500/15',
-    dotClass: 'bg-cyan-500',
+    tono: 'medio',
     rotate: 'rotate-1',
   },
 ];
@@ -134,32 +143,36 @@ const reviews = [
       </p>
     </div>
 
-    <div class="max-w-6xl mx-auto columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
+    {/* `space-y-6` aplica margen superior a todos los hijos MENOS al primero
+        del conjunto, no al primero de cada columna: en 2 y 3 columnas, la
+        segunda y la tercera arrancaban 24 px mas abajo que la primera. Con
+        `mb-6` en cada tarjeta las tres columnas empiezan a la misma altura. */}
+    <div class="max-w-6xl mx-auto columns-1 sm:columns-2 lg:columns-3 gap-6">
       {
         reviews.map((review, index) => (
           <div
             tabindex="0"
             data-aos="fade-up"
             data-aos-delay={(index % 3) * 120}
-            class={`testimonial-card ${review.rotate} group bg-stone-50/90 dark:bg-stone-900/80 p-6 rounded-lg border ${review.colorClass} shadow-lg space-y-5 backdrop-blur-md relative focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400`}
+            class={`testimonial-card ${review.rotate} group bg-stone-50/90 dark:bg-stone-900/80 p-6 mb-6 rounded-lg border ${TONOS[review.tono].borde} hover:border-amber-500/60 shadow-lg space-y-5 backdrop-blur-md relative focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400`}
           >
             <span
-              class={`testimonial-pin absolute -top-2.5 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full border-2 border-black/40 dark:border-white/20 ${review.bgClass}`}
+              class={`testimonial-pin absolute -top-2.5 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full border-2 border-black/40 dark:border-white/20 ${TONOS[review.tono].fondo}`}
               aria-hidden="true"
             />
 
             <div class="flex items-center gap-3 pt-1">
               <span
-                class={`shrink-0 w-11 h-11 rounded-full border-2 flex items-center justify-center ${review.colorClass} ${review.bgClass}`}
+                class={`shrink-0 w-11 h-11 rounded-full border-2 flex items-center justify-center ${TONOS[review.tono].borde} ${TONOS[review.tono].fondo}`}
                 aria-hidden="true"
               >
-                <span class={`font-cinzel text-lg font-bold ${review.textClass}`}>
+                <span class={`font-cinzel text-lg font-bold ${TONOS[review.tono].texto}`}>
                   {review.author.charAt(0)}
                 </span>
               </span>
               <div class="min-w-0">
                 <p
-                  class={`text-sm font-bold font-cinzel uppercase tracking-wider truncate ${review.textClass}`}
+                  class={`text-sm font-bold font-cinzel uppercase tracking-wider truncate ${TONOS[review.tono].texto}`}
                 >
                   {review.author}
                 </p>
@@ -174,10 +187,14 @@ const reviews = [
             </p>
 
             <div class="flex items-center justify-between pt-3 border-t border-stone-200/70 dark:border-white/10">
-              <div class="flex gap-1" aria-hidden="true">
+              <div
+                class="flex gap-1"
+                role="img"
+                aria-label={`${review.rating} de 5`}
+              >
                 {Array.from({ length: 5 }).map((_, i) => (
                   <span
-                    class={`w-1.5 h-1.5 rounded-full ${i < review.rating ? review.dotClass : 'bg-stone-300 dark:bg-stone-700'}`}
+                    class={`w-1.5 h-1.5 rounded-full ${i < review.rating ? TONOS[review.tono].punto : 'bg-stone-300 dark:bg-stone-700'}`}
                   />
                 ))}
               </div>

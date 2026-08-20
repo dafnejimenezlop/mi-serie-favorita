@@ -68,9 +68,11 @@
       >
       </div>
       <button
+        type="button"
         role="tab"
         aria-selected="true"
         aria-controls="temp1"
+        id="tab-temp1"
         class="tab-btn active relative z-10 inline-flex items-center justify-center min-h-10 md:min-h-9 px-1.5 py-2 md:px-5 md:py-1.5 rounded-lg md:rounded-full font-cinzel font-bold tracking-normal md:tracking-[0.12em] uppercase text-[10px] md:text-xs leading-tight transition-colors duration-300 text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
         data-target="temp1"
       >
@@ -78,9 +80,11 @@
         <span class="hidden md:block">Temporada 1</span>
       </button>
       <button
+        type="button"
         role="tab"
         aria-selected="false"
         aria-controls="temp2"
+        id="tab-temp2"
         class="tab-btn relative z-10 inline-flex items-center justify-center min-h-10 md:min-h-9 px-1.5 py-2 md:px-5 md:py-1.5 rounded-lg md:rounded-full font-cinzel font-bold tracking-normal md:tracking-[0.12em] uppercase text-[10px] md:text-xs leading-tight transition-colors duration-300 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
         data-target="temp2"
       >
@@ -88,9 +92,11 @@
         <span class="hidden md:block">Temporada 2</span>
       </button>
       <button
+        type="button"
         role="tab"
         aria-selected="false"
         aria-controls="temp3"
+        id="tab-temp3"
         class="tab-btn relative z-10 inline-flex items-center justify-center min-h-10 md:min-h-9 px-1.5 py-2 md:px-5 md:py-1.5 rounded-lg md:rounded-full font-cinzel font-bold tracking-normal md:tracking-[0.12em] uppercase text-[10px] md:text-xs leading-tight transition-colors duration-300 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
         data-target="temp3"
       >
@@ -100,7 +106,13 @@
     </div>
 
     <div class="relative w-full">
-      <div id="temp1" class="tab-content case-counter-reset block animate-fade-in">
+      <div
+        id="temp1"
+        role="tabpanel"
+        aria-labelledby="tab-temp1"
+        tabindex="0"
+        class="tab-content case-counter-reset block animate-fade-in focus-visible:outline-none"
+      >
         <div class="flex items-center gap-6 mb-8 md:mb-12">
           <h3
             class="text-xl md:text-4xl font-cinzel text-stone-800 dark:text-stone-100 font-bold uppercase tracking-widest whitespace-nowrap"
@@ -240,9 +252,15 @@
           </div>
         </div>
 
+        {/* Carátula en vez de iframe: los tres vídeos de temporada vivían
+            como reproductores completos desde la carga inicial, dentro de
+            pestañas ocultas. Ahora pesan una imagen hasta que alguien pulsa. */}
         <div
           class="relative max-w-5xl mx-auto rounded-xl overflow-hidden shadow-2xl border border-stone-700 dark:border-stone-800 bg-black aspect-video"
           data-aos="zoom-in"
+          data-video-facade
+          data-video-id="zmxw7NgsBH4"
+          data-video-title="Resumen en vídeo de la primera temporada de DARK"
         >
           <span
             class="absolute top-3 left-3 z-10 flex items-center gap-1.5 rounded-full bg-black/70 border border-amber-500/40 backdrop-blur-md px-3 py-1 font-mono text-[9px] tracking-[0.2em] uppercase text-amber-500"
@@ -250,14 +268,42 @@
             <span class="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse"></span>
             Expediente Audiovisual
           </span>
-          <iframe
-            class="w-full h-full"
-            src="https://www.youtube.com/embed/zmxw7NgsBH4?controls=1"
-            allowfullscreen></iframe>
+          <button
+            type="button"
+            data-video-play
+            aria-label="Resumen en vídeo de la primera temporada de DARK"
+            class="group absolute inset-0 w-full h-full flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-amber-400"
+          >
+            <img
+              src="https://i.ytimg.com/vi/zmxw7NgsBH4/hqdefault.jpg"
+              alt=""
+              loading="lazy"
+              decoding="async"
+              class="absolute inset-0 w-full h-full object-cover opacity-60 grayscale group-hover:opacity-90 group-hover:grayscale-0 transition-all duration-700"
+            />
+            <span
+              class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/50"
+              aria-hidden="true"
+            ></span>
+            <span
+              class="relative flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full border border-amber-500/60 bg-black/60 backdrop-blur-md text-amber-500 shadow-[0_0_30px_-8px_rgba(245,158,11,0.8)] transition-all duration-300 group-hover:bg-amber-500 group-hover:text-black group-hover:scale-110 group-active:scale-95"
+              aria-hidden="true"
+            >
+              <svg class="w-7 h-7 md:w-8 md:h-8 translate-x-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </span>
+          </button>
         </div>
       </div>
 
-      <div id="temp2" class="tab-content case-counter-reset hidden animate-fade-in">
+      <div
+        id="temp2"
+        role="tabpanel"
+        aria-labelledby="tab-temp2"
+        tabindex="0"
+        class="tab-content case-counter-reset hidden animate-fade-in focus-visible:outline-none"
+      >
         <div class="flex items-center gap-6 mb-8 md:mb-12">
           <h3
             class="text-xl md:text-4xl font-cinzel text-stone-800 dark:text-stone-100 font-bold uppercase tracking-widest whitespace-nowrap"
@@ -390,9 +436,15 @@
           </div>
         </div>
 
+        {/* Carátula en vez de iframe: los tres vídeos de temporada vivían
+            como reproductores completos desde la carga inicial, dentro de
+            pestañas ocultas. Ahora pesan una imagen hasta que alguien pulsa. */}
         <div
           class="relative max-w-5xl mx-auto rounded-xl overflow-hidden shadow-2xl border border-stone-700 dark:border-stone-800 bg-black aspect-video"
           data-aos="zoom-in"
+          data-video-facade
+          data-video-id="Nghb6pT0ghk"
+          data-video-title="Resumen en vídeo de la segunda temporada de DARK"
         >
           <span
             class="absolute top-3 left-3 z-10 flex items-center gap-1.5 rounded-full bg-black/70 border border-amber-500/40 backdrop-blur-md px-3 py-1 font-mono text-[9px] tracking-[0.2em] uppercase text-amber-500"
@@ -400,14 +452,42 @@
             <span class="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse"></span>
             Expediente Audiovisual
           </span>
-          <iframe
-            class="w-full h-full"
-            src="https://www.youtube.com/embed/Nghb6pT0ghk?controls=1"
-            allowfullscreen></iframe>
+          <button
+            type="button"
+            data-video-play
+            aria-label="Resumen en vídeo de la segunda temporada de DARK"
+            class="group absolute inset-0 w-full h-full flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-amber-400"
+          >
+            <img
+              src="https://i.ytimg.com/vi/Nghb6pT0ghk/hqdefault.jpg"
+              alt=""
+              loading="lazy"
+              decoding="async"
+              class="absolute inset-0 w-full h-full object-cover opacity-60 grayscale group-hover:opacity-90 group-hover:grayscale-0 transition-all duration-700"
+            />
+            <span
+              class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/50"
+              aria-hidden="true"
+            ></span>
+            <span
+              class="relative flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full border border-amber-500/60 bg-black/60 backdrop-blur-md text-amber-500 shadow-[0_0_30px_-8px_rgba(245,158,11,0.8)] transition-all duration-300 group-hover:bg-amber-500 group-hover:text-black group-hover:scale-110 group-active:scale-95"
+              aria-hidden="true"
+            >
+              <svg class="w-7 h-7 md:w-8 md:h-8 translate-x-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </span>
+          </button>
         </div>
       </div>
 
-      <div id="temp3" class="tab-content case-counter-reset hidden animate-fade-in">
+      <div
+        id="temp3"
+        role="tabpanel"
+        aria-labelledby="tab-temp3"
+        tabindex="0"
+        class="tab-content case-counter-reset hidden animate-fade-in focus-visible:outline-none"
+      >
         <div class="flex items-center gap-6 mb-8 md:mb-12">
           <h3
             class="text-xl md:text-4xl font-cinzel text-stone-800 dark:text-stone-100 font-bold uppercase tracking-widest whitespace-nowrap"
@@ -540,9 +620,15 @@
           </div>
         </div>
 
+        {/* Carátula en vez de iframe: los tres vídeos de temporada vivían
+            como reproductores completos desde la carga inicial, dentro de
+            pestañas ocultas. Ahora pesan una imagen hasta que alguien pulsa. */}
         <div
           class="relative max-w-5xl mx-auto rounded-xl overflow-hidden shadow-2xl border border-stone-700 dark:border-stone-800 bg-black aspect-video"
           data-aos="zoom-in"
+          data-video-facade
+          data-video-id="z2wPBG-GSJ0"
+          data-video-title="Resumen en vídeo de la tercera temporada de DARK"
         >
           <span
             class="absolute top-3 left-3 z-10 flex items-center gap-1.5 rounded-full bg-black/70 border border-amber-500/40 backdrop-blur-md px-3 py-1 font-mono text-[9px] tracking-[0.2em] uppercase text-amber-500"
@@ -550,10 +636,32 @@
             <span class="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse"></span>
             Expediente Audiovisual
           </span>
-          <iframe
-            class="w-full h-full"
-            src="https://www.youtube.com/embed/z2wPBG-GSJ0?controls=1"
-            allowfullscreen></iframe>
+          <button
+            type="button"
+            data-video-play
+            aria-label="Resumen en vídeo de la tercera temporada de DARK"
+            class="group absolute inset-0 w-full h-full flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-amber-400"
+          >
+            <img
+              src="https://i.ytimg.com/vi/z2wPBG-GSJ0/hqdefault.jpg"
+              alt=""
+              loading="lazy"
+              decoding="async"
+              class="absolute inset-0 w-full h-full object-cover opacity-60 grayscale group-hover:opacity-90 group-hover:grayscale-0 transition-all duration-700"
+            />
+            <span
+              class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/50"
+              aria-hidden="true"
+            ></span>
+            <span
+              class="relative flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full border border-amber-500/60 bg-black/60 backdrop-blur-md text-amber-500 shadow-[0_0_30px_-8px_rgba(245,158,11,0.8)] transition-all duration-300 group-hover:bg-amber-500 group-hover:text-black group-hover:scale-110 group-active:scale-95"
+              aria-hidden="true"
+            >
+              <svg class="w-7 h-7 md:w-8 md:h-8 translate-x-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </span>
+          </button>
         </div>
       </div>
     </div>
@@ -561,134 +669,24 @@
 </div>
 
 <style>
-  .animate-fade-in {
-    animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  }
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(15px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* Ficha de caso numerada: refuerza la lectura "tablón de investigación"
-     del sitio sin depender de JS — cada .case-counter-reset reinicia el
-     contador (una numeración por temporada). */
-  .case-counter-reset {
-    counter-reset: case-counter;
-  }
-  .case-card {
-    counter-increment: case-counter;
-  }
-  .case-card::before {
-    content: counter(case-counter, decimal-leading-zero);
-    position: absolute;
-    top: 0.75rem;
-    left: 0.75rem;
-    z-index: 20;
-    width: 2.25rem;
-    height: 2.25rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 9999px;
-    background: rgba(10, 10, 10, 0.75);
-    border: 1px solid rgba(245, 158, 11, 0.6);
-    color: #f59e0b;
-    font-family: 'Cinzel', serif;
-    font-weight: 700;
-    font-size: 0.7rem;
-    letter-spacing: 0.05em;
-    backdrop-filter: blur(4px);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
-  }
-  @media (min-width: 1024px) {
-    .case-card::before {
-      top: 1rem;
-      left: 1rem;
-      width: 2.75rem;
-      height: 2.75rem;
-      font-size: 0.8rem;
-    }
-  }
-
-  /* Hilo conector entre fichas: reutiliza .gen-connector-line (definida en
-     Familias.astro, style is:global — línea ámbar con pulso) para leer la
-     columna de tarjetas como una secuencia de expediente, no bloques
-     sueltos. Solo visible en desktop, alineado con el centro del badge
-     numerado (left-1rem + mitad de 2.75rem ≈ 38px). */
-  .case-thread {
-    left: 38px;
-  }
+  /* El contador de fichas, el hilo conector y la animación de entrada viven
+     ahora en global.css: los comparten Resumen, Aclaraciones y Familias, y
+     una hoja importada nunca queda acotada por el `data-astro-cid-*` de un
+     componente. */
 </style>
 
-<script is:inline>
+<script>
+  import { initTabs, initVideoFacades } from '../scripts/tabs.js';
+
   document.addEventListener('DOMContentLoaded', () => {
-    const tabs = document.querySelectorAll('.tab-btn');
-    const contents = document.querySelectorAll('.tab-content');
-    const pill = document.getElementById('resumen-tab-pill');
-
-    function movePillTo(tabEl) {
-      if (!pill || !tabEl) return;
-      pill.style.left = `${tabEl.offsetLeft}px`;
-      pill.style.width = `${tabEl.offsetWidth}px`;
-      pill.style.opacity = '1';
-    }
-
-    function activateTab(tabTargetId) {
-      contents.forEach((c) => {
-        c.classList.remove('block');
-        c.classList.add('hidden');
-      });
-
-      // El estado activo lo lleva solo la píldora ámbar + el texto en negro
-      // (que es lo que da contraste sobre ella); ya no hay clases de borde
-      // que mantener sincronizadas.
-      tabs.forEach((t) => {
-        t.classList.remove('active', 'text-black');
-        t.classList.add('text-stone-600', 'dark:text-stone-400');
-        t.setAttribute('aria-selected', 'false');
-      });
-
-      const targetContent = document.getElementById(tabTargetId);
-      const targetTab = document.querySelector(
-        `.tab-btn[data-target="${tabTargetId}"]`,
-      );
-
-      if (targetContent && targetTab) {
-        targetContent.classList.remove('hidden');
-        targetContent.classList.add('block');
-
-        targetTab.classList.add('active');
-        targetTab.classList.remove('text-stone-600', 'dark:text-stone-400');
-        targetTab.classList.add('text-black');
-        targetTab.setAttribute('aria-selected', 'true');
-
-        movePillTo(targetTab);
-        if (typeof AOS !== 'undefined') window.setTimeout(() => AOS.refresh(), 60);
-      }
-    }
-
-    tabs.forEach((tab) => {
-      tab.addEventListener('click', () => {
-        activateTab(tab.getAttribute('data-target'));
-      });
+    initVideoFacades();
+    // El router de index.astro sigue llamando a este nombre al entrar en la
+    // vista: es el contrato, no un global suelto.
+    window.resetResumenTabs = initTabs({
+      boton: '.tab-btn',
+      panel: '.tab-content',
+      pastilla: 'resumen-tab-pill',
+      inicial: 'temp1',
     });
-
-    function repositionPill() {
-      const activeTab = document.querySelector('.tab-btn.active') || tabs[0];
-      movePillTo(activeTab);
-    }
-
-    window.addEventListener('resize', repositionPill);
-    // La píldora se mide en píxeles del texto: medirla con la fuente de
-    // reserva la deja desalineada hasta el primer resize.
-    if (document.fonts?.ready) document.fonts.ready.then(repositionPill);
-
-    window.resetResumenTabs = () => activateTab('temp1');
   });
 </script>

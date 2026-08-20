@@ -3,6 +3,15 @@
 // Asistente guiado (sin backend): un menú de respuestas rápidas
 // predefinidas presentado como conversación. Todo el contenido es estático,
 // igual que el resto del sitio — no hay IA ni llamadas a ningún servicio.
+import { recommendations } from '../data/recomendaciones';
+import { songs } from '../data/bandaSonora';
+
+// Las cifras de las respuestas estaban escritas a mano y se quedaron atrás
+// cuando crecieron los datos: el asistente prometía "quince candidatas"
+// cuando ya había 24, y la propia sección, dos clics después, mostraba
+// "24 Títulos". Ahora salen de la misma fuente que la sección.
+const totalRecomendaciones = recommendations.length;
+const totalCanciones = songs.length;
 
 const icons: Record<string, string> = {
   sparkles: 'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z',
@@ -17,17 +26,50 @@ const icons: Record<string, string> = {
   send: 'M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z',
 };
 
+// El panel abría con las doce preguntas a la vez, en una rejilla con scroll
+// propio: un muro de opciones justo cuando el usuario todavía no sabe qué
+// quiere. Se entra por estos cuatro temas y cada paso enseña como mucho
+// cuatro botones — la conversación estrecha en vez de volcarlo todo.
+const temas = [
+  {
+    id: 'trama',
+    label: 'Entender la trama',
+    hint: 'El final, los mundos, el 33',
+    icon: 'loop',
+  },
+  {
+    id: 'sitio',
+    label: 'Recorrer el archivo',
+    hint: 'Resumen, familias, música',
+    icon: 'calendar',
+  },
+  {
+    id: 'empezar',
+    label: 'Aún no la he visto',
+    hint: 'Por dónde empezar, sin spoilers',
+    icon: 'eye',
+  },
+  {
+    id: 'proyecto',
+    label: 'Sobre este sitio',
+    hint: 'Quién lo hace y cómo escribirme',
+    icon: 'info',
+  },
+];
+
 const quickReplies = [
   {
     id: 'recomienda',
+    tema: 'sitio',
     label: 'Recomiéndame algo',
     icon: 'sparkles',
     reply:
-      'Si ya te has terminado DARK, tengo quince candidatas a tu próxima obsesión: de "1899" (de los mismos creadores) a "Twin Peaks". Puedes filtrarlas por plataforma.',
+      `Si ya te has terminado DARK, tengo ${totalRecomendaciones} candidatas a tu próxima obsesión: de "1899" (de los mismos creadores) a "Twin Peaks". Puedes filtrarlas por plataforma.`,
     cta: { label: 'Ver recomendaciones', href: '#recomendaciones' },
   },
   {
     id: 'final',
+    tema: 'trama',
     label: 'No entiendo el final',
     icon: 'loop',
     reply:
@@ -36,6 +78,7 @@ const quickReplies = [
   },
   {
     id: 'quien-es-quien',
+    tema: 'trama',
     label: '¿Quién es quién?',
     icon: 'users',
     reply:
@@ -44,6 +87,7 @@ const quickReplies = [
   },
   {
     id: 'resumen',
+    tema: 'sitio',
     label: 'Resumen de temporadas',
     icon: 'calendar',
     reply:
@@ -52,14 +96,16 @@ const quickReplies = [
   },
   {
     id: 'banda-sonora',
+    tema: 'sitio',
     label: 'Banda sonora y fotos',
     icon: 'music',
     reply:
-      'La música de DARK está elegida con muchísimo mimo. Tienes las 18 canciones de la serie para escuchar, más una galería de fotogramas.',
+      `La música de DARK está elegida con muchísimo mimo. Tienes las ${totalCanciones} canciones de la serie para escuchar, más una galería de fotogramas.`,
     cta: { label: 'Escuchar y ver', href: '#galeria' },
   },
   {
     id: 'numero-33',
+    tema: 'trama',
     label: '¿Qué significa el 33?',
     icon: 'bulb',
     reply:
@@ -68,6 +114,7 @@ const quickReplies = [
   },
   {
     id: 'orden',
+    tema: 'empezar',
     label: '¿En qué orden la veo?',
     icon: 'calendar',
     reply:
@@ -76,6 +123,7 @@ const quickReplies = [
   },
   {
     id: 'sic-mundus',
+    tema: 'trama',
     label: '¿Qué es Sic Mundus?',
     icon: 'loop',
     reply:
@@ -84,6 +132,7 @@ const quickReplies = [
   },
   {
     id: 'nuevo-espectador',
+    tema: 'empezar',
     label: 'Nunca he visto la serie',
     icon: 'eye',
     reply:
@@ -92,6 +141,7 @@ const quickReplies = [
   },
   {
     id: 'sobre-el-sitio',
+    tema: 'proyecto',
     label: 'Sobre este sitio',
     icon: 'info',
     reply:
@@ -100,6 +150,7 @@ const quickReplies = [
   },
   {
     id: 'sugerencia',
+    tema: 'proyecto',
     label: '¿Alguna sugerencia o fallo?',
     icon: 'send',
     reply:
@@ -108,6 +159,7 @@ const quickReplies = [
   },
   {
     id: 'ver-dark',
+    tema: 'empezar',
     label: 'Ver DARK en Netflix',
     icon: 'play',
     reply: 'Aquí la tienes, directa desde la fuente. Que disfrutes el viaje — o el bucle.',
@@ -121,7 +173,6 @@ const quickReplies = [
   <div
     id="asistente-panel"
     role="dialog"
-    aria-modal="true"
     aria-label="Asistente de Winden"
     aria-hidden="true"
     class="hidden mb-4 w-[calc(100vw-3rem)] max-w-sm sm:w-96 h-[34rem] max-h-[80vh] flex-col rounded-2xl border border-stone-700/60 bg-stone-950/95 backdrop-blur-xl shadow-2xl shadow-black/50 overflow-hidden origin-bottom-right opacity-0 scale-95 translate-y-2 transition-all duration-300 ease-out"
@@ -197,38 +248,76 @@ const quickReplies = [
       </div>
     </div>
 
-    <!-- La zona de sugerencias estaba limitada a `max-h-[38%]` para doce
-         opciones en dos columnas: se veían cuatro y media y había que
-         desplazarse a ciegas dentro de un panel que ya se desplaza. Sube a un
-         45% con una etiqueta que anuncia qué es y un degradado inferior que
-         hace evidente que la lista continúa. -->
+    <!-- Zona de sugerencias. Arranca con los cuatro temas; a partir de ahí
+         la rellena el script según dónde esté la conversación. Al ser como
+         mucho cuatro botones, ya no necesita scroll propio dentro de un panel
+         que ya se desplaza. -->
     <div class="shrink-0 border-t border-stone-800 bg-stone-950/80">
-      <p class="px-4 pt-2.5 pb-1.5 font-mono text-[9px] tracking-[0.25em] uppercase text-stone-600">
-        Preguntas frecuentes
-      </p>
-      <div class="relative">
-        <div class="max-h-[13.5rem] overflow-y-auto custom-scrollbar px-3 pb-3">
-          <div id="asistente-quick-replies" class="grid grid-cols-2 gap-2">
-            {
-              quickReplies.map((option) => (
-                <button
-                  type="button"
-                  data-asistente-option={option.id}
-                  class="asistente-chip flex items-center gap-2 rounded-xl border border-stone-700 bg-stone-900 px-2.5 py-2 text-left text-[11px] leading-tight font-semibold text-stone-300 hover:border-amber-500/60 hover:text-amber-500 hover:bg-stone-800 hover:-translate-y-0.5 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
-                >
-                  <svg class="w-3.5 h-3.5 shrink-0 text-amber-500/80" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d={icons[option.icon]} />
-                  </svg>
-                  <span>{option.label}</span>
-                </button>
-              ))
-            }
-          </div>
-        </div>
-        <div
-          aria-hidden="true"
-          class="pointer-events-none absolute inset-x-0 bottom-0 h-6 bg-gradient-to-t from-stone-950 to-transparent"
-        ></div>
+      <div class="flex items-center justify-between gap-2 px-4 pt-2.5 pb-1.5">
+        <p
+          id="asistente-sugerencias-titulo"
+          class="font-mono text-[9px] tracking-[0.25em] uppercase text-stone-600"
+        >
+          ¿Por dónde empezamos?
+        </p>
+        <button
+          type="button"
+          id="asistente-volver"
+          class="hidden items-center gap-1 rounded-full border border-stone-700 px-2 py-1 font-mono text-[9px] uppercase tracking-widest text-stone-400 hover:border-amber-500/60 hover:text-amber-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+        >
+          <svg
+            class="w-2.5 h-2.5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="3"
+              d="M15 19l-7-7 7-7"></path>
+          </svg>
+          Temas
+        </button>
+      </div>
+      <div
+        id="asistente-sugerencias"
+        class="grid grid-cols-1 gap-2 px-3 pb-3"
+        aria-live="polite"
+      >
+        {
+          temas.map((tema) => (
+            <button
+              type="button"
+              data-asistente-tema={tema.id}
+              class="asistente-chip flex items-center gap-3 rounded-xl border border-stone-700 bg-stone-900 px-3 py-2.5 text-left text-stone-300 hover:border-amber-500/60 hover:text-amber-500 hover:bg-stone-800 hover:-translate-y-0.5 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+            >
+              <svg
+                class="w-4 h-4 shrink-0 text-amber-500/80"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.8"
+                  d={icons[tema.icon]}
+                />
+              </svg>
+              <span class="min-w-0">
+                <span class="block text-[12px] font-semibold leading-tight">
+                  {tema.label}
+                </span>
+                <span class="block text-[10px] leading-tight text-stone-500">
+                  {tema.hint}
+                </span>
+              </span>
+            </button>
+          ))
+        }
       </div>
     </div>
   </div>
@@ -383,7 +472,7 @@ const quickReplies = [
   }
 </style>
 
-<script is:inline define:vars={{ quickReplies }}>
+<script is:inline define:vars={{ quickReplies, temas, icons }}>
   document.addEventListener('DOMContentLoaded', () => {
     const root = document.getElementById('asistente-winden-root');
     const toggleBtn = document.getElementById('asistente-toggle');
@@ -469,20 +558,126 @@ const quickReplies = [
       }
     }
 
+    // ===== SUGERENCIAS EN TRES NIVELES =====
+    // 1. cuatro temas  ->  2. las preguntas de ese tema  ->  3. lo que queda
+    // por preguntar del mismo tema, ya con la respuesta en pantalla. En
+    // ningún momento hay más de cuatro botones a la vez.
+    const zonaSugerencias = document.getElementById('asistente-sugerencias');
+    const tituloSugerencias = document.getElementById(
+      'asistente-sugerencias-titulo',
+    );
+    const botonVolver = document.getElementById('asistente-volver');
+    const yaPreguntado = new Set();
+    let temaActual = null;
+
+    const CLASE_CHIP =
+      'asistente-chip flex items-center gap-2 rounded-xl border border-stone-700 bg-stone-900 px-2.5 py-2 text-left text-[11px] leading-tight font-semibold text-stone-300 hover:border-amber-500/60 hover:text-amber-500 hover:bg-stone-800 hover:-translate-y-0.5 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400';
+
+    function icono(nombre) {
+      return `<svg class="w-3.5 h-3.5 shrink-0 text-amber-500/80" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="${icons[nombre]}" /></svg>`;
+    }
+
+    function pintarTemas() {
+      temaActual = null;
+      if (tituloSugerencias) {
+        tituloSugerencias.textContent = yaPreguntado.size
+          ? '¿Algo más?'
+          : '¿Por dónde empezamos?';
+      }
+      botonVolver?.classList.add('hidden');
+      botonVolver?.classList.remove('flex');
+      zonaSugerencias.className = 'grid grid-cols-1 gap-2 px-3 pb-3';
+      zonaSugerencias.innerHTML = temas
+        .map(
+          (tema) => `
+        <button type="button" data-asistente-tema="${tema.id}"
+          class="asistente-chip flex items-center gap-3 rounded-xl border border-stone-700 bg-stone-900 px-3 py-2.5 text-left text-stone-300 hover:border-amber-500/60 hover:text-amber-500 hover:bg-stone-800 hover:-translate-y-0.5 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400">
+          <svg class="w-4 h-4 shrink-0 text-amber-500/80" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="${icons[tema.icon]}" /></svg>
+          <span class="min-w-0">
+            <span class="block text-[12px] font-semibold leading-tight">${tema.label}</span>
+            <span class="block text-[10px] leading-tight text-stone-500">${tema.hint}</span>
+          </span>
+        </button>`,
+        )
+        .join('');
+    }
+
+    function pintarOpciones(idTema, titulo) {
+      temaActual = idTema;
+      const tema = temas.find((t) => t.id === idTema);
+      if (tituloSugerencias) {
+        tituloSugerencias.textContent = titulo || tema?.label || 'Preguntas';
+      }
+      botonVolver?.classList.remove('hidden');
+      botonVolver?.classList.add('flex');
+      zonaSugerencias.className = 'grid grid-cols-1 gap-2 px-3 pb-3';
+      zonaSugerencias.innerHTML = quickReplies
+        .filter((o) => o.tema === idTema)
+        .map(
+          (o) => `
+        <button type="button" data-asistente-option="${o.id}" class="${CLASE_CHIP}${yaPreguntado.has(o.id) ? ' opacity-55' : ''}">
+          ${icono(o.icon)}<span>${o.label}</span>
+        </button>`,
+        )
+        .join('');
+    }
+
+    function pintarSeguimiento(option) {
+      const pendientes = quickReplies.filter(
+        (o) => o.tema === option.tema && !yaPreguntado.has(o.id),
+      );
+
+      if (!pendientes.length) {
+        pintarTemas();
+        return;
+      }
+
+      temaActual = option.tema;
+      if (tituloSugerencias) tituloSugerencias.textContent = 'Y ya que estamos…';
+      botonVolver?.classList.remove('hidden');
+      botonVolver?.classList.add('flex');
+      zonaSugerencias.className = 'grid grid-cols-1 gap-2 px-3 pb-3';
+      zonaSugerencias.innerHTML = pendientes
+        .slice(0, 3)
+        .map(
+          (o) => `
+        <button type="button" data-asistente-option="${o.id}" class="${CLASE_CHIP}">
+          ${icono(o.icon)}<span>${o.label}</span>
+        </button>`,
+        )
+        .join('');
+    }
+
     function handleOptionClick(optionId) {
       const option = quickReplies.find((o) => o.id === optionId);
       if (!option) return;
+      yaPreguntado.add(option.id);
       addUserBubble(option.label);
       const typingEl = addTypingBubble();
+      // Mientras "escribe", las sugerencias se vacían: ofrecer el siguiente
+      // paso antes de haber contestado al anterior es justo la sensación de
+      // amontonamiento que se quería quitar.
+      zonaSugerencias.innerHTML = '';
       window.setTimeout(() => {
         typingEl.remove();
         addBotBubble(option);
+        pintarSeguimiento(option);
       }, 550);
     }
 
-    document.querySelectorAll('[data-asistente-option]').forEach((btn) => {
-      btn.addEventListener('click', () => handleOptionClick(btn.dataset.asistenteOption));
+    // Un solo escuchador para toda la zona: los botones se repintan en cada
+    // paso, así que atarlos uno a uno obligaría a re-atarlos cada vez.
+    zonaSugerencias?.addEventListener('click', (evento) => {
+      const opcion = evento.target.closest('[data-asistente-option]');
+      if (opcion) {
+        handleOptionClick(opcion.dataset.asistenteOption);
+        return;
+      }
+      const tema = evento.target.closest('[data-asistente-tema]');
+      if (tema) pintarOpciones(tema.dataset.asistenteTema);
     });
+
+    botonVolver?.addEventListener('click', pintarTemas);
 
     // ===== AVISO DE DESCUBRIMIENTO (una sola vez por navegador) =====
     const NUDGE_KEY = 'asistenteWindenNudgeVisto';

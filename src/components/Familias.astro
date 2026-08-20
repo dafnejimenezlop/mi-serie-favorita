@@ -4,10 +4,25 @@
 import { familiasData, relationshipData } from '../data/familias';
 import { validateRelationships } from '../utils/familyTree';
 
+// La validacion se ejecuta y se registra EN SERVIDOR. Antes su resultado
+// viajaba serializado dentro del HTML de cada visita —via `define:vars`— solo
+// para poder hacer un `console.warn` en el navegador: un dato de desarrollo
+// que pagaba todo el que entraba en la pagina.
 const relationshipValidation = validateRelationships(
   familiasData,
   relationshipData,
 );
+
+if (
+  relationshipValidation.missingEndpoints.length ||
+  relationshipValidation.duplicateIds.length ||
+  relationshipValidation.unknownTypes.length
+) {
+  console.warn(
+    '[familias] relaciones con problemas:',
+    JSON.stringify(relationshipValidation),
+  );
+}
 ---
 
 <style is:global>
@@ -475,32 +490,10 @@ const relationshipValidation = validateRelationships(
       0 0 22px rgba(245, 158, 11, 0.24);
   }
 
-  /* LÍNEAS DE GENERACIÓN CON PULSO */
-  @keyframes line-pulse {
-    0% {
-      background-position: 0% 0%;
-    }
-    100% {
-      background-position: 0% 100%;
-    }
-  }
-  .gen-connector-line {
-    width: 1px;
-    min-width: 1px;
-    background: linear-gradient(
-      to bottom,
-      transparent 0%,
-      rgba(245, 158, 11, 0.5) 20%,
-      rgba(245, 158, 11, 0.75) 50%,
-      rgba(245, 158, 11, 0.5) 80%,
-      transparent 100%
-    );
-    background-size: 100% 300%;
-    background-position: 0% 0%;
-    animation: line-pulse 2.5s ease-in-out infinite;
-    box-shadow: 0 0 4px rgba(245, 158, 11, 0.25);
-    display: block;
-  }
+  /* Las líneas de generación con pulso (`.gen-connector-line` + su keyframe)
+     viven ahora en global.css: las usan también Resumen y Aclaraciones para
+     el hilo entre fichas, y desde aquí solo llegaban porque las seis vistas
+     comparten documento. */
 
   /* EFECTOS AL ENTRAR EN PANTALLA (.in-view) */
   .scroll-scene {
@@ -1046,30 +1039,19 @@ const relationshipValidation = validateRelationships(
     );
   }
 
-  /* Animación de barras de audio */
-  @keyframes audio-bar {
-    0% {
-      height: 4px;
-    }
-    50% {
-      height: 16px;
-    }
-    100% {
-      height: 4px;
-    }
-  }
-  .animate-audio-bar-1 {
-    animation: audio-bar 1.2s ease-in-out infinite;
-  }
-  .animate-audio-bar-2 {
-    animation: audio-bar 0.9s ease-in-out infinite 0.3s;
-  }
-  .animate-audio-bar-3 {
-    animation: audio-bar 1.5s ease-in-out infinite 0.6s;
-  }
+  /* El ecualizador de barras y `.gen-connector-line` se han movido a
+     global.css: los usan también Galería, Resumen y Aclaraciones, y aquí solo
+     funcionaban porque las seis vistas comparten documento. */
 </style>
 
-<audio id="dark-ambient-audio" loop src="/audio/dark-theme.mp3"></audio>
+<!-- `preload="none"`: son 3,35 MB y el audio solo suena si el usuario
+     pulsa el botón de sonido del árbol. Sin esto el navegador pide los
+     metadatos del fichero en toda visita a la página. -->
+<audio
+  id="dark-ambient-audio"
+  loop
+  preload="none"
+  src="/audio/dark-theme.mp3"></audio>
 
 <!-- Se apilaba en `bottom-6 right-6` justo encima de los controles de zoom
      (`bottom-8 right-8`): con z-450 contra z-160, este botón tapaba el botón
@@ -1389,12 +1371,16 @@ const relationshipValidation = validateRelationships(
   <!-- Controles de zoom -->
   <div class="fixed bottom-8 right-8 z-[160] flex flex-col gap-2">
     <button
+      type="button"
       onclick="zoomIn()"
+      aria-label="Acercar el árbol"
       class="w-10 h-10 rounded-full border border-stone-600 hover:border-amber-500 flex items-center justify-center bg-black/70 backdrop-blur-sm text-stone-400 hover:text-amber-500 transition-all shadow-xl text-lg font-light"
       title="Acercar">+</button
     >
     <button
+      type="button"
       onclick="zoomReset()"
+      aria-label="Restablecer el zoom del árbol"
       class="w-10 h-10 rounded-full border border-stone-600 hover:border-amber-500 flex items-center justify-center bg-black/70 backdrop-blur-sm text-stone-400 hover:text-amber-500 transition-all shadow-xl"
       title="Restablecer"
     >
@@ -1408,7 +1394,9 @@ const relationshipValidation = validateRelationships(
       >
     </button>
     <button
+      type="button"
       onclick="zoomOut()"
+      aria-label="Alejar el árbol"
       class="w-10 h-10 rounded-full border border-stone-600 hover:border-amber-500 flex items-center justify-center bg-black/70 backdrop-blur-sm text-stone-400 hover:text-amber-500 transition-all shadow-xl text-lg font-light"
       title="Alejar">−</button
     >
@@ -1467,7 +1455,9 @@ const relationshipValidation = validateRelationships(
   class="fixed inset-0 z-[200] bg-[#050505] hidden opacity-0 transition-opacity duration-1000 overflow-y-auto snap-y snap-mandatory hide-scrollbar scroll-smooth"
 >
   <button
+    type="button"
     onclick="toggleSidebar()"
+    aria-label="Abrir el índice de personajes"
     class="fixed top-8 left-8 z-[260] text-white/50 hover:text-white transition-all group"
   >
     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -1480,7 +1470,9 @@ const relationshipValidation = validateRelationships(
   </button>
 
   <button
+    type="button"
     onclick="closeCinematicViewer()"
+    aria-label="Cerrar la ficha del personaje"
     class="fixed top-8 right-8 z-[260] text-white/50 hover:text-white transition-all group"
   >
     <div
@@ -1529,9 +1521,12 @@ const relationshipValidation = validateRelationships(
   <div
     class="fixed inset-0 w-full h-full z-0 overflow-hidden pointer-events-none"
   >
+    <!-- Fondo puramente decorativo: `alt=""` para que los lectores de
+         pantalla lo salten en vez de anunciar una imagen sin nombre. -->
     <img
       id="cinematic-bg"
       src=""
+      alt=""
       class="temporal-bg w-full h-full object-cover object-center opacity-100 scale-100 transition-all duration-[1s] ease-out"
     />
     <div class="cinematic-temporal-overlay absolute inset-0"></div>
@@ -1548,7 +1543,7 @@ const relationshipValidation = validateRelationships(
   </div>
 </div>
 
-<script is:inline define:vars={{ familiasData, relationshipData, relationshipValidation }}>
+<script is:inline define:vars={{ familiasData, relationshipData }}>
   let currentFamilyId = '';
   let currentTreeMode = 'family';
   let observer = null;
@@ -1598,14 +1593,6 @@ const relationshipValidation = validateRelationships(
   try {
     audioMutedByUser = localStorage.getItem(AUDIO_MUTED_KEY) === '1';
   } catch {}
-
-  if (
-    relationshipValidation.missingEndpoints.length ||
-    relationshipValidation.duplicateIds.length ||
-    relationshipValidation.unknownTypes.length
-  ) {
-    console.warn('Family tree relationship validation issues', relationshipValidation);
-  }
 
   function isSidebarOpen() {
     return !document

@@ -13,10 +13,13 @@ const {
   title,
   description = 'Un tributo de fans a DARK: resumen de temporadas, aclaraciones, árbol genealógico interactivo de las familias de Winden y teorías. No afiliado con Netflix.',
 } = Astro.props;
-const canonicalURL = new URL(
-  Astro.url.pathname,
-  Astro.site ?? Astro.url.origin,
-);
+const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
+const canonicalURL = new URL(Astro.url.pathname, siteOrigin);
+// Open Graph exige URL ABSOLUTA: con una ruta relativa la mayoria de
+// rastreadores (WhatsApp, Twitter, LinkedIn) no resuelven la imagen y la
+// tarjeta sale sin foto. Ademas /prueba.png era el logo de 300x282 px, muy
+// lejos de los 1200x630 que pide el formato.
+const ogImageURL = new URL('/og.jpg', siteOrigin);
 ---
 
 <!doctype html>
@@ -24,21 +27,29 @@ const canonicalURL = new URL(
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- El `type` debe coincidir con la extensión real (regla 5): estaba
-         declarado como image/svg+xml apuntando a un .ico. -->
-    <link rel="icon" type="image/x-icon" href="/prueba2.ico" />
+    <!-- El favicon era un .ico de 254 KB — mas pesado que todo el CSS del
+         sitio junto, descargado en cada visita. Un PNG de 32 px cumple lo
+         mismo en 1,2 KB. El `type` coincide con la extension real (regla 5). -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="canonical" href={canonicalURL} />
     <title>{title}</title>
     <meta name="description" content={description} />
 
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="DARK — Sic Mundus" />
+    <meta property="og:locale" content="es_ES" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content="/prueba.png" />
+    <meta property="og:image" content={ogImageURL} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Fotograma de DARK" />
     <meta property="og:url" content={canonicalURL} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content="/prueba.png" />
+    <meta name="twitter:image" content={ogImageURL} />
 
     <!-- Las fuentes se cargaban con `@import url(...)` desde global.css, lo
          que serializa las descargas: el navegador tiene que bajar y parsear
@@ -54,7 +65,6 @@ const canonicalURL = new URL(
       href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap"
     />
 
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
 
     <script is:inline>
       const theme = (() => {
@@ -159,6 +169,23 @@ const canonicalURL = new URL(
         opacity: 0;
       }
 
+      /* El vídeo de fondo ya no se monta en la carga inicial, sino en el
+         primer hueco de inactividad del navegador. Entra con una transición
+         de opacidad para que ese montaje diferido no se lea como un
+         parpadeo: sin esto, el iframe aparecería de golpe. */
+      #youtube-ambient-player {
+        opacity: 0;
+        transition: opacity 0.9s ease-out;
+      }
+      #youtube-ambient-player.is-ready {
+        opacity: 1;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #youtube-ambient-player {
+          transition: none;
+        }
+      }
+
       /* Las reglas de los botones flotantes viven en global.css: cruzan
          componentes (AsistenteWinden.astro y Whatsapp.astro) y este bloque,
          aun con is:global, depende del pipeline de estilos de Astro. Una hoja
@@ -261,6 +288,7 @@ const canonicalURL = new URL(
     >
       <button
         id="btnCloseModal"
+        aria-label="Cerrar el tráiler"
         class="absolute top-4 right-4 md:top-8 md:right-8 z-[110] p-2 bg-stone-900/80 hover:bg-black text-stone-400 hover:text-amber-500 rounded-full transition-all border border-stone-700 hover:border-amber-500"
       >
         <svg
@@ -317,67 +345,182 @@ const canonicalURL = new URL(
       })();
     </script>
 
-    <script is:inline src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script is:inline>
-      AOS.init({ once: false, mirror: true, duration: 800, offset: 120 });
+    <!-- AOS pasa de unpkg (dos peticiones render-blocking a un cuarto dominio)
+         al paquete npm que ya estaba instalado: Astro lo empaqueta con el
+         resto y deja de depender de que un CDN externo este en pie. -->
+    <script>
+      import AOS from 'aos';
+
+      // Se expone ANTES de inicializar: media docena de scripts inline del
+      // sitio llaman a `AOS.refresh()` al cambiar de vista o de pestaña, y
+      // todos comprueban `typeof AOS !== 'undefined'`. Si la exposicion
+      // dependiera de que init() termine bien, un fallo aqui los dejaria a
+      // todos sin refresco.
+      window.AOS = AOS;
+
+      // `prefers-reduced-motion` era obligatorio (regla 3) y AOS, que es
+      // justo quien mas cosas mueve — 141 elementos en toda la pagina —, era
+      // el unico que no lo respetaba. `once: true` ademas evita que cada
+      // bloque se reanime cada vez que pasas por el en los dos sentidos.
+      const sinMovimiento = window.matchMedia(
+        '(prefers-reduced-motion: reduce)',
+      ).matches;
+
+      const arrancarAOS = () => {
+        try {
+          AOS.init({
+            once: true,
+            mirror: false,
+            duration: 800,
+            offset: 120,
+            disable: sinMovimiento,
+          });
+        } catch (error) {
+          // Las animaciones de entrada son un adorno: si la libreria falla,
+          // el contenido tiene que seguir viendose igual.
+          console.warn('AOS no pudo inicializarse', error);
+        }
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', arrancarAOS);
+      } else {
+        arrancarAOS();
+      }
     </script>
 
     <script is:inline>
-      // 1. Lógica de YouTube
-      var tag = document.createElement('script');
-      tag.src = 'https://www.youtube.com/iframe_api';
-      var firstScriptTag = document.getElementsByTagName('script')[0];
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+      // ===== YOUTUBE BAJO DEMANDA =====
+      // Antes se instanciaban TRES reproductores en la carga inicial —
+      // ambiental, hero y modal — y los tres eran el mismo video. Cada embed
+      // arrastra del orden de 1 MB de JS, asi que era, con diferencia, el
+      // gasto mas grande de la pagina. Ahora:
+      //   - el del hero se monta enseguida, porque es lo que se ve;
+      //   - el ambiental espera a que el navegador este ocioso (vive detras de
+      //     un degradado al 85 %, nadie nota que llegue un segundo despues);
+      //   - el del modal no existe hasta que alguien lo abre.
+      // La propia API de YouTube tampoco se descarga hasta que hace falta.
+      var VIDEO_ID = '14FGjkrrXFk';
+      var VISTAS_SIN_HERO = [
+        '#resumen',
+        '#aclaraciones',
+        '#personajes',
+        '#recomendaciones',
+        '#galeria',
+      ];
 
       var ambientPlayer, heroPlayer, modalPlayer;
       var isPlaying = true;
       var isMuted = true;
-      var isVideoLoaded = false;
+
+      var ytApiPedida = false;
+      var ytLista = false;
+      var ytCola = [];
+
+      function cargarYouTubeApi() {
+        if (ytApiPedida) return;
+        ytApiPedida = true;
+        var tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/iframe_api';
+        document.head.appendChild(tag);
+      }
+
+      // Galeria.astro y Resumen.astro montan sus propios reproductores; sin
+      // esto se quedarian esperando a una API que ya no se carga sola.
+      window.cargarYouTubeApi = cargarYouTubeApi;
+
+      function conYouTube(fn) {
+        if (ytLista) {
+          fn();
+          return;
+        }
+        ytCola.push(fn);
+        cargarYouTubeApi();
+      }
 
       function onYouTubeIframeAPIReady() {
-        ambientPlayer = new YT.Player('youtube-ambient-player', {
-          videoId: '14FGjkrrXFk',
-          playerVars: {
-            autoplay: 1,
-            controls: 0,
-            showinfo: 0,
-            rel: 0,
-            loop: 1,
-            playlist: '14FGjkrrXFk',
-            mute: 1,
-            playsinline: 1,
-            disablekb: 1,
-            cc_load_policy: 0,
-          },
-          events: { onReady: (e) => e.target.playVideo() },
-        });
-
-        heroPlayer = new YT.Player('youtube-hero-player', {
-          videoId: '14FGjkrrXFk',
-          playerVars: {
-            autoplay: 1,
-            controls: 0,
-            showinfo: 0,
-            rel: 0,
-            loop: 1,
-            playlist: '14FGjkrrXFk',
-            mute: 1,
-            playsinline: 1,
-            disablekb: 1,
-            cc_load_policy: 0,
-          },
-          events: { onReady: onHeroReady, onStateChange: onHeroStateChange },
-        });
-
-        modalPlayer = new YT.Player('youtube-modal-player', {
-          videoId: '14FGjkrrXFk',
-          playerVars: { autoplay: 0, controls: 1, rel: 0 },
+        ytLista = true;
+        var pendientes = ytCola.slice();
+        ytCola.length = 0;
+        pendientes.forEach(function (fn) {
+          fn();
         });
       }
 
-      // Retirar el cargador y devolver el scroll. Se centraliza aquí porque
-      // ahora hay DOS caminos que pueden dispararlo (el vídeo listo o la
-      // salvaguarda por tiempo) y ambos deben desbloquear la página.
+      var VARS_FONDO = {
+        autoplay: 1,
+        controls: 0,
+        showinfo: 0,
+        rel: 0,
+        loop: 1,
+        playlist: VIDEO_ID,
+        mute: 1,
+        playsinline: 1,
+        disablekb: 1,
+        cc_load_policy: 0,
+      };
+
+      function montarAmbiental() {
+        if (ambientPlayer) return;
+        if (!document.getElementById('youtube-ambient-player')) return;
+        ambientPlayer = new YT.Player('youtube-ambient-player', {
+          videoId: VIDEO_ID,
+          playerVars: VARS_FONDO,
+          events: {
+            onReady: function (e) {
+              e.target.playVideo();
+              // Entra con una transicion de opacidad para que el montaje
+              // diferido no se lea como un parpadeo.
+              var marco = document.getElementById('youtube-ambient-player');
+              if (marco) marco.classList.add('is-ready');
+            },
+          },
+        });
+      }
+
+      function montarHero() {
+        if (heroPlayer) return;
+        if (!document.getElementById('youtube-hero-player')) return;
+        heroPlayer = new YT.Player('youtube-hero-player', {
+          videoId: VIDEO_ID,
+          playerVars: VARS_FONDO,
+          events: { onReady: onHeroReady },
+        });
+      }
+
+      function montarModal(alEstarListo) {
+        if (modalPlayer) {
+          alEstarListo(modalPlayer);
+          return;
+        }
+        conYouTube(function () {
+          if (modalPlayer) return;
+          modalPlayer = new YT.Player('youtube-modal-player', {
+            videoId: VIDEO_ID,
+            playerVars: { autoplay: 0, controls: 1, rel: 0 },
+            events: {
+              onReady: function (e) {
+                alEstarListo(e.target);
+              },
+            },
+          });
+        });
+      }
+
+      function programarAmbiental() {
+        var lanzar = function () {
+          conYouTube(montarAmbiental);
+        };
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(lanzar, { timeout: 4000 });
+        } else {
+          window.setTimeout(lanzar, 2500);
+        }
+      }
+
+      // Retirar el cargador y devolver el scroll. Se centraliza aqui porque
+      // hay dos caminos que pueden dispararlo y ambos deben desbloquear la
+      // pagina.
       var loaderHidden = false;
       function hideGlobalLoader() {
         if (loaderHidden) return;
@@ -390,62 +533,129 @@ const canonicalURL = new URL(
         document.body.classList.remove('scroll-lock');
       }
 
-      // SALVAGUARDA: el cargador solo se quitaba cuando el vídeo del hero
-      // empezaba a reproducirse. Si YouTube está bloqueado, va lento o el
-      // usuario está sin conexión, ese evento no llega nunca — y desde que el
-      // cargador bloquea el scroll, quedarse ahí colgado dejaría la página
-      // congelada. A los 6s se retira pase lo que pase.
-      setTimeout(hideGlobalLoader, 6000);
-
-      function onHeroStateChange(event) {
-        if (event.data === 1 && !isVideoLoaded) {
-          isVideoLoaded = true;
-          setTimeout(hideGlobalLoader, 1000);
-        }
+      // El cargador ya NO espera a que el video del hero empiece a sonar:
+      // bloqueaba el scroll hasta 6 s si YouTube iba lento o estaba bloqueado,
+      // y era lo primero que veia el usuario. Ahora se retira en cuanto el
+      // documento esta listo, y el video entra despues con su propia
+      // transicion de opacidad. La salvaguarda por tiempo se queda como red.
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function () {
+          window.setTimeout(hideGlobalLoader, 900);
+        });
+      } else {
+        window.setTimeout(hideGlobalLoader, 900);
       }
+      setTimeout(hideGlobalLoader, 3000);
 
       function onHeroReady(event) {
         event.target.playVideo();
-        const btnPlayPause = document.getElementById('btnPlayPause');
+      }
+
+      // Los botones de sonido y pausa mentian: #btnMute nacia con
+      // aria-label="Mutear sonido" cuando el video YA estaba silenciado, y
+      // ninguno de los dos actualizaba la etiqueta al pulsarse. Los iconos si
+      // se intercambiaban; el nombre accesible no, asi que un lector de
+      // pantalla anunciaba justo lo contrario de lo que hacia el boton. Ahora
+      // el estado se pinta en un solo sitio: iconos y etiqueta a la vez.
+      function pintarEstadoSonido() {
+        const btn = document.getElementById('btnMute');
+        const iconMuted = document.getElementById('icon-muted');
+        const iconUnmuted = document.getElementById('icon-unmuted');
+        if (!btn) return;
+        iconMuted?.classList.toggle('hidden', !isMuted);
+        iconMuted?.classList.toggle('block', isMuted);
+        iconUnmuted?.classList.toggle('hidden', isMuted);
+        iconUnmuted?.classList.toggle('block', !isMuted);
+        btn.setAttribute(
+          'aria-label',
+          isMuted ? 'Activar el sonido del vídeo' : 'Silenciar el vídeo',
+        );
+        btn.setAttribute('aria-pressed', isMuted ? 'true' : 'false');
+      }
+
+      function pintarEstadoReproduccion() {
+        const btn = document.getElementById('btnPlayPause');
         const iconPlay = document.getElementById('icon-play');
         const iconPause = document.getElementById('icon-pause');
+        if (!btn) return;
+        iconPause?.classList.toggle('hidden', !isPlaying);
+        iconPause?.classList.toggle('block', isPlaying);
+        iconPlay?.classList.toggle('hidden', isPlaying);
+        iconPlay?.classList.toggle('block', !isPlaying);
+        btn.setAttribute(
+          'aria-label',
+          isPlaying ? 'Pausar el vídeo' : 'Reproducir el vídeo',
+        );
+      }
+
+      function atarControlesHero() {
+        const btnPlayPause = document.getElementById('btnPlayPause');
+        const btnMute = document.getElementById('btnMute');
 
         if (btnPlayPause) {
           btnPlayPause.addEventListener('click', () => {
-            if (isPlaying) {
-              heroPlayer.pauseVideo();
-              iconPause.classList.replace('block', 'hidden');
-              iconPlay.classList.replace('hidden', 'block');
-            } else {
-              heroPlayer.playVideo();
-              iconPlay.classList.replace('block', 'hidden');
-              iconPause.classList.replace('hidden', 'block');
-            }
+            if (!heroPlayer) return;
             isPlaying = !isPlaying;
+            if (isPlaying) heroPlayer.playVideo();
+            else heroPlayer.pauseVideo();
+            pintarEstadoReproduccion();
           });
         }
-
-        const btnMute = document.getElementById('btnMute');
-        const iconMuted = document.getElementById('icon-muted');
-        const iconUnmuted = document.getElementById('icon-unmuted');
 
         if (btnMute) {
           btnMute.addEventListener('click', () => {
-            if (isMuted) {
-              heroPlayer.unMute();
-              iconMuted.classList.replace('block', 'hidden');
-              iconUnmuted.classList.replace('hidden', 'block');
-            } else {
-              heroPlayer.mute();
-              iconUnmuted.classList.replace('block', 'hidden');
-              iconMuted.classList.replace('hidden', 'block');
-            }
+            if (!heroPlayer) return;
             isMuted = !isMuted;
+            if (isMuted) heroPlayer.mute();
+            else heroPlayer.unMute();
+            pintarEstadoSonido();
           });
         }
+
+        pintarEstadoSonido();
+        pintarEstadoReproduccion();
       }
 
       document.addEventListener('DOMContentLoaded', () => {
+        // ===== QUE REPRODUCTOR HACE FALTA AQUI Y AHORA =====
+        // Si se entra por Inicio, el hero es lo unico que se ve: se monta ya y
+        // el ambiental espera al primer hueco de inactividad. Si se entra
+        // directamente a otra vista (#resumen, #galeria...) el hero esta en
+        // display:none y el fondo ambiental es lo unico que hay que montar,
+        // asi que no tiene sentido esperar.
+        const entraPorInicio =
+          VISTAS_SIN_HERO.indexOf(window.location.hash) === -1;
+
+        atarControlesHero();
+
+        if (entraPorInicio) {
+          conYouTube(montarHero);
+          programarAmbiental();
+        } else {
+          conYouTube(montarAmbiental);
+        }
+
+        // Al salir de Inicio el video del hero deja de verse: pausarlo libera
+        // decodificacion de video mientras se lee el resto del sitio. Y si el
+        // ambiental todavia no habia llegado, ahora si hace falta ya.
+        window.addEventListener('hashchange', () => {
+          const enInicio = VISTAS_SIN_HERO.indexOf(window.location.hash) === -1;
+          if (!enInicio) {
+            conYouTube(montarAmbiental);
+            if (heroPlayer && typeof heroPlayer.pauseVideo === 'function') {
+              heroPlayer.pauseVideo();
+            }
+          } else if (
+            isPlaying &&
+            heroPlayer &&
+            typeof heroPlayer.playVideo === 'function'
+          ) {
+            heroPlayer.playVideo();
+          } else if (!heroPlayer) {
+            conYouTube(montarHero);
+          }
+        });
+
         // Modal de Vídeo
         const btnModal = document.getElementById('btnModal');
         const btnCloseModal = document.getElementById('btnCloseModal');
@@ -460,8 +670,14 @@ const canonicalURL = new URL(
           setTimeout(() => videoModal.classList.remove('opacity-0'), 10);
           if (heroPlayer && typeof heroPlayer.pauseVideo === 'function')
             heroPlayer.pauseVideo();
-          if (modalPlayer && typeof modalPlayer.playVideo === 'function')
-            modalPlayer.playVideo();
+          // El reproductor del modal se crea aqui, la primera vez que alguien
+          // lo abre. Antes existia desde la carga inicial aunque no llegara a
+          // abrirse nunca: un iframe de YouTube entero por si acaso.
+          montarModal((player) => {
+            if (videoModal.getAttribute('aria-hidden') === 'false') {
+              player.playVideo();
+            }
+          });
           btnCloseModal?.focus();
         }
 

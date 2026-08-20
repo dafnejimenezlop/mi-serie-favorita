@@ -86,10 +86,15 @@ const byAffinityDesc = [...recommendations].sort((a, b) => b.affinity - a.affini
           id="reco-spotlight"
           class="relative w-full h-full min-h-[420px] rounded-3xl overflow-hidden border border-stone-800 bg-stone-950 shadow-2xl shadow-black/40"
         >
+          {/* Esta vista arranca en `display:none`, pero sin `loading="lazy"`
+              la caratula destacada se descargaba entera en la carga inicial
+              aunque el usuario no entrase nunca aqui. */}
           <img
             id="reco-spotlight-img"
             src={initial.cover}
             alt=""
+            loading="lazy"
+            decoding="async"
             class="absolute inset-0 w-full h-full object-cover opacity-90 transition-opacity duration-500 ease-out"
           />
           <div
@@ -136,7 +141,10 @@ const byAffinityDesc = [...recommendations].sort((a, b) => b.affinity - a.affini
               ))}
             </div>
 
-            <div class="mt-4 max-w-xl h-1 w-full max-w-[220px] rounded-full bg-white/10 overflow-hidden">
+            {/* Llevaba `max-w-xl` y `max-w-[220px]` a la vez: dos valores para
+                la misma propiedad, y cual ganaba dependia del orden en que
+                Tailwind generase las clases, no del orden escrito aqui. */}
+            <div class="mt-4 h-1 w-full max-w-[220px] rounded-full bg-white/10 overflow-hidden">
               <div
                 id="reco-spotlight-affinity-fill"
                 class="h-full rounded-full bg-gradient-to-r from-amber-600 to-amber-400 transition-[width] duration-700 ease-out"
@@ -259,8 +267,16 @@ const byAffinityDesc = [...recommendations].sort((a, b) => b.affinity - a.affini
 
     <!-- ===== Catálogo completo ===== -->
     <div class="mt-16 md:mt-24">
-      <div class="flex items-center gap-6 mb-8 md:mb-10" data-aos="fade-up">
-        <h3 class="text-xl md:text-3xl font-cinzel text-stone-800 dark:text-stone-100 font-bold uppercase tracking-widest whitespace-nowrap">
+      {/* Tres piezas sin sitio a 390 px: el titulo (278 px, `whitespace-nowrap`),
+          la linea que crece y el contador. Entre las dos separaciones de
+          `gap-6` la fila pedia 407 px y sacaba 17 px de scroll horizontal a
+          toda la vista. Con `flex-wrap` el contador baja a una segunda linea
+          en movil y en escritorio todo sigue igual. */}
+      <div
+        class="flex flex-wrap items-center gap-x-4 gap-y-1 md:gap-6 mb-8 md:mb-10"
+        data-aos="fade-up"
+      >
+        <h3 class="text-xl md:text-3xl font-cinzel text-stone-800 dark:text-stone-100 font-bold uppercase tracking-wider md:tracking-widest whitespace-nowrap">
           Catálogo Completo
         </h3>
         <div class="h-[1px] flex-grow bg-gradient-to-r from-stone-400 dark:from-stone-700 to-transparent"></div>

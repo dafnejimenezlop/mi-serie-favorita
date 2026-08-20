@@ -24,7 +24,8 @@ de inventar uno nuevo.**
 
 - **Framework**: Astro v6, `output: 'server'` sobre adapter `@astrojs/vercel`.
 - **Estilos**: Tailwind CSS v4 vía plugin de Vite (`@tailwindcss/vite`), no PostCSS clásico. El modo oscuro se activa por clase (`@variant dark (&:where(.dark, .dark *));` en `global.css`), no por `prefers-color-scheme` — respétalo, no cambies a la variante `media`.
-- **Componentes Dinámicos**: React (`.jsx`/`.tsx`) con `@astrojs/react`, solo con `client:load`/`client:visible` cuando de verdad se necesita estado interactivo del lado cliente. **Por defecto, sigue usando `.astro` + `<script is:inline>` como ya hace el resto del proyecto** (Header, Sidebar de familias, Aclaraciones, Resumen) — no migres a React "porque sí"; es una decisión de arquitectura ya tomada y consistente.
+- **Componentes Dinámicos**: React (`.jsx`/`.tsx`) con `@astrojs/react`, solo con `client:load`/`client:visible` cuando de verdad se necesita estado interactivo del lado cliente. **Por defecto, sigue usando `.astro` + `<script is:inline>` como ya hace el resto del proyecto** (Header, barra lateral de familias, Familias) — no migres a React "porque sí"; es una decisión de arquitectura ya tomada y consistente.
+- **Cuándo un `<script>` normal (no `is:inline`)**: cuando la lógica se comparte entre componentes o necesita `import`. Resumen, Aclaraciones y Galería repetían tres controladores de pestañas casi idénticos; ahora los tres usan `initTabs()` de `src/scripts/tabs.js` a través de un `<script>` empaquetado por Astro. La regla práctica: `is:inline` para lógica de una sola vista, `<script>` con `import` para lo que ya está duplicado. Ojo: `define:vars` implica `is:inline`, así que un script con `define:vars` **no puede importar nada**.
 - **Iconografía**: `lucide-react` para React; en `.astro` los iconos van como SVG inline (patrón ya usado en Header/Footer/Hero) — mantén ese mismo patrón, no mezcles ambos sistemas en la misma vista.
 - **Datos y Tipado**: TypeScript estricto. Toda la genealogía/personajes vive en `src/data/familias.ts` (`familiasData`, `relationshipData`) con sus tipos `Family`, `FamilyCharacter`, `FamilyRelationship`, etc. — nunca hardcodees datos de personajes directamente en un componente.
 - **TypeScript Defensivo**:
@@ -32,7 +33,7 @@ de inventar uno nuevo.**
   - Todo parámetro en funciones helpers de `familyTree.ts` debe prever valores `undefined` o arrays vacíos sin romper la ejecución.
 - **Validación de datos**: `src/utils/familyTree.ts` (`validateRelationships`, `computeLineage`) es la fuente de verdad de la lógica de parentesco. Si tocas relaciones familiares, actualiza también sus tests (`src/utils/familyTree.test.ts`, `vitest run`) — no dupliques la lógica salvo el caso ya documentado abajo.
 - **Duplicación intencional documentada**: `Familias.astro` reimplementa `computeLineage` y otros helpers en su `<script is:inline>` porque no puede hacer `import` de un `.ts`. Es una excepción ya justificada con comentario en el propio archivo — si cambias el algoritmo en `familyTree.ts`, replica el cambio ahí también y actualiza el comentario que lo explica.
-- **API routes**: `src/pages/api/*.ts` usa `Resend` para email (`send-email.ts`). Cualquier nuevo endpoint sigue el mismo patrón: instanciar el cliente dentro del handler, validar campos obligatorios, devolver `Response` con status explícito, nunca dejar que un error interno se filtre al cliente en texto plano.
+- **API routes**: hoy solo hay endpoints de texto (`src/pages/robots.txt.ts`, `src/pages/sitemap.xml.ts`), que resuelven el origen en tiempo de petición en vez de fijar un dominio. La antigua `send-email.ts` con `Resend` se eliminó junto a su formulario huérfano: era una ruta pública sin rate limit, sin UI que la usara y que interpolaba la entrada del usuario sin escapar en el HTML del correo. Si vuelve a hacer falta un endpoint con efectos, el patrón es: instanciar el cliente dentro del handler, validar y acotar cada campo, escapar todo lo que se incruste en HTML, devolver `Response` con status explícito y **nunca** dejar que un error interno se filtre al cliente.
 
 ---
 
@@ -52,7 +53,7 @@ sección visual, pregúntate: ¿esto lo firmaría un diseñador senior, o solo
 - **Tipografía**: `font-cinzel` (serif, mayúsculas, tracking amplio) para títulos/etiquetas de identidad de marca; `Open Sans` para cuerpo de texto. No mezcles otra fuente sin tocar `global.css`.
 - **Espaciado**: generoso, sin amontonar — sigue las proporciones ya usadas (`py-16 md:py-20`, `mb-12 md:mb-16`, etc.) en vez de valores arbitrarios nuevos.
 - **Consistencia entre secciones**: cada sección de contenido largo (Resumen, Aclaraciones) reutiliza el mismo patrón de tarjeta con imagen lateral + degradado + texto — no inventes un layout distinto para una sección nueva del mismo tipo sin buena razón.
-- **No dejes componentes "huérfanos"**: si creas o encuentras un componente que no se importa/renderiza en ninguna página, o que no comparte la paleta del resto (ver `Sidebar.astro`, que usa `red-600`/`slate-900` en vez de ámbar/stone y no está montado en ningún layout), o lo integras correctamente o lo eliminas — no lo dejes vivo y desconectado.
+- **No dejes componentes "huérfanos"**: si creas o encuentras un componente que no se importa/renderiza en ninguna página, o que no comparte la paleta del resto, o lo integras correctamente o lo eliminas — no lo dejes vivo y desconectado. Precedente: `Sidebar.astro` (formulario en `red-600`/`slate-900`, sin montar en ningún layout) y `Synopsis.astro` (duplicaba el `id="sinopsis"` de `Ratings.astro`) se eliminaron por esto mismo.
 
 ---
 
@@ -99,18 +100,18 @@ SPA-lite sobre `location.hash` gestionada en `src/pages/index.astro`
   - Marcar `aria-hidden`/`aria-expanded` coherente con su estado visual (ya hecho en `mobileMenu`; replícalo si falta en otros paneles).
 - Contraste: nunca texto `stone-500` o más claro sobre fondos claros (`bg-stone-200`) sin verificarlo — el modo claro existe y se prueba, no es solo un guiño.
 - **Meta tags obligatorios en `BaseLayout.astro`** para cualquier página nueva: `<meta name="description">`, Open Graph (`og:title`, `og:description`, `og:image`, `og:type`) y `twitter:card`. Si añades una página nueva bajo `src/pages/`, no la publiques sin esto.
-- El favicon debe coincidir `type` ↔ extensión real del archivo (`image/svg+xml` → `.svg`, no `.ico`). Antes de tocar el `<head>`, verifica en `public/` qué archivo estás referenciando de verdad.
+- El favicon debe coincidir `type` ↔ extensión real del archivo. Hoy es `/favicon-32.png` (1,2 KB) más `/apple-touch-icon.png`; el `.ico` anterior pesaba 254 KB y se descargaba en cada visita. La imagen social es `/og.jpg` (1200x630) y **se referencia con URL absoluta** — con una ruta relativa la mayoría de rastreadores no resuelven la tarjeta.
 
 ---
 
 ## 6. 🚀 RENDIMIENTO Y MANEJO DEL DOM
 
-- El reproductor de YouTube ambiental (fondo de `BaseLayout` + `Hero`) y el `<audio>` ambiental de `Familias.astro` son pesados por diseño — no dupliques instancias nuevas de la IFrame API o de `<audio>` en otros componentes; reutiliza los `players`/`audioEl` globales ya definidos en `BaseLayout.astro`/`Familias.astro`.
+- **Ningún reproductor de YouTube se monta en la carga inicial.** `BaseLayout.astro` expone `window.cargarYouTubeApi()` y monta bajo demanda: el del hero al entrar por Inicio, el ambiental en el primer hueco de inactividad (`requestIdleCallback`), y el del modal solo al abrirlo. Los vídeos de Resumen son carátulas que insertan el iframe al pulsar (`initVideoFacades()` en `src/scripts/tabs.js`) y la banda sonora reutiliza un único reproductor para las 18 pistas. Antes eran seis iframes por visita, tres de ellos del mismo vídeo. Si añades vídeo en algún sitio, sigue uno de estos dos patrones — nunca un `<iframe>` de YouTube directo en el HTML. El `<audio>` de `Familias.astro` lleva `preload="none"` (son 3,35 MB).
 - Imágenes de personajes/familias (`public/Familias/**`, `public/Aclaraciones/**`, `public/resumen/**`) son muchas y pesadas: usa `loading="lazy"` en toda `<img>` que no esté en el viewport inicial (hero/LCP exceptuado), y no subas assets sin comprimir.
 - **Manejo Limpio del DOM y Event Listeners**:
   - Todo script que agregue listeners a `window` o `document` (ej. eventos de teclado `Escape`, `resize`, `scroll`, o `hashchange`) en componentes interactivos debe implementar la limpieza adecuada (`removeEventListener`) cuando el componente se desmonte o destruya.
   - Evita re-layouts forzados (Layout Thrashing). Si lees propiedades de medidas del DOM (`offsetHeight`, `getBoundingClientRect()`), realiza todas las lecturas juntas antes de escribir cambios en el DOM o aplicar estilos con JS.
-- AOS (`aos@2.3.1` vía CDN unpkg) y la Google Font (`fonts.googleapis.com`) son requests externos render-blocking en el `<head>`. No añadas más dependencias por CDN sin evaluar antes si un paquete npm + bundling de Astro sería más rápido y más fiable.
+- AOS ya **no** viene de unpkg: su JS se importa desde el paquete npm en `BaseLayout.astro` y su CSS entra por `@import 'aos/dist/aos.css'` en `global.css`. Se inicializa con `once: true` y `disable` atado a `prefers-reduced-motion`. La Google Font (`fonts.googleapis.com`) sigue siendo el único request externo render-blocking del `<head>`. No añadas más dependencias por CDN: el paquete npm + el bundling de Astro es más rápido y no depende de que un tercero esté en pie.
 - Cualquier `<script is:inline>` nuevo debe ir al final del `<body>` o con `defer`, salvo que necesite ejecutarse antes del primer paint (como el script anti-flash de tema en `BaseLayout.astro`).
 
 ---
@@ -129,8 +130,22 @@ SPA-lite sobre `location.hash` gestionada en `src/pages/index.astro`
 
 ## 8. 🔍 VERIFICACIÓN VISUAL Y DE REGRESIÓN (Playwright)
 
-`@playwright/test` está instalado como devDependency — úsalo activamente,
-no solo cuando se pida explícitamente.
+`@playwright/test` está configurado (`playwright.config.ts`) con dos proyectos,
+`escritorio` (1440x900) y `movil` (390x844), y una batería de humo en
+`e2e/smoke.spec.ts`. Se ejecuta con `npm run test:e2e` y **tiene que pasar
+antes de dar por terminado cualquier cambio visual o de interacción**.
+
+Los ocho casos actuales cubren: navegación real por las seis vistas, enlaces
+sin destino, ausencia de scroll horizontal en las seis, solapamiento de la
+frase del día, interruptor de tema con persistencia, cero reproductores de
+YouTube en la carga inicial, carátulas de vídeo y el asistente por temas.
+Si añades una vista, añádela a la constante `VISTAS` del spec.
+
+Nota: los tests corren **en serie** (`workers: 1`). El servidor de desarrollo
+renderiza en servidor un documento de más de 1 MB y varias pestañas a la vez
+lo saturan hasta agotar los tiempos de navegación. Y se navega con
+`waitUntil: 'domcontentloaded'`: el iframe de fondo puede dejar el evento
+`load` pendiente indefinidamente.
 
 - **Antes de dar por terminado cualquier cambio visual o de interacción**, levanta el sitio (`npm run dev`) y verifica con Playwright (o el navegador de la sesión) en al menos dos viewports:
   - Móvil: `390x844`.

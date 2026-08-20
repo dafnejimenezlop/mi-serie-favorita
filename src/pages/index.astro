@@ -19,7 +19,7 @@ import Galeria from '../components/Galeria.astro';
 ---
 
 <BaseLayout title="DARK - Sic Mundus">
-  <div id="vista-inicio" class="block transition-opacity duration-500">
+  <div id="vista-inicio" class="block transition-opacity duration-200 ease-out">
     <Hero />
     <Ratings />
     <Timeline />
@@ -30,23 +30,23 @@ import Galeria from '../components/Galeria.astro';
     <Explore />
   </div>
 
-  <div id="vista-resumen" class="hidden transition-opacity duration-500">
+  <div id="vista-resumen" class="hidden transition-opacity duration-200 ease-out">
     <Resumen />
   </div>
 
-  <div id="vista-aclaraciones" class="hidden transition-opacity duration-500">
+  <div id="vista-aclaraciones" class="hidden transition-opacity duration-200 ease-out">
     <Aclaraciones />
   </div>
 
-  <div id="vista-personajes" class="hidden transition-opacity duration-500">
+  <div id="vista-personajes" class="hidden transition-opacity duration-200 ease-out">
     <Familias />
   </div>
 
-  <div id="vista-recomendaciones" class="hidden transition-opacity duration-500">
+  <div id="vista-recomendaciones" class="hidden transition-opacity duration-200 ease-out">
     <Recomendaciones />
   </div>
 
-  <div id="vista-galeria" class="hidden transition-opacity duration-500">
+  <div id="vista-galeria" class="hidden transition-opacity duration-200 ease-out">
     <Galeria />
   </div>
 
@@ -62,44 +62,71 @@ import Galeria from '../components/Galeria.astro';
   // hasta ese bloque en vez de cancelarlo).
   let vistaAnterior = null;
 
-  function controlarVistas() {
-    const hash = window.location.hash || '#inicio';
-    const vistas = [
-      'vista-inicio',
-      'vista-resumen',
-      'vista-aclaraciones',
-      'vista-personajes',
-      'vista-recomendaciones',
-      'vista-galeria',
-    ];
+  const VISTAS = [
+    'vista-inicio',
+    'vista-resumen',
+    'vista-aclaraciones',
+    'vista-personajes',
+    'vista-recomendaciones',
+    'vista-galeria',
+  ];
 
-    // Decidir cuál es la vista activa
-    let vistaActiva = 'vista-inicio';
-    if (hash === '#resumen') vistaActiva = 'vista-resumen';
-    if (hash === '#aclaraciones') vistaActiva = 'vista-aclaraciones';
-    if (hash === '#personajes') vistaActiva = 'vista-personajes';
-    if (hash === '#recomendaciones') vistaActiva = 'vista-recomendaciones';
-    if (hash === '#galeria') vistaActiva = 'vista-galeria';
+  // hash -> id de la vista. Antes eran cinco `if` encadenados que había que
+  // tocar en dos sitios cada vez que se añadía una sección.
+  const VISTA_POR_HASH = {
+    '#resumen': 'vista-resumen',
+    '#aclaraciones': 'vista-aclaraciones',
+    '#personajes': 'vista-personajes',
+    '#recomendaciones': 'vista-recomendaciones',
+    '#galeria': 'vista-galeria',
+  };
 
-    // Mostrar solo la vista activa y ocultar el resto
-    vistas.forEach((v) => {
+  // Cada vista con pestañas expone su propio reset; el router solo necesita
+  // saber a quién llamar.
+  const RESET_POR_VISTA = {
+    'vista-resumen': 'resetResumenTabs',
+    'vista-aclaraciones': 'resetAclaracionesTabs',
+    'vista-personajes': 'resetPersonajesTabs',
+    'vista-recomendaciones': 'resetRecomendacionesTabs',
+    'vista-galeria': 'resetGaleriaTabs',
+  };
+
+  // El fundido entre vistas NO existía: los seis contenedores llevaban
+  // `transition-opacity duration-500`, pero el cambio se hacía con `hidden`
+  // (display:none), que no transiciona — la clase no hacía absolutamente
+  // nada y navegar entre secciones era un corte seco. Como las vistas son
+  // páginas completas, superponerlas duplicaría la altura del documento: el
+  // gesto correcto es fundir a cero, intercambiar y volver a entrar.
+  const DURACION_SALIDA = 200;
+  const sinMovimiento = window.matchMedia(
+    '(prefers-reduced-motion: reduce)',
+  ).matches;
+
+  function pintarVista(vistaActiva, hash, cambioDeVista) {
+    VISTAS.forEach((v) => {
       const el = document.getElementById(v);
-      if (el) {
-        if (v === vistaActiva) {
-          el.classList.remove('hidden');
-          el.classList.add('block');
-        } else {
-          el.classList.add('hidden');
-          el.classList.remove('block');
-        }
-      }
+      if (!el) return;
+      const esActiva = v === vistaActiva;
+      el.classList.toggle('hidden', !esActiva);
+      el.classList.toggle('block', esActiva);
+      if (!esActiva) el.classList.remove('opacity-0');
     });
 
-    const cambioDeVista = vistaActiva !== vistaAnterior;
-    vistaAnterior = vistaActiva;
+    const activa = document.getElementById(vistaActiva);
 
     if (cambioDeVista) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Instantáneo, no `smooth`: la vista anterior ya se ha desvanecido, así
+      // que un desplazamiento suave sobre contenido que ya no está solo
+      // retrasa la entrada de la nueva.
+      window.scrollTo({ top: 0, behavior: 'auto' });
+
+      if (activa && !sinMovimiento) {
+        activa.classList.add('opacity-0');
+        // Un reflujo forzado antes de quitar la clase: sin él el navegador
+        // agrupa las dos escrituras y no hay transición que animar.
+        void activa.offsetHeight;
+        activa.classList.remove('opacity-0');
+      }
     } else {
       // Misma vista: si el hash apunta a un ancla real dentro de ella
       // (como #sinopsis, #ciclos o #testimonios en Inicio), desplázate
@@ -116,36 +143,30 @@ import Galeria from '../components/Galeria.astro';
     }, 50);
 
     // Resetear las pestañas a la primera cuando entras en cada sección
-    if (
-      vistaActiva === 'vista-resumen' &&
-      typeof window.resetResumenTabs === 'function'
-    ) {
-      window.resetResumenTabs();
+    const reset = RESET_POR_VISTA[vistaActiva];
+    if (reset && typeof window[reset] === 'function') window[reset]();
+  }
+
+  function controlarVistas() {
+    const hash = window.location.hash || '#inicio';
+    const vistaActiva = VISTA_POR_HASH[hash] || 'vista-inicio';
+
+    const cambioDeVista = vistaActiva !== vistaAnterior;
+    const anterior = vistaAnterior
+      ? document.getElementById(vistaAnterior)
+      : null;
+    vistaAnterior = vistaActiva;
+
+    if (!cambioDeVista || !anterior || sinMovimiento) {
+      pintarVista(vistaActiva, hash, cambioDeVista);
+      return;
     }
-    if (
-      vistaActiva === 'vista-aclaraciones' &&
-      typeof window.resetAclaracionesTabs === 'function'
-    ) {
-      window.resetAclaracionesTabs();
-    }
-    if (
-      vistaActiva === 'vista-personajes' &&
-      typeof window.resetPersonajesTabs === 'function'
-    ) {
-      window.resetPersonajesTabs();
-    }
-    if (
-      vistaActiva === 'vista-recomendaciones' &&
-      typeof window.resetRecomendacionesTabs === 'function'
-    ) {
-      window.resetRecomendacionesTabs();
-    }
-    if (
-      vistaActiva === 'vista-galeria' &&
-      typeof window.resetGaleriaTabs === 'function'
-    ) {
-      window.resetGaleriaTabs();
-    }
+
+    anterior.classList.add('opacity-0');
+    window.setTimeout(
+      () => pintarVista(vistaActiva, hash, cambioDeVista),
+      DURACION_SALIDA,
+    );
   }
 
   document.addEventListener('DOMContentLoaded', controlarVistas);

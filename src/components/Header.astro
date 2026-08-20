@@ -25,6 +25,8 @@ const navLinks = [
         <img
           src="/prueba.png"
           alt="Dark Logo"
+          width="181"
+          height="48"
           class="h-8 md:h-12 w-auto object-contain transition-transform hover:scale-105"
         />
       </a>
@@ -58,6 +60,8 @@ const navLinks = [
         <button
           id="menuToggle"
           aria-label="Abrir menú"
+          aria-expanded="false"
+          aria-controls="mobileMenu"
           class="md:hidden p-2 rounded-full transition-all duration-300 border border-stone-600 bg-black/40 text-amber-500 hover:border-amber-500 hover:bg-black/60"
         >
           <span
@@ -112,10 +116,16 @@ const navLinks = [
     </nav>
   </div>
 
+  <!-- `inert` es lo que faltaba: con el panel cerrado seguia estando en
+       `display:block` (solo desplazado con translate-x-full), asi que sus
+       enlaces se podian enfocar con Tab aunque estuvieran fuera de pantalla —
+       el foco desaparecia y ademas dejaba descendientes enfocables bajo un
+       aria-hidden. Lo pone y lo quita el mismo par openMenu/closeMenu. -->
   <div
     id="mobileMenu"
     class="fixed inset-0 z-[200] pointer-events-none"
     aria-hidden="true"
+    inert
   >
     <div
       id="menuOverlay"
@@ -171,13 +181,6 @@ const navLinks = [
 </header>
 
 <style>
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
   #menuToggle.is-open .hamburger-line:nth-child(1) {
     transform: translateY(7px) rotate(45deg);
   }
@@ -305,12 +308,16 @@ const navLinks = [
 
     function openMenu() {
       mobileMenu.setAttribute('aria-hidden', 'false');
+      mobileMenu.removeAttribute('inert');
       mobileMenu.classList.remove('pointer-events-none');
       menuOverlay.classList.remove('bg-black/0');
       menuOverlay.classList.add('bg-black/60');
       menuPanel.classList.remove('translate-x-full');
       menuToggle.classList.add('is-open');
-      document.body.style.overflow = 'hidden';
+      menuToggle.setAttribute('aria-expanded', 'true');
+      menuToggle.setAttribute('aria-label', 'Cerrar menú');
+      document.body.classList.add('scroll-lock');
+      menuClose?.focus();
     }
 
     function closeMenu() {
@@ -319,8 +326,17 @@ const navLinks = [
       menuOverlay.classList.add('bg-black/0');
       menuPanel.classList.add('translate-x-full');
       menuToggle.classList.remove('is-open');
-      document.body.style.overflow = '';
-      setTimeout(() => mobileMenu.classList.add('pointer-events-none'), 500);
+      menuToggle.setAttribute('aria-expanded', 'false');
+      menuToggle.setAttribute('aria-label', 'Abrir menú');
+      document.body.classList.remove('scroll-lock');
+      setTimeout(() => {
+        mobileMenu.classList.add('pointer-events-none');
+        // `inert` se devuelve al terminar la animacion de salida: antes se
+        // llevaria por delante el foco mientras el panel todavia se ve.
+        if (mobileMenu.getAttribute('aria-hidden') === 'true') {
+          mobileMenu.setAttribute('inert', '');
+        }
+      }, 500);
     }
 
     if (menuToggle) menuToggle.addEventListener('click', openMenu);

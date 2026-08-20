@@ -5,8 +5,13 @@
 <div class="pt-40 md:pt-48 pb-24 relative z-10 w-full min-h-screen">
   <div class="container mx-auto px-4 md:px-6 max-w-7xl">
     <div class="text-center space-y-6 mb-12" data-aos="fade-down">
+      {/* "ACLARACIONES" son doce letras: a `text-4xl` con `tracking-[0.2em]`
+          el titulo medía 10 px mas que el ancho disponible a 390 px y
+          provocaba scroll horizontal en toda la vista. Como es una sola
+          palabra, no hay donde partirla: hay que apretar el interletraje en
+          movil, igual que ya hace Recomendaciones con su titulo largo. */}
       <h2
-        class="text-4xl md:text-6xl font-cinzel text-amber-600 dark:text-amber-500 font-bold tracking-[0.2em] drop-shadow-lg dark:drop-shadow-2xl uppercase"
+        class="text-4xl md:text-6xl font-cinzel text-amber-600 dark:text-amber-500 font-bold tracking-[0.1em] md:tracking-[0.2em] drop-shadow-lg dark:drop-shadow-2xl uppercase"
       >
         Aclaraciones
       </h2>
@@ -39,36 +44,44 @@
       >
       </div>
       <button
+        type="button"
         role="tab"
         aria-selected="true"
         aria-controls="aclara-explicacion"
+        id="tab-aclara-explicacion"
         class="tab-btn-aclara active relative z-10 inline-flex items-center justify-center min-h-10 md:min-h-9 px-1.5 py-2 md:px-5 md:py-1.5 rounded-lg md:rounded-full font-cinzel font-bold tracking-normal md:tracking-[0.12em] uppercase text-[9px] md:text-xs leading-tight transition-colors duration-300 text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
         data-target="aclara-explicacion"
       >
         Explicación
       </button>
       <button
+        type="button"
         role="tab"
         aria-selected="false"
         aria-controls="aclara-simbologia"
+        id="tab-aclara-simbologia"
         class="tab-btn-aclara relative z-10 inline-flex items-center justify-center min-h-10 md:min-h-9 px-1.5 py-2 md:px-5 md:py-1.5 rounded-lg md:rounded-full font-cinzel font-bold tracking-normal md:tracking-[0.12em] uppercase text-[9px] md:text-xs leading-tight transition-colors duration-300 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
         data-target="aclara-simbologia"
       >
         Simbología
       </button>
       <button
+        type="button"
         role="tab"
         aria-selected="false"
         aria-controls="aclara-final"
+        id="tab-aclara-final"
         class="tab-btn-aclara relative z-10 inline-flex items-center justify-center min-h-10 md:min-h-9 px-1.5 py-2 md:px-5 md:py-1.5 rounded-lg md:rounded-full font-cinzel font-bold tracking-normal md:tracking-[0.12em] uppercase text-[9px] md:text-xs leading-tight transition-colors duration-300 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
         data-target="aclara-final"
       >
         El Final
       </button>
       <button
+        type="button"
         role="tab"
         aria-selected="false"
         aria-controls="aclara-glosario"
+        id="tab-aclara-glosario"
         class="tab-btn-aclara relative z-10 inline-flex items-center justify-center min-h-10 md:min-h-9 px-1.5 py-2 md:px-5 md:py-1.5 rounded-lg md:rounded-full font-cinzel font-bold tracking-normal md:tracking-[0.12em] uppercase text-[9px] md:text-xs leading-tight transition-colors duration-300 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
         data-target="aclara-glosario"
       >
@@ -79,7 +92,10 @@
     <div class="relative w-full">
       <div
         id="aclara-explicacion"
-        class="tab-content-aclara case-counter-reset block animate-fade-in"
+        role="tabpanel"
+        aria-labelledby="tab-aclara-explicacion"
+        tabindex="0"
+        class="tab-content-aclara case-counter-reset block animate-fade-in focus-visible:outline-none"
       >
         <div
           class="text-center max-w-4xl mx-auto mb-16 space-y-4 text-stone-800 dark:text-stone-300 font-light leading-relaxed"
@@ -516,7 +532,10 @@
 
       <div
         id="aclara-simbologia"
-        class="tab-content-aclara case-counter-reset hidden animate-fade-in"
+        role="tabpanel"
+        aria-labelledby="tab-aclara-simbologia"
+        tabindex="0"
+        class="tab-content-aclara case-counter-reset hidden animate-fade-in focus-visible:outline-none"
       >
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           <div
@@ -689,7 +708,13 @@
         </div>
       </div>
 
-      <div id="aclara-final" class="tab-content-aclara case-counter-reset hidden animate-fade-in">
+      <div
+        id="aclara-final"
+        role="tabpanel"
+        aria-labelledby="tab-aclara-final"
+        tabindex="0"
+        class="tab-content-aclara case-counter-reset hidden animate-fade-in focus-visible:outline-none"
+      >
         <div class="relative">
           <div
             class="case-thread hidden lg:block gen-connector-line absolute top-4 bottom-4 z-0"
@@ -893,7 +918,10 @@
 
       <div
         id="aclara-glosario"
-        class="tab-content-aclara hidden animate-fade-in"
+        role="tabpanel"
+        aria-labelledby="tab-aclara-glosario"
+        tabindex="0"
+        class="tab-content-aclara hidden animate-fade-in focus-visible:outline-none"
       >
         <div
           class="text-center max-w-3xl mx-auto mb-12 space-y-3 text-stone-800 dark:text-stone-300 font-light leading-relaxed"
@@ -1109,155 +1137,27 @@
     }
   }
 
-  .animate-fade-in {
-    animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  }
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(15px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
   .mask-right,
   .mask-left {
     -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
     mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
   }
 
-  /* Ficha de caso numerada: refuerza la lectura "tablón de investigación"
-     del sitio sin depender de JS — cada .case-counter-reset reinicia el
-     contador (una numeración por pestaña). */
-  .case-counter-reset {
-    counter-reset: case-counter;
-  }
-  .case-card {
-    counter-increment: case-counter;
-  }
-  .case-card::before {
-    content: counter(case-counter, decimal-leading-zero);
-    position: absolute;
-    top: 0.75rem;
-    left: 0.75rem;
-    z-index: 20;
-    width: 2.25rem;
-    height: 2.25rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 9999px;
-    background: rgba(10, 10, 10, 0.75);
-    border: 1px solid rgba(245, 158, 11, 0.6);
-    color: #f59e0b;
-    font-family: 'Cinzel', serif;
-    font-weight: 700;
-    font-size: 0.7rem;
-    letter-spacing: 0.05em;
-    backdrop-filter: blur(4px);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
-  }
-  @media (min-width: 1024px) {
-    .case-card::before {
-      top: 1rem;
-      left: 1rem;
-      width: 2.75rem;
-      height: 2.75rem;
-      font-size: 0.8rem;
-    }
-    .mask-right {
-      -webkit-mask-image: linear-gradient(
-        to right,
-        black 40%,
-        transparent 100%
-      );
-      mask-image: linear-gradient(to right, black 40%, transparent 100%);
-    }
-    .mask-left {
-      -webkit-mask-image: linear-gradient(to left, black 40%, transparent 100%);
-      mask-image: linear-gradient(to left, black 40%, transparent 100%);
-    }
-  }
-
-  /* Hilo conector entre fichas: reutiliza .gen-connector-line (definida en
-     Familias.astro, style is:global — línea ámbar con pulso) para leer la
-     columna de tarjetas como una secuencia de expediente, no bloques
-     sueltos. Solo visible en desktop, alineado con el centro del badge
-     numerado (left-1rem + mitad de 2.75rem ≈ 38px). */
-  .case-thread {
-    left: 38px;
-  }
+  /* El contador de fichas, el hilo conector y la animación de entrada viven
+     ahora en global.css: los comparten Resumen, Aclaraciones y Familias, y
+     una hoja importada nunca queda acotada por el `data-astro-cid-*` de un
+     componente. */
 </style>
 
-<script is:inline>
+<script>
+  import { initTabs } from '../scripts/tabs.js';
+
   document.addEventListener('DOMContentLoaded', () => {
-    const tabsAclara = document.querySelectorAll('.tab-btn-aclara');
-    const contentsAclara = document.querySelectorAll('.tab-content-aclara');
-    const pillAclara = document.getElementById('aclara-tab-pill');
-
-    function movePillTo(tabEl) {
-      if (!pillAclara || !tabEl) return;
-      pillAclara.style.left = `${tabEl.offsetLeft}px`;
-      pillAclara.style.width = `${tabEl.offsetWidth}px`;
-      pillAclara.style.opacity = '1';
-    }
-
-    function activateAclaraTab(tabTargetId) {
-      contentsAclara.forEach((c) => {
-        c.classList.remove('block');
-        c.classList.add('hidden');
-      });
-
-      // El estado activo es ahora solo la píldora ámbar + el color del texto
-      // (negro sobre ámbar, que es lo que da el contraste); ya no hay clases
-      // de borde que sincronizar.
-      tabsAclara.forEach((t) => {
-        t.classList.remove('active', 'text-black');
-        t.classList.add('text-stone-600', 'dark:text-stone-400');
-        t.setAttribute('aria-selected', 'false');
-      });
-
-      const targetContent = document.getElementById(tabTargetId);
-      const targetTab = document.querySelector(
-        `.tab-btn-aclara[data-target="${tabTargetId}"]`,
-      );
-
-      if (targetContent && targetTab) {
-        targetContent.classList.remove('hidden');
-        targetContent.classList.add('block');
-
-        targetTab.classList.add('active');
-        targetTab.classList.remove('text-stone-600', 'dark:text-stone-400');
-        targetTab.classList.add('text-black');
-        targetTab.setAttribute('aria-selected', 'true');
-
-        movePillTo(targetTab);
-        if (typeof AOS !== 'undefined') window.setTimeout(() => AOS.refresh(), 60);
-      }
-    }
-
-    tabsAclara.forEach((tab) => {
-      tab.addEventListener('click', () => {
-        activateAclaraTab(tab.getAttribute('data-target'));
-      });
+    window.resetAclaracionesTabs = initTabs({
+      boton: '.tab-btn-aclara',
+      panel: '.tab-content-aclara',
+      pastilla: 'aclara-tab-pill',
+      inicial: 'aclara-explicacion',
     });
-
-    function repositionPill() {
-      const activeTab =
-        document.querySelector('.tab-btn-aclara.active') || tabsAclara[0];
-      movePillTo(activeTab);
-    }
-
-    window.addEventListener('resize', repositionPill);
-    // La píldora se mide en píxeles del texto: si la medida se toma con la
-    // fuente de reserva, queda desalineada hasta el primer resize.
-    if (document.fonts?.ready) document.fonts.ready.then(repositionPill);
-
-    // Exponemos para resetear cuando se cambie la vista desde index.astro
-    window.resetAclaracionesTabs = () =>
-      activateAclaraTab('aclara-explicacion');
   });
 </script>

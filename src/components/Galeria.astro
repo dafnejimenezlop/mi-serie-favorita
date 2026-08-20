@@ -1,6 +1,12 @@
 ---
 // src/components/Galeria.astro
 import { songs, galleryImages } from '../data/bandaSonora';
+
+// La pieza de apertura hace de ancla del bloque: 18 filas idénticas eran un
+// muro sin jerarquía, y la primera canción —el tema de cabecera— es
+// justamente la que casi todo el mundo viene buscando.
+const destacada = songs[0];
+const artistas = new Set(songs.map((s) => s.artist)).size;
 ---
 
 <div class="pt-40 md:pt-48 pb-24 relative z-10 w-full min-h-screen">
@@ -19,10 +25,6 @@ import { songs, galleryImages } from '../data/bandaSonora';
       </p>
     </div>
 
-    <!-- Galería era la tercera variante de pestaña del sitio (fondo sólido +
-         subrayado, sin píldora deslizante). Adopta el mismo control que
-         Resumen y Aclaraciones para que cambiar de sección no cambie el
-         lenguaje de la interfaz. -->
     <div
       id="galeria-tablist"
       role="tablist"
@@ -37,18 +39,22 @@ import { songs, galleryImages } from '../data/bandaSonora';
       >
       </div>
       <button
+        type="button"
         role="tab"
         aria-selected="true"
         aria-controls="galeria-musica"
+        id="tab-galeria-musica"
         class="tab-btn-galeria active relative z-10 inline-flex items-center justify-center min-h-10 md:min-h-9 px-1.5 py-2 md:px-5 md:py-1.5 rounded-lg md:rounded-full font-cinzel font-bold tracking-normal md:tracking-[0.12em] uppercase text-[10px] md:text-xs leading-tight transition-colors duration-300 text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
         data-target="galeria-musica"
       >
         Banda Sonora
       </button>
       <button
+        type="button"
         role="tab"
         aria-selected="false"
         aria-controls="galeria-fotos"
+        id="tab-galeria-fotos"
         class="tab-btn-galeria relative z-10 inline-flex items-center justify-center min-h-10 md:min-h-9 px-1.5 py-2 md:px-5 md:py-1.5 rounded-lg md:rounded-full font-cinzel font-bold tracking-normal md:tracking-[0.12em] uppercase text-[10px] md:text-xs leading-tight transition-colors duration-300 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
         data-target="galeria-fotos"
       >
@@ -56,91 +62,238 @@ import { songs, galleryImages } from '../data/bandaSonora';
       </button>
     </div>
 
-    <!-- ===== BANDA SONORA (lista de pistas, estilo reproductor) ===== -->
-    <div id="galeria-musica" class="tab-content-galeria block animate-fade-in">
-      <div class="max-w-4xl mx-auto rounded-2xl border border-stone-300/70 dark:border-stone-800 bg-white/60 dark:bg-stone-900/40 backdrop-blur-md overflow-hidden divide-y divide-stone-200/70 dark:divide-stone-800/70 shadow-xl">
-        {
-          songs.map((song, index) => (
-            <div class="track-item" data-track-item data-track-id={song.youtubeId}>
-              <button
-                type="button"
-                data-song-toggle
-                data-song-id={song.youtubeId}
-                data-song-title={song.title}
-                data-song-artist={song.artist}
-                aria-expanded="false"
-                aria-controls={`song-panel-${song.youtubeId}`}
-                class="track-row group w-full flex items-center gap-3 md:gap-4 px-3 md:px-5 py-2.5 md:py-3 text-left transition-colors duration-200 hover:bg-amber-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-amber-400"
+    <!-- ═══════════════ BANDA SONORA ═══════════════
+         Antes era un acordeón: cada pista desplegaba su propio reproductor
+         dentro de la fila, así que la lista daba saltos de 300 px al abrir y
+         cerrar, y ninguna de las 18 canciones tenía más peso que las demás.
+         Ahora hay un solo escenario arriba —el mismo patrón maestro/detalle
+         que ya usa Recomendaciones— y la lista de abajo solo cambia lo que
+         suena. Como el reproductor no se recrea, cambiar de pista es
+         instantáneo y la lista nunca se mueve. -->
+    <div
+      id="galeria-musica"
+      role="tabpanel"
+      aria-labelledby="tab-galeria-musica"
+      tabindex="0"
+      class="tab-content-galeria block animate-fade-in focus-visible:outline-none"
+    >
+      <div class="max-w-6xl mx-auto space-y-10">
+        <!-- Escenario -->
+        <div
+          class="grid grid-cols-1 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] gap-6 lg:gap-8 items-stretch"
+          data-aos="fade-up"
+        >
+          <div
+            id="sound-stage"
+            data-video-id={destacada.youtubeId}
+            class="relative w-full aspect-video rounded-2xl overflow-hidden border border-stone-300/70 dark:border-stone-800 bg-black shadow-2xl shadow-black/40"
+          >
+            <button
+              type="button"
+              id="sound-stage-play"
+              class="group absolute inset-0 w-full h-full flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-amber-400"
+            >
+              <img
+                id="sound-stage-cover"
+                src={`https://i.ytimg.com/vi/${destacada.youtubeId}/maxresdefault.jpg`}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                class="absolute inset-0 w-full h-full object-cover opacity-70 grayscale-[40%] group-hover:opacity-95 group-hover:grayscale-0 transition-all duration-700"
+              />
+              <span
+                class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-black/40"
+                aria-hidden="true"></span>
+              <span
+                class="relative flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full border border-amber-500/60 bg-black/60 backdrop-blur-md text-amber-500 shadow-[0_0_30px_-8px_rgba(245,158,11,0.8)] transition-all duration-300 group-hover:bg-amber-500 group-hover:text-black group-hover:scale-110 group-active:scale-95"
+                aria-hidden="true"
               >
-                <span class="relative shrink-0 w-6 text-center font-mono text-xs text-stone-400 dark:text-stone-600">
-                  <span class="track-row-index group-hover:opacity-0 transition-opacity duration-150">
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
-                  <span class="track-row-eq absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150 flex items-end justify-center gap-[2px]" aria-hidden="true">
-                    <span class="w-[2.5px] bg-amber-500 h-2 animate-audio-bar-1 rounded-sm" />
-                    <span class="w-[2.5px] bg-amber-500 h-3 animate-audio-bar-2 rounded-sm" />
-                    <span class="w-[2.5px] bg-amber-500 h-1.5 animate-audio-bar-3 rounded-sm" />
-                  </span>
-                </span>
-
-                <span class="relative shrink-0 w-11 h-11 md:w-12 md:h-12 rounded-lg overflow-hidden bg-stone-950">
-                  <img
-                    src={`https://img.youtube.com/vi/${song.youtubeId}/default.jpg`}
-                    alt=""
-                    loading="lazy"
-                    class="w-full h-full object-cover grayscale-[55%] group-hover:grayscale-0 transition-all duration-300"
-                  />
-                </span>
-
-                <span class="min-w-0 flex-1">
-                  <span class="block font-cinzel text-sm md:text-base font-bold text-stone-900 dark:text-white uppercase tracking-wide truncate">
-                    {song.title}
-                  </span>
-                  <span class="block text-xs text-stone-500 dark:text-stone-400 font-mono tracking-wide truncate">
-                    {song.artist}
-                    {song.note && <span class="italic text-stone-400 dark:text-stone-600"> · {song.note}</span>}
-                  </span>
-                </span>
-
-                <span class="song-toggle-icon shrink-0 w-8 h-8 rounded-full border border-transparent group-hover:border-amber-500/60 flex items-center justify-center text-stone-400 group-hover:text-amber-500 group-hover:bg-amber-500/10 transition-all duration-200">
-                  <svg class="song-toggle-icon-play w-3.5 h-3.5 translate-x-0.5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                  <svg class="song-toggle-icon-close hidden w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </span>
-              </button>
-
-              <div
-                id={`song-panel-${song.youtubeId}`}
-                class="song-expand grid transition-[grid-template-rows] duration-500 ease-out"
-                style="grid-template-rows: 0fr;"
+                <svg
+                  class="w-7 h-7 md:w-8 md:h-8 translate-x-0.5"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M8 5v14l11-7z"></path>
+                </svg>
+              </span>
+              <span class="sr-only" id="sound-stage-play-label"
+                >Reproducir {destacada.title}, de {destacada.artist}</span
               >
-                <div class="overflow-hidden">
-                  <div class="px-3 pb-4 md:px-5 md:pb-5 pt-1">
-                    <div
-                      data-song-player-slot
-                      class="relative w-full aspect-video bg-black rounded-xl overflow-hidden border border-stone-800 shadow-lg shadow-black/30"
-                    />
-                  </div>
-                </div>
-              </div>
+            </button>
+            <div id="sound-stage-slot" class="absolute inset-0"></div>
+          </div>
+
+          <!-- Ficha de la pista en el escenario -->
+          <div
+            class="relative flex flex-col justify-between gap-6 rounded-2xl border border-stone-300/70 dark:border-stone-800 bg-white/60 dark:bg-stone-900/40 backdrop-blur-md p-6 md:p-8 shadow-xl"
+          >
+            <div class="space-y-4">
+              <span
+                class="inline-flex items-center gap-2 font-mono text-[10px] tracking-[0.28em] uppercase text-amber-700 dark:text-amber-500/90"
+              >
+                <span
+                  class="flex items-end justify-center h-3 gap-[2px] overflow-hidden"
+                  aria-hidden="true"
+                >
+                  <span class="w-[2px] bg-amber-500 h-1.5 animate-audio-bar-1 rounded-sm"
+                  ></span>
+                  <span class="w-[2px] bg-amber-500 h-3 animate-audio-bar-2 rounded-sm"
+                  ></span>
+                  <span class="w-[2px] bg-amber-500 h-2 animate-audio-bar-3 rounded-sm"
+                  ></span>
+                </span>
+                <span id="sound-stage-eyebrow">Tema de apertura</span>
+              </span>
+
+              <h3
+                id="sound-stage-title"
+                class="font-cinzel text-2xl md:text-4xl font-bold uppercase tracking-wide text-stone-900 dark:text-white leading-tight"
+              >
+                {destacada.title}
+              </h3>
+              <p
+                id="sound-stage-artist"
+                class="font-mono text-sm tracking-wide text-stone-600 dark:text-stone-400"
+              >
+                {destacada.artist}
+              </p>
+              <p
+                id="sound-stage-note"
+                class="text-sm text-stone-600 dark:text-stone-400 font-light italic leading-relaxed"
+              >
+                {destacada.note}
+              </p>
             </div>
-          ))
-        }
+
+            <div
+              class="flex flex-wrap items-center gap-x-5 gap-y-2 pt-5 border-t border-stone-300/70 dark:border-white/10 font-mono text-[10px] md:text-[11px] tracking-[0.2em] uppercase text-stone-500 dark:text-stone-500"
+            >
+              <span>{songs.length} pistas</span>
+              <span aria-hidden="true" class="text-amber-500/50">·</span>
+              <span>{artistas} artistas</span>
+              <span aria-hidden="true" class="text-amber-500/50">·</span>
+              <span class="text-amber-700 dark:text-amber-500/90"
+                >Elegida escena a escena</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Lista de pistas: dos columnas en escritorio. La fila ya no se
+             despliega, así que la rejilla no se descuadra al reproducir. -->
+        <div>
+          <div
+            class="flex items-center gap-4 mb-4 px-1"
+            data-aos="fade-up"
+          >
+            <h3
+              class="font-cinzel text-xs md:text-sm tracking-[0.25em] uppercase text-stone-600 dark:text-stone-400 whitespace-nowrap"
+            >
+              Todas las pistas
+            </h3>
+            <div
+              class="h-px flex-grow bg-gradient-to-r from-stone-400/60 dark:from-stone-700 to-transparent"
+              aria-hidden="true"
+            >
+            </div>
+          </div>
+
+          <ul
+            class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 border-t border-stone-200/70 dark:border-stone-800/70"
+            data-aos="fade-up"
+          >
+            {
+              songs.map((song, index) => (
+                <li class="border-b border-stone-200/70 dark:border-stone-800/70">
+                  <button
+                    type="button"
+                    data-song-play
+                    data-song-id={song.youtubeId}
+                    data-song-title={song.title}
+                    data-song-artist={song.artist}
+                    data-song-note={song.note || ''}
+                    data-song-index={index + 1}
+                    aria-current={index === 0 ? 'true' : 'false'}
+                    class="track-row group w-full flex items-center gap-3 md:gap-4 px-2 md:px-3 py-2.5 text-left transition-colors duration-200 hover:bg-amber-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-amber-400"
+                  >
+                    <span class="relative shrink-0 w-6 text-center font-mono text-xs text-stone-400 dark:text-stone-600">
+                      <span class="track-row-index group-hover:opacity-0 transition-opacity duration-150">
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
+                      <span
+                        class="track-row-eq absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150 flex items-end justify-center gap-[2px]"
+                        aria-hidden="true"
+                      >
+                        <span class="w-[2.5px] bg-amber-500 h-2 animate-audio-bar-1 rounded-sm" />
+                        <span class="w-[2.5px] bg-amber-500 h-3 animate-audio-bar-2 rounded-sm" />
+                        <span class="w-[2.5px] bg-amber-500 h-1.5 animate-audio-bar-3 rounded-sm" />
+                      </span>
+                    </span>
+
+                    {/* La miniatura era `default.jpg` (120x90) mostrada a 48 px:
+                        en una pantalla de densidad doble se veía borrosa.
+                        `mqdefault` (320x180) es la que corresponde. */}
+                    <span class="relative shrink-0 w-12 h-12 rounded-lg overflow-hidden bg-stone-950">
+                      <img
+                        src={`https://i.ytimg.com/vi/${song.youtubeId}/mqdefault.jpg`}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        width="320"
+                        height="180"
+                        class="w-full h-full object-cover grayscale-[55%] group-hover:grayscale-0 transition-all duration-300"
+                      />
+                    </span>
+
+                    <span class="min-w-0 flex-1">
+                      <span class="block font-cinzel text-sm md:text-base font-bold text-stone-900 dark:text-white uppercase tracking-wide truncate">
+                        {song.title}
+                      </span>
+                      <span class="block text-xs text-stone-500 dark:text-stone-400 font-mono tracking-wide truncate">
+                        {song.artist}
+                      </span>
+                    </span>
+
+                    {song.note && (
+                      <span class="hidden xl:inline-block shrink-0 max-w-[9rem] truncate rounded-full border border-amber-500/30 px-2.5 py-0.5 text-[10px] font-mono uppercase tracking-wide text-amber-700 dark:text-amber-500/80">
+                        {song.note}
+                      </span>
+                    )}
+
+                    <span class="song-toggle-icon shrink-0 w-8 h-8 rounded-full border border-transparent group-hover:border-amber-500/60 flex items-center justify-center text-stone-400 group-hover:text-amber-500 group-hover:bg-amber-500/10 transition-all duration-200">
+                      <svg
+                        class="w-3.5 h-3.5 translate-x-0.5"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                    </span>
+                  </button>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
       </div>
     </div>
 
-    <!-- ===== FOTOGRAFÍAS (mosaico editorial estilo tablón de pistas) ===== -->
-    <div id="galeria-fotos" class="tab-content-galeria hidden animate-fade-in">
+    <!-- ═══════════════ FOTOGRAFÍAS ═══════════════ -->
+    <div
+      id="galeria-fotos"
+      role="tabpanel"
+      aria-labelledby="tab-galeria-fotos"
+      tabindex="0"
+      class="tab-content-galeria hidden animate-fade-in focus-visible:outline-none"
+    >
       <div
         class="flex items-center justify-center gap-4 mb-8 md:mb-10 opacity-80"
         data-aos="zoom-in"
       >
         <div class="h-[1px] w-12 md:w-24 bg-gradient-to-r from-transparent to-amber-600" />
         <p class="text-amber-700 dark:text-amber-500 font-mono tracking-widest uppercase text-[10px] md:text-xs font-bold flex items-center gap-2">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M14 8h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
           {galleryImages.length} Fotogramas Archivados
@@ -168,10 +321,20 @@ import { songs, galleryImages } from '../data/bandaSonora';
                 src={image.src}
                 alt={image.alt}
                 loading="lazy"
+                decoding="async"
                 class="w-full h-full object-cover grayscale-[25%] group-hover:grayscale-0 scale-100 group-hover:scale-110 transition-all duration-700 ease-out"
               />
 
-              {/* Chincheta ámbar: refuerza la lectura "tablón de pistas" del sitio */}
+              {/* Numeración de hoja de contactos: siempre visible, no solo al
+                  pasar el ratón. Refuerza la lectura de archivo y da al
+                  mosaico una retícula legible en móvil, donde no hay hover. */}
+              <span
+                class="absolute top-1.5 left-2 z-10 font-mono text-[10px] tracking-widest text-white/60 group-hover:text-amber-400 transition-colors duration-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]"
+                aria-hidden="true"
+              >
+                {String(index + 1).padStart(2, '0')}
+              </span>
+
               <span
                 aria-hidden="true"
                 class="absolute top-2 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.9)] opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 transition-all duration-300 z-10"
@@ -179,14 +342,18 @@ import { songs, galleryImages } from '../data/bandaSonora';
 
               <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-              <span class="photo-tile-caption absolute inset-x-0 bottom-0 px-3 py-2.5 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+              {/* El pie solo aparecía en `hover`, así que en móvil —donde no
+                  existe— ninguna foto tenía descripción visible. Ahora se ve
+                  siempre por debajo de `md` y se reserva al hover en
+                  escritorio, que es donde el mosaico limpio sí compensa. */}
+              <span class="photo-tile-caption absolute inset-x-0 bottom-0 px-3 py-2.5 md:translate-y-2 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 transition-all duration-300">
                 <span class="block text-[11px] md:text-xs leading-snug text-stone-100 font-medium line-clamp-2">
                   {image.alt}
                 </span>
               </span>
 
               <div class="absolute bottom-2 right-2 w-7 h-7 rounded-full bg-black/60 border border-amber-500/40 flex items-center justify-center opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100 transition-all duration-300">
-                <svg class="w-3.5 h-3.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-3.5 h-3.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
                 </svg>
               </div>
@@ -198,21 +365,21 @@ import { songs, galleryImages } from '../data/bandaSonora';
   </div>
 </div>
 
-<!-- Lightbox de fotografías -->
+<!-- Visor de fotografías -->
 <div
   id="photo-lightbox"
   role="dialog"
   aria-modal="true"
   aria-label="Visor de fotografías"
   aria-hidden="true"
-  class="hidden fixed inset-0 z-[120] items-center justify-center bg-black/95 backdrop-blur-lg opacity-0 transition-opacity duration-500 p-4"
+  class="hidden fixed inset-0 z-[120] flex-col items-center justify-center bg-black/95 backdrop-blur-lg opacity-0 transition-opacity duration-500 p-4 pb-28"
 >
   <button
     id="photo-lightbox-close"
     aria-label="Cerrar visor"
     class="absolute top-4 right-4 md:top-8 md:right-8 z-10 p-2 bg-stone-900/80 hover:bg-black text-stone-400 hover:text-amber-500 rounded-full transition-all border border-stone-700 hover:border-amber-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
   >
-    <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
     </svg>
   </button>
@@ -221,7 +388,7 @@ import { songs, galleryImages } from '../data/bandaSonora';
     aria-label="Foto anterior"
     class="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-stone-900/80 hover:bg-black text-stone-300 hover:text-amber-500 border border-stone-700 hover:border-amber-500 flex items-center justify-center transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
   >
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
     </svg>
   </button>
@@ -230,61 +397,91 @@ import { songs, galleryImages } from '../data/bandaSonora';
     aria-label="Foto siguiente"
     class="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-stone-900/80 hover:bg-black text-stone-300 hover:text-amber-500 border border-stone-700 hover:border-amber-500 flex items-center justify-center transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
   >
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
     </svg>
   </button>
+
   <figure class="flex flex-col items-center gap-4 max-w-full">
     <img
       id="photo-lightbox-img"
       src=""
       alt=""
-      class="max-w-full max-h-[75vh] w-auto h-auto rounded-lg shadow-2xl border border-stone-800 object-contain"
+      class="max-w-full max-h-[68vh] w-auto h-auto rounded-lg shadow-2xl border border-stone-800 object-contain transition-opacity duration-200"
     />
     <figcaption
       id="photo-lightbox-caption"
       class="max-w-xl text-center text-sm md:text-base text-stone-300 font-light leading-relaxed px-4"
     />
   </figure>
+
+  <!-- Tira de contactos: el visor no daba ninguna pista de dónde estabas
+       dentro de las 26 fotos ni permitía saltar a una concreta. -->
+  <div
+    id="photo-lightbox-strip"
+    class="absolute inset-x-0 bottom-0 flex items-center gap-2 overflow-x-auto px-4 py-3 bg-gradient-to-t from-black via-black/80 to-transparent custom-scrollbar"
+  >
+  </div>
+
   <p
     id="photo-lightbox-counter"
-    class="absolute bottom-5 left-1/2 -translate-x-1/2 font-mono text-[11px] tracking-[0.3em] uppercase text-stone-400 bg-black/60 backdrop-blur-md border border-white/10 rounded-full px-3 py-1"
+    aria-live="polite"
+    class="absolute bottom-24 left-1/2 -translate-x-1/2 font-mono text-[11px] tracking-[0.3em] uppercase text-stone-400 bg-black/60 backdrop-blur-md border border-white/10 rounded-full px-3 py-1"
   />
 </div>
 
 <style>
-  .animate-fade-in {
-    animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  /* La pista que suena mantiene el ecualizador encendido, no solo en hover. */
+  .track-row[aria-current='true'] {
+    background-color: color-mix(
+      in srgb,
+      var(--color-amber-500) 12%,
+      transparent
+    );
   }
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(15px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .track-row[aria-expanded='true'] {
-    background-color: color-mix(in srgb, var(--color-amber-500) 10%, transparent);
-  }
-  /* Mientras suena, el ecualizador queda fijo (no solo en hover) hasta que
-     cambie de canción o el usuario la cierre. */
-  .track-row[aria-expanded='true'] .track-row-index {
+  .track-row[aria-current='true'] .track-row-index {
     opacity: 0 !important;
   }
-  .track-row[aria-expanded='true'] .track-row-eq {
+  .track-row[aria-current='true'] .track-row-eq {
     opacity: 1 !important;
   }
-  .song-toggle-icon-play,
-  .song-toggle-icon-close {
-    transition: opacity 150ms ease-out;
+  .track-row[aria-current='true'] .song-toggle-icon {
+    border-color: color-mix(in srgb, var(--color-amber-500) 60%, transparent);
+    color: var(--color-amber-500);
   }
 
   .photo-tile-caption {
     background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
+  }
+
+  .strip-thumb {
+    flex: 0 0 auto;
+    width: 4rem;
+    height: 2.5rem;
+    border-radius: 0.25rem;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    opacity: 0.45;
+    transition:
+      opacity 0.2s ease,
+      border-color 0.2s ease,
+      transform 0.2s ease;
+  }
+  .strip-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .strip-thumb:hover,
+  .strip-thumb:focus-visible {
+    opacity: 0.85;
+    outline: none;
+    border-color: rgb(var(--accent-rgb) / 0.6);
+  }
+  .strip-thumb[aria-current='true'] {
+    opacity: 1;
+    border-color: rgb(var(--accent-rgb));
+    transform: translateY(-2px);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -292,7 +489,7 @@ import { songs, galleryImages } from '../data/bandaSonora';
     .track-row-eq span,
     .photo-tile,
     .photo-tile-caption,
-    .song-expand,
+    .strip-thumb,
     [data-photo-open] img,
     [data-photo-open] span {
       transition: none !important;
@@ -302,211 +499,291 @@ import { songs, galleryImages } from '../data/bandaSonora';
   }
 </style>
 
-<script is:inline define:vars={{ galleryImages }}>
+<script>
+  import { initTabs } from '../scripts/tabs.js';
+
   document.addEventListener('DOMContentLoaded', () => {
-    // --- Tabs ---
-    const tabs = document.querySelectorAll('.tab-btn-galeria');
-    const contents = document.querySelectorAll('.tab-content-galeria');
+    // ═══════════════ ESCENARIO DE LA BANDA SONORA ═══════════════
+    // Un único reproductor para las 18 pistas: se crea la primera vez que
+    // alguien pulsa y a partir de ahí solo se le cambia el vídeo, así que
+    // saltar de canción no reconstruye ningún iframe.
+    const escenario = document.getElementById('sound-stage');
+    const botonEscenario = document.getElementById('sound-stage-play');
+    const portada = document.getElementById('sound-stage-cover');
+    const tituloEscenario = document.getElementById('sound-stage-title');
+    const artistaEscenario = document.getElementById('sound-stage-artist');
+    const notaEscenario = document.getElementById('sound-stage-note');
+    const etiquetaEscenario = document.getElementById('sound-stage-eyebrow');
+    const etiquetaBoton = document.getElementById('sound-stage-play-label');
+    const filas = Array.from(document.querySelectorAll('[data-song-play]'));
 
-    const pillGaleria = document.getElementById('galeria-tab-pill');
+    let reproductor = null;
 
-    function movePillTo(tabEl) {
-      if (!pillGaleria || !tabEl) return;
-      pillGaleria.style.left = `${tabEl.offsetLeft}px`;
-      pillGaleria.style.width = `${tabEl.offsetWidth}px`;
-      pillGaleria.style.opacity = '1';
-    }
-
-    function activateTab(targetId) {
-      contents.forEach((c) => {
-        c.classList.remove('block');
-        c.classList.add('hidden');
-      });
-      tabs.forEach((t) => {
-        t.classList.remove('active', 'text-black');
-        t.classList.add('text-stone-600', 'dark:text-stone-400');
-        t.setAttribute('aria-selected', 'false');
-      });
-
-      const targetContent = document.getElementById(targetId);
-      const targetTab = document.querySelector(`.tab-btn-galeria[data-target="${targetId}"]`);
-      if (targetContent && targetTab) {
-        targetContent.classList.remove('hidden');
-        targetContent.classList.add('block');
-        targetTab.classList.remove('text-stone-600', 'dark:text-stone-400');
-        targetTab.classList.add('active', 'text-black');
-        targetTab.setAttribute('aria-selected', 'true');
-        movePillTo(targetTab);
+    function esperarYT(alEstarListo) {
+      if (window.YT && window.YT.Player) {
+        alEstarListo();
+        return;
       }
-      if (typeof AOS !== 'undefined') setTimeout(() => AOS.refresh(), 50);
+      // La API ya no se carga sola en cada visita: la pide quien la necesita.
+      if (typeof window.cargarYouTubeApi === 'function') {
+        window.cargarYouTubeApi();
+      }
+      window.setTimeout(() => esperarYT(alEstarListo), 200);
     }
 
-    function repositionPillGaleria() {
-      movePillTo(document.querySelector('.tab-btn-galeria.active') || tabs[0]);
-    }
-    window.addEventListener('resize', repositionPillGaleria);
-    if (document.fonts?.ready) document.fonts.ready.then(repositionPillGaleria);
+    function reproducir(id) {
+      if (!escenario) return;
+      escenario.dataset.videoId = id;
 
-    tabs.forEach((tab) => {
-      tab.addEventListener('click', () => {
-        if (tab.dataset.target !== 'galeria-musica' && openTrackItem) {
-          collapseTrack(openTrackItem);
-          openTrackItem = null;
-        }
-        activateTab(tab.dataset.target);
+      if (reproductor && typeof reproductor.loadVideoById === 'function') {
+        reproductor.loadVideoById(id);
+        return;
+      }
+
+      botonEscenario?.classList.add('hidden');
+      esperarYT(() => {
+        reproductor = new YT.Player('sound-stage-slot', {
+          videoId: id,
+          playerVars: { autoplay: 1, rel: 0, playsinline: 1 },
+        });
+      });
+    }
+
+    function pintarEscenario(datos) {
+      if (tituloEscenario) tituloEscenario.textContent = datos.title;
+      if (artistaEscenario) artistaEscenario.textContent = datos.artist;
+      if (notaEscenario) {
+        notaEscenario.textContent = datos.note || '';
+        notaEscenario.classList.toggle('hidden', !datos.note);
+      }
+      if (etiquetaEscenario) {
+        etiquetaEscenario.textContent = `Pista ${String(datos.index).padStart(2, '0')} de ${filas.length}`;
+      }
+      if (portada) {
+        portada.src = `https://i.ytimg.com/vi/${datos.id}/maxresdefault.jpg`;
+      }
+      if (etiquetaBoton) {
+        etiquetaBoton.textContent = `Reproducir ${datos.title}, de ${datos.artist}`;
+      }
+      filas.forEach((fila) => {
+        fila.setAttribute(
+          'aria-current',
+          fila.dataset.songId === datos.id ? 'true' : 'false',
+        );
+      });
+    }
+
+    filas.forEach((fila) => {
+      fila.addEventListener('click', () => {
+        pintarEscenario({
+          id: fila.dataset.songId,
+          title: fila.dataset.songTitle,
+          artist: fila.dataset.songArtist,
+          note: fila.dataset.songNote,
+          index: Number(fila.dataset.songIndex),
+        });
+        reproducir(fila.dataset.songId);
+        escenario?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       });
     });
-    window.resetGaleriaTabs = () => {
-      if (openTrackItem) {
-        collapseTrack(openTrackItem);
-        openTrackItem = null;
-      }
-      activateTab('galeria-musica');
-    };
 
-    // --- Reproductor en línea (acordeón, reutiliza la YouTube IFrame API ya cargada en BaseLayout) ---
-    // Sustituye al antiguo modal a pantalla completa: cada pista se expande
-    // in situ dentro de la lista (mismo patrón .reco-expand ya usado en
-    // Recomendaciones), sin overlay ni huecos vacíos fuera de contexto.
-    let openTrackItem = null;
-    let openPlayer = null;
+    botonEscenario?.addEventListener('click', () => {
+      reproducir(escenario.dataset.videoId);
+    });
 
-    function collapseTrack(item) {
-      if (!item) return;
-      const toggle = item.querySelector('[data-song-toggle]');
-      const panel = item.querySelector('.song-expand');
-      const iconPlay = item.querySelector('.song-toggle-icon-play');
-      const iconClose = item.querySelector('.song-toggle-icon-close');
-      toggle?.setAttribute('aria-expanded', 'false');
-      if (panel) panel.style.gridTemplateRows = '0fr';
-      iconClose?.classList.add('hidden');
-      iconPlay?.classList.remove('hidden');
-      if (openPlayer && typeof openPlayer.destroy === 'function') {
-        openPlayer.destroy();
+    function pararMusica() {
+      if (reproductor && typeof reproductor.pauseVideo === 'function') {
+        reproductor.pauseVideo();
       }
-      openPlayer = null;
     }
 
-    function expandTrack(item, btn) {
-      const panel = item.querySelector('.song-expand');
-      const slot = item.querySelector('[data-song-player-slot]');
-      const iconPlay = item.querySelector('.song-toggle-icon-play');
-      const iconClose = item.querySelector('.song-toggle-icon-close');
-      if (!panel || !slot) return;
+    // ═══════════════ PESTAÑAS ═══════════════
+    window.resetGaleriaTabs = initTabs({
+      boton: '.tab-btn-galeria',
+      panel: '.tab-content-galeria',
+      pastilla: 'galeria-tab-pill',
+      inicial: 'galeria-musica',
+      alCambiar: (id) => {
+        if (id !== 'galeria-musica') pararMusica();
+      },
+    });
 
-      btn.setAttribute('aria-expanded', 'true');
-      panel.style.gridTemplateRows = '1fr';
-      iconPlay?.classList.add('hidden');
-      iconClose?.classList.remove('hidden');
+    // ═══════════════ VISOR DE FOTOGRAFÍAS ═══════════════
+    const visor = document.getElementById('photo-lightbox');
+    if (!visor) return;
+    document.body.appendChild(visor);
 
-      slot.id = `song-player-${btn.dataset.songId}`;
-      const videoId = btn.dataset.songId;
-      function mountPlayer() {
-        if (window.YT && window.YT.Player) {
-          openPlayer = new YT.Player(slot.id, {
-            videoId,
-            playerVars: { autoplay: 1, rel: 0 },
+    const imagenVisor = document.getElementById('photo-lightbox-img');
+    const cerrarVisor = document.getElementById('photo-lightbox-close');
+    const anteriorVisor = document.getElementById('photo-lightbox-prev');
+    const siguienteVisor = document.getElementById('photo-lightbox-next');
+    const contador = document.getElementById('photo-lightbox-counter');
+    const pie = document.getElementById('photo-lightbox-caption');
+    const tira = document.getElementById('photo-lightbox-strip');
+
+    let indiceActual = 0;
+    let ultimoFoco = null;
+
+    // La lista de fotos se lee del propio mosaico en vez de serializarse con
+    // `define:vars`: eran 11 KB de JSON incrustados en el HTML de cada visita
+    // para repetir datos que ya estaban en el DOM.
+    const galleryImages = Array.from(
+      document.querySelectorAll('[data-photo-open]'),
+    ).map((boton) => {
+      const img = boton.querySelector('img');
+      return { src: img.getAttribute('src'), alt: img.getAttribute('alt') };
+    });
+
+    // Tira de contactos: se construye una vez, con miniaturas perezosas.
+    galleryImages.forEach((foto, i) => {
+      const miniatura = document.createElement('button');
+      miniatura.type = 'button';
+      miniatura.className = 'strip-thumb';
+      miniatura.setAttribute('aria-label', `Ir a la foto ${i + 1}`);
+      miniatura.dataset.stripIndex = String(i);
+      const img = document.createElement('img');
+      img.src = foto.src;
+      img.alt = '';
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      miniatura.appendChild(img);
+      miniatura.addEventListener('click', () => mostrarFoto(i));
+      tira?.appendChild(miniatura);
+    });
+
+    const miniaturas = Array.from(
+      tira ? tira.querySelectorAll('[data-strip-index]') : [],
+    );
+
+    // Precargar vecinas: sin esto, cada salto dejaba el visor en blanco
+    // mientras se descargaba la siguiente foto.
+    function precargarVecinas(indice) {
+      [-1, 1].forEach((salto) => {
+        const vecina =
+          galleryImages[
+            (indice + salto + galleryImages.length) % galleryImages.length
+          ];
+        if (vecina) new Image().src = vecina.src;
+      });
+    }
+
+    function mostrarFoto(indice) {
+      indiceActual =
+        (indice + galleryImages.length) % galleryImages.length;
+      const foto = galleryImages[indiceActual];
+
+      imagenVisor.style.opacity = '0';
+      const listo = () => {
+        imagenVisor.style.opacity = '1';
+        imagenVisor.removeEventListener('load', listo);
+      };
+      imagenVisor.addEventListener('load', listo);
+      imagenVisor.src = foto.src;
+      imagenVisor.alt = foto.alt;
+      if (imagenVisor.complete) listo();
+
+      if (pie) pie.textContent = foto.alt;
+      if (contador) {
+        contador.textContent = `${indiceActual + 1} / ${galleryImages.length}`;
+      }
+      miniaturas.forEach((m, i) => {
+        m.setAttribute('aria-current', i === indiceActual ? 'true' : 'false');
+        if (i === indiceActual) {
+          m.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+            inline: 'center',
           });
-        } else {
-          setTimeout(mountPlayer, 200);
-        }
-      }
-      mountPlayer();
-      openTrackItem = item;
-    }
-
-    document.querySelectorAll('[data-song-toggle]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const item = btn.closest('[data-track-item]');
-        const isOpen = btn.getAttribute('aria-expanded') === 'true';
-
-        if (openTrackItem && openTrackItem !== item) {
-          collapseTrack(openTrackItem);
-        }
-
-        if (isOpen) {
-          collapseTrack(item);
-          openTrackItem = null;
-        } else {
-          expandTrack(item, btn);
         }
       });
-    });
-
-    // --- Lightbox de fotografías ---
-    const lightbox = document.getElementById('photo-lightbox');
-    document.body.appendChild(lightbox);
-    const lightboxImg = document.getElementById('photo-lightbox-img');
-    const lightboxClose = document.getElementById('photo-lightbox-close');
-    const lightboxPrev = document.getElementById('photo-lightbox-prev');
-    const lightboxNext = document.getElementById('photo-lightbox-next');
-    let currentPhotoIndex = 0;
-    let lightboxLastFocused = null;
-
-    const lightboxCounter = document.getElementById('photo-lightbox-counter');
-    const lightboxCaption = document.getElementById('photo-lightbox-caption');
-
-    function renderPhoto() {
-      const photo = galleryImages[currentPhotoIndex];
-      lightboxImg.src = photo.src;
-      lightboxImg.alt = photo.alt;
-      if (lightboxCaption) {
-        lightboxCaption.textContent = photo.alt;
-      }
-      if (lightboxCounter) {
-        lightboxCounter.textContent = `${currentPhotoIndex + 1} / ${galleryImages.length}`;
-      }
+      precargarVecinas(indiceActual);
     }
 
-    function openLightbox(index) {
-      lightboxLastFocused = document.activeElement;
-      currentPhotoIndex = index;
-      renderPhoto();
-      lightbox.classList.remove('hidden');
-      lightbox.classList.add('flex');
-      lightbox.setAttribute('aria-hidden', 'false');
-      setTimeout(() => lightbox.classList.remove('opacity-0'), 10);
-      lightboxClose?.focus();
+    function abrirVisor(indice) {
+      ultimoFoco = document.activeElement;
+      visor.classList.remove('hidden');
+      visor.classList.add('flex');
+      visor.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('scroll-lock');
+      mostrarFoto(indice);
+      setTimeout(() => visor.classList.remove('opacity-0'), 10);
+      cerrarVisor?.focus();
+      document.addEventListener('keydown', alPulsarTecla);
     }
 
-    function closeLightbox() {
-      lightbox.classList.add('opacity-0');
-      lightbox.setAttribute('aria-hidden', 'true');
+    function cerrar() {
+      visor.classList.add('opacity-0');
+      visor.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('scroll-lock');
       setTimeout(() => {
-        lightbox.classList.add('hidden');
-        lightbox.classList.remove('flex');
+        visor.classList.add('hidden');
+        visor.classList.remove('flex');
       }, 500);
-      if (lightboxLastFocused instanceof HTMLElement) lightboxLastFocused.focus();
+      document.removeEventListener('keydown', alPulsarTecla);
+      if (ultimoFoco instanceof HTMLElement) ultimoFoco.focus();
     }
 
-    function showNextPhoto() {
-      currentPhotoIndex = (currentPhotoIndex + 1) % galleryImages.length;
-      renderPhoto();
-    }
-    function showPrevPhoto() {
-      currentPhotoIndex = (currentPhotoIndex - 1 + galleryImages.length) % galleryImages.length;
-      renderPhoto();
-    }
-
-    document.querySelectorAll('[data-photo-open]').forEach((btn) => {
-      btn.addEventListener('click', () => openLightbox(Number(btn.dataset.photoIndex)));
-    });
-    lightboxClose?.addEventListener('click', closeLightbox);
-    lightboxNext?.addEventListener('click', showNextPhoto);
-    lightboxPrev?.addEventListener('click', showPrevPhoto);
-
-    document.addEventListener('keydown', (event) => {
-      if (openTrackItem && event.key === 'Escape') {
-        const btn = openTrackItem.querySelector('[data-song-toggle]');
-        collapseTrack(openTrackItem);
-        openTrackItem = null;
-        btn?.focus();
+    // Trampa de foco: el visor se declara `aria-modal`, así que el tabulador
+    // no puede escaparse a la página de detrás.
+    function alPulsarTecla(evento) {
+      if (visor.getAttribute('aria-hidden') !== 'false') return;
+      if (evento.key === 'Escape') {
+        cerrar();
+        return;
       }
-      if (lightbox.getAttribute('aria-hidden') === 'false') {
-        if (event.key === 'Escape') closeLightbox();
-        if (event.key === 'ArrowRight') showNextPhoto();
-        if (event.key === 'ArrowLeft') showPrevPhoto();
+      if (evento.key === 'ArrowRight') {
+        mostrarFoto(indiceActual + 1);
+        return;
       }
+      if (evento.key === 'ArrowLeft') {
+        mostrarFoto(indiceActual - 1);
+        return;
+      }
+      if (evento.key !== 'Tab') return;
+
+      const enfocables = visor.querySelectorAll(
+        'button, [href], [tabindex]:not([tabindex="-1"])',
+      );
+      if (!enfocables.length) return;
+      const primero = enfocables[0];
+      const ultimo = enfocables[enfocables.length - 1];
+      if (evento.shiftKey && document.activeElement === primero) {
+        evento.preventDefault();
+        ultimo.focus();
+      } else if (!evento.shiftKey && document.activeElement === ultimo) {
+        evento.preventDefault();
+        primero.focus();
+      }
+    }
+
+    // Gesto de deslizar en móvil, que es donde más se usa un visor de fotos.
+    let inicioX = null;
+    visor.addEventListener(
+      'touchstart',
+      (e) => {
+        inicioX = e.changedTouches[0].clientX;
+      },
+      { passive: true },
+    );
+    visor.addEventListener(
+      'touchend',
+      (e) => {
+        if (inicioX === null) return;
+        const recorrido = e.changedTouches[0].clientX - inicioX;
+        inicioX = null;
+        if (Math.abs(recorrido) < 45) return;
+        mostrarFoto(indiceActual + (recorrido < 0 ? 1 : -1));
+      },
+      { passive: true },
+    );
+
+    document.querySelectorAll('[data-photo-open]').forEach((boton) => {
+      boton.addEventListener('click', () =>
+        abrirVisor(Number(boton.dataset.photoIndex)),
+      );
     });
+    cerrarVisor?.addEventListener('click', cerrar);
+    siguienteVisor?.addEventListener('click', () => mostrarFoto(indiceActual + 1));
+    anteriorVisor?.addEventListener('click', () => mostrarFoto(indiceActual - 1));
   });
 </script>

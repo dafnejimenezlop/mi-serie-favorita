@@ -1,5 +1,8 @@
 /* src/styles/global.css */
 @import 'tailwindcss';
+/* AOS venia por CDN (unpkg), render-blocking desde un cuarto dominio. Su CSS
+   entra aqui, con el resto de la hoja; su JS se importa desde BaseLayout. */
+@import 'aos/dist/aos.css';
 
 /* Activa el modo oscuro por clase en Tailwind v4 */
 @variant dark (&:where(.dark, .dark *));
@@ -220,4 +223,136 @@ body.hero-in-view #whatsapp-fab {
    roto a la vista). */
 img {
   color: transparent;
+}
+
+/* ===== PIEZAS COMPARTIDAS ENTRE COMPONENTES =====
+   Todo lo de aquí abajo lo usan DOS O MÁS componentes, así que su sitio es
+   este archivo y no el `<style>` de ninguno de ellos.
+
+   Vivían dentro de Familias.astro y de los tres `<style>` de las secciones
+   con pestañas, y solo funcionaban porque las seis vistas se renderizan en el
+   mismo documento: el día que Familias saliera de esa página, la lista de la
+   banda sonora y los hilos conectores de Resumen y Aclaraciones se habrían
+   roto sin previo aviso. Además `.animate-fade-in` estaba copiado literal en
+   tres archivos y el contador de fichas en dos. */
+
+/* --- Entrada de panel al cambiar de pestaña (Resumen, Aclaraciones, Galería) --- */
+.animate-fade-in {
+  animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Hilo conector ámbar entre fichas (Familias, Resumen, Aclaraciones) --- */
+.gen-connector-line {
+  width: 1px;
+  min-width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(var(--accent-rgb) / 0.5) 20%,
+    rgba(var(--accent-rgb) / 0.75) 50%,
+    rgba(var(--accent-rgb) / 0.5) 80%,
+    transparent 100%
+  );
+  background-size: 100% 300%;
+  background-position: 0% 0%;
+  animation: line-pulse 2.5s ease-in-out infinite;
+  box-shadow: 0 0 4px rgba(var(--accent-rgb) / 0.25);
+  display: block;
+}
+@keyframes line-pulse {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 0% 100%;
+  }
+}
+
+/* Alineado con el centro del distintivo numerado: left-1rem + la mitad de
+   2.75rem ≈ 38px. */
+.case-thread {
+  left: 38px;
+}
+
+/* --- Ficha de caso numerada (Resumen y Aclaraciones) ---
+   Refuerza la lectura de "tablón de investigación" sin depender de JS: cada
+   `.case-counter-reset` reinicia el contador, una numeración por pestaña. --- */
+.case-counter-reset {
+  counter-reset: case-counter;
+}
+.case-card {
+  counter-increment: case-counter;
+}
+.case-card::before {
+  content: counter(case-counter, decimal-leading-zero);
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 20;
+  width: 2.25rem;
+  height: 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: rgba(10, 10, 10, 0.75);
+  border: 1px solid rgb(var(--accent-rgb) / 0.6);
+  color: #f59e0b;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+@media (min-width: 1024px) {
+  .case-card::before {
+    top: 1rem;
+    left: 1rem;
+    width: 2.75rem;
+    height: 2.75rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* --- Ecualizador de tres barras (Familias y Galería) --- */
+@keyframes audio-bar {
+  0% {
+    height: 4px;
+  }
+  50% {
+    height: 16px;
+  }
+  100% {
+    height: 4px;
+  }
+}
+.animate-audio-bar-1 {
+  animation: audio-bar 1.2s ease-in-out infinite;
+}
+.animate-audio-bar-2 {
+  animation: audio-bar 0.9s ease-in-out infinite 0.3s;
+}
+.animate-audio-bar-3 {
+  animation: audio-bar 1.5s ease-in-out infinite 0.6s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in,
+  .gen-connector-line,
+  .animate-audio-bar-1,
+  .animate-audio-bar-2,
+  .animate-audio-bar-3 {
+    animation: none;
+  }
 }

@@ -4,6 +4,11 @@ dist/
 # generated types
 .astro/
 
+# salida de Playwright
+test-results/
+playwright-report/
+.playwright/
+
 # dependencies
 node_modules/
 
@@ -17,8 +22,9 @@ pnpm-debug.log*
 .env
 .env.production
 
-# macOS-specific files
+# ficheros basura del explorador
 .DS_Store
+Thumbs.db
 
 # jetbrains setting folder
 .idea/
