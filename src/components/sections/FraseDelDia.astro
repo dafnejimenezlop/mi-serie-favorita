@@ -49,6 +49,19 @@ const quotes = [
   },
 ];
 
+// Cuerpo de letra según la longitud de la cita. Todas comparten la misma
+// celda (la altura la marca la más larga), así que con un tamaño único las
+// citas breves —"Todo está conectado."— flotaban en un hueco de casi 200 px
+// en móvil. Ahora las cortas se componen grandes, como una frase de cartel,
+// y las largas más pequeñas: el hueco se reduce y el contraste de escala le
+// da a cada cita su propio peso.
+const cuerpoCita = (texto: string) =>
+  texto.length > 170
+    ? 'text-base md:text-xl'
+    : texto.length > 90
+      ? 'text-lg md:text-2xl'
+      : 'text-2xl md:text-4xl';
+
 const dayOfEpoch = Math.floor(Date.now() / 86_400_000);
 const todayIndex = dayOfEpoch % quotes.length;
 ---
@@ -60,13 +73,13 @@ const todayIndex = dayOfEpoch % quotes.length;
   <div class="container mx-auto px-6">
     <div class="text-center mb-12 space-y-3">
       <span
-        class="font-mono text-[11px] tracking-[0.3em] uppercase text-amber-600 dark:text-amber-500/80"
+        class="block font-mono text-[11px] tracking-[0.3em] uppercase text-amber-800 dark:text-amber-500"
         data-aos="fade-up"
       >
         Archivo de Winden
       </span>
       <h2
-        class="text-3xl md:text-5xl font-cinzel text-amber-700 dark:text-amber-500 font-bold transition-colors"
+        class="text-3xl md:text-5xl font-cinzel text-amber-700 dark:text-amber-500 font-bold tracking-[0.08em] leading-tight uppercase transition-colors"
         data-aos="zoom-in"
       >
         Frase del Día
@@ -103,14 +116,14 @@ const todayIndex = dayOfEpoch % quotes.length;
               class={`quote-slide flex flex-col items-center justify-center text-center gap-6 transition-opacity duration-500 ${index === todayIndex ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
               aria-hidden={index === todayIndex ? 'false' : 'true'}
             >
-              <p class="text-lg md:text-2xl text-stone-800 dark:text-stone-100 font-light italic leading-relaxed px-4">
+              <p class={`${cuerpoCita(quote.text)} text-stone-800 dark:text-stone-100 font-light italic leading-relaxed px-2 md:px-4 text-balance`}>
                 "{quote.text}"
               </p>
               <footer class="flex flex-col items-center gap-1">
-                <cite class="not-italic font-cinzel text-sm md:text-base font-bold uppercase tracking-widest text-amber-600 dark:text-amber-500">
+                <cite class="not-italic font-cinzel text-sm md:text-base font-bold uppercase tracking-widest text-amber-800 dark:text-amber-500">
                   {quote.author}
                 </cite>
-                <span class="text-[11px] text-stone-500 dark:text-stone-500 font-mono tracking-wide uppercase">
+                <span class="text-[11px] text-stone-600 dark:text-stone-400 font-mono tracking-wide uppercase">
                   {quote.context}
                 </span>
               </footer>

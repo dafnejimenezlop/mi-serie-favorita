@@ -26,7 +26,7 @@ const byAffinityDesc = [...recommendations].sort((a, b) => b.affinity - a.affini
       {/* Quince letras en Cinzel no caben a `text-3xl` en 390 px: con
           `break-words` el título se partía en "RECOMENDACIONE / S". */}
       <h2
-        class="text-[1.65rem] leading-tight sm:text-4xl md:text-5xl lg:text-6xl font-cinzel text-amber-600 dark:text-amber-500 font-bold tracking-[0.06em] sm:tracking-[0.1em] md:tracking-[0.15em] drop-shadow-lg dark:drop-shadow-2xl uppercase"
+        class="text-[1.65rem] leading-tight sm:text-4xl md:text-5xl lg:text-6xl font-cinzel text-amber-700 dark:text-amber-500 font-bold tracking-[0.06em] sm:tracking-[0.1em] md:tracking-[0.15em] drop-shadow-lg dark:drop-shadow-2xl uppercase"
       >
         Recomendaciones
       </h2>
@@ -49,7 +49,7 @@ const byAffinityDesc = [...recommendations].sort((a, b) => b.affinity - a.affini
         <span class="font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase text-stone-600 dark:text-stone-400 border border-stone-300/70 dark:border-stone-800 rounded-full px-3 py-1">
           {platformsCount} Plataformas
         </span>
-        <span class="font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase text-amber-700 dark:text-amber-500 border border-amber-500/30 rounded-full px-3 py-1">
+        <span class="font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase text-amber-800 dark:text-amber-500 border border-amber-500/30 rounded-full px-3 py-1">
           {avgAffinity}% Afinidad Media
         </span>
       </div>
@@ -151,7 +151,7 @@ const byAffinityDesc = [...recommendations].sort((a, b) => b.affinity - a.affini
           Catálogo Completo
         </h3>
         <div class="h-[1px] flex-grow bg-gradient-to-r from-stone-400 dark:from-stone-700 to-transparent"></div>
-        <p id="reco-grid-count" aria-live="polite" class="font-mono text-[10px] md:text-xs tracking-widest uppercase text-stone-500 whitespace-nowrap">
+        <p id="reco-grid-count" aria-live="polite" class="font-mono text-[10px] md:text-xs tracking-widest uppercase text-stone-600 dark:text-stone-400 whitespace-nowrap">
           {recommendations.length} títulos
         </p>
       </div>
@@ -252,7 +252,7 @@ const byAffinityDesc = [...recommendations].sort((a, b) => b.affinity - a.affini
                 <span class="block font-cinzel text-xs md:text-sm font-bold text-stone-800 dark:text-stone-100 uppercase tracking-wide truncate group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors duration-300">
                   {item.title}
                 </span>
-                <span class="block mt-0.5 text-[10px] md:text-[11px] font-mono text-stone-500 truncate">
+                <span class="block mt-0.5 text-[10px] md:text-[11px] font-mono text-stone-600 dark:text-stone-400 truncate">
                   {item.platform.name} · {item.years}
                 </span>
               </span>
@@ -342,13 +342,13 @@ const byAffinityDesc = [...recommendations].sort((a, b) => b.affinity - a.affini
 
         <div class="mt-6 md:mt-0 md:pt-16 space-y-5">
           <div>
-            <p class="font-mono text-[10px] tracking-[0.25em] uppercase text-stone-500 mb-2">Afinidad con DARK</p>
+            <p class="font-mono text-[10px] tracking-[0.25em] uppercase text-stone-400 mb-2">Afinidad con DARK</p>
             <div class="h-1.5 w-full rounded-full bg-white/10 overflow-hidden">
               <div id="reco-ficha-barra" class="h-full rounded-full bg-gradient-to-r from-amber-600 to-amber-400 transition-[width] duration-700 ease-out" style="width: 0%"></div>
             </div>
           </div>
           <div>
-            <p class="font-mono text-[10px] tracking-[0.25em] uppercase text-stone-500 mb-2">Etiquetas</p>
+            <p class="font-mono text-[10px] tracking-[0.25em] uppercase text-stone-400 mb-2">Etiquetas</p>
             <div id="reco-ficha-etiquetas" class="flex flex-wrap gap-2"></div>
           </div>
           {/* En móvil la acción principal vive en la barra inferior (siempre
@@ -395,7 +395,7 @@ const byAffinityDesc = [...recommendations].sort((a, b) => b.affinity - a.affini
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
         </svg>
       </a>
-      <span id="reco-ficha-posicion" class="hidden md:inline font-mono text-[10px] tracking-[0.25em] uppercase text-stone-500 tabular-nums"></span>
+      <span id="reco-ficha-posicion" class="hidden md:inline font-mono text-[10px] tracking-[0.25em] uppercase text-stone-400 tabular-nums"></span>
       <button
         type="button"
         id="reco-ficha-siguiente"

@@ -13,7 +13,7 @@ const artistas = new Set(songs.map((s) => s.artist)).size;
   <div class="container mx-auto px-4 md:px-6 max-w-7xl">
     <div class="text-center space-y-6 mb-12" data-aos="fade-down">
       <h2
-        class="text-3xl leading-tight sm:text-4xl md:text-6xl font-cinzel text-amber-600 dark:text-amber-500 font-bold tracking-[0.12em] md:tracking-[0.2em] drop-shadow-lg dark:drop-shadow-2xl uppercase"
+        class="text-3xl leading-tight sm:text-4xl md:text-6xl font-cinzel text-amber-700 dark:text-amber-500 font-bold tracking-[0.12em] md:tracking-[0.2em] drop-shadow-lg dark:drop-shadow-2xl uppercase"
       >
         Banda Sonora &amp; Galería
       </h2>
@@ -181,13 +181,13 @@ const artistas = new Set(songs.map((s) => s.artist)).size;
             </div>
 
             <div
-              class="flex flex-wrap items-center gap-x-5 gap-y-2 pt-5 border-t border-stone-300/70 dark:border-white/10 font-mono text-[10px] md:text-[11px] tracking-[0.2em] uppercase text-stone-500 dark:text-stone-500"
+              class="flex flex-wrap items-center gap-x-5 gap-y-2 pt-5 border-t border-stone-300/70 dark:border-white/10 font-mono text-[10px] md:text-[11px] tracking-[0.2em] uppercase text-stone-600 dark:text-stone-400"
             >
               <span>{songs.length} pistas</span>
               <span aria-hidden="true" class="text-amber-500/50">·</span>
               <span>{artistas} artistas</span>
               <span aria-hidden="true" class="text-amber-500/50">·</span>
-              <span class="text-amber-700 dark:text-amber-500/90"
+              <span class="text-amber-800 dark:text-amber-500"
                 >Elegida escena a escena</span
               >
             </div>
@@ -231,7 +231,7 @@ const artistas = new Set(songs.map((s) => s.artist)).size;
                     aria-current={index === 0 ? 'true' : 'false'}
                     class="track-row group w-full flex items-center gap-3 md:gap-4 px-2 md:px-3 py-2.5 text-left transition-colors duration-200 hover:bg-amber-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-amber-400"
                   >
-                    <span class="relative shrink-0 w-6 text-center font-mono text-xs text-stone-400 dark:text-stone-600">
+                    <span class="relative shrink-0 w-6 text-center font-mono text-xs text-stone-600 dark:text-stone-400">
                       <span class="track-row-index group-hover:opacity-0 transition-opacity duration-150">
                         {String(index + 1).padStart(2, '0')}
                       </span>
@@ -264,13 +264,13 @@ const artistas = new Set(songs.map((s) => s.artist)).size;
                       <span class="block font-cinzel text-sm md:text-base font-bold text-stone-900 dark:text-white uppercase tracking-wide truncate">
                         {song.title}
                       </span>
-                      <span class="block text-xs text-stone-500 dark:text-stone-400 font-mono tracking-wide truncate">
+                      <span class="block text-xs text-stone-600 dark:text-stone-400 font-mono tracking-wide truncate">
                         {song.artist}
                       </span>
                     </span>
 
                     {song.note && (
-                      <span class="hidden xl:inline-block shrink-0 max-w-[9rem] truncate rounded-full border border-amber-500/30 px-2.5 py-0.5 text-[10px] font-mono uppercase tracking-wide text-amber-700 dark:text-amber-500/80">
+                      <span class="hidden xl:inline-block shrink-0 max-w-[9rem] truncate rounded-full border border-amber-500/30 px-2.5 py-0.5 text-[10px] font-mono uppercase tracking-wide text-amber-800 dark:text-amber-500">
                         {song.note}
                       </span>
                     )}
@@ -303,11 +303,11 @@ const artistas = new Set(songs.map((s) => s.artist)).size;
       class="tab-content-galeria hidden animate-fade-in focus-visible:outline-none"
     >
       <div
-        class="flex items-center justify-center gap-4 mb-8 md:mb-10 opacity-80"
+        class="flex items-center justify-center gap-4 mb-8 md:mb-10"
         data-aos="zoom-in"
       >
         <div class="h-[1px] w-12 md:w-24 bg-gradient-to-r from-transparent to-amber-600" />
-        <p class="text-amber-700 dark:text-amber-500 font-mono tracking-widest uppercase text-[10px] md:text-xs font-bold flex items-center gap-2">
+        <p class="text-amber-800 dark:text-amber-500 font-mono tracking-widest uppercase text-[10px] md:text-xs font-bold flex items-center gap-2">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M14 8h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
@@ -465,7 +465,7 @@ const artistas = new Set(songs.map((s) => s.artist)).size;
     </div>
     <p
       id="photo-lightbox-hint"
-      class="md:hidden text-center font-mono text-[9px] tracking-[0.25em] uppercase text-stone-500"
+      class="md:hidden text-center font-mono text-[9px] tracking-[0.25em] uppercase text-stone-400"
       aria-hidden="true"
     >
       Desliza para cambiar · Doble toque para ampliar

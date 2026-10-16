@@ -11,16 +11,49 @@
   id="inicio"
   class="relative min-h-[100svh] flex items-center justify-center overflow-hidden bg-black"
 >
-  <!-- `scale-125`: el iframe medía exactamente lo mismo que la pantalla en
-       vertical, así que la interfaz que YouTube pinta en sus bordes (título y
-       aviso de edad arriba, barra de controles abajo) quedaba DENTRO del
-       hero. Ampliándolo un 25 % esos bordes caen fuera del recorte. -->
+  <!-- Póster: un fotograma local que está ahí desde el primer pintado.
+       Sin él, el hero era un rectángulo negro durante los segundos que
+       YouTube tarda en descargar su reproductor (~1 MB) y empezar a emitir;
+       y si el navegador bloqueaba el autoplay (modo ahorro en iOS), se
+       quedaba negro para siempre. Lleva un recorte vertical propio para
+       móvil (15 KB) y un leve avance de cámara mientras espera. -->
+  <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none" aria-hidden="true">
+    <picture>
+      <source media="(max-aspect-ratio: 3/4)" srcset="/hero/poster-movil.webp" type="image/webp" />
+      <img
+        id="hero-poster"
+        src="/hero/poster.webp"
+        alt=""
+        width="1500"
+        height="850"
+        fetchpriority="high"
+        decoding="async"
+        class="hero-poster absolute inset-0 w-full h-full object-cover"
+      />
+    </picture>
+  </div>
+
+  <!-- El vídeo entra con un fundido SOLO cuando YouTube confirma que está
+       reproduciendo (BaseLayout añade `video-activo` a #inicio). Hasta
+       entonces el iframe es invisible: ni pantalla negra, ni el spinner ni
+       el botón gris de YouTube.
+       `scale-[1.4]`: el iframe medía exactamente lo mismo que la pantalla,
+       así que la interfaz que YouTube pinta en sus bordes (título, el aviso
+       de edad "16+" que sale al arrancar y la barra de controles) quedaba
+       DENTRO del hero. Con un 25 % el aviso aún asomaba en escritorio;
+       con un 40 % cae bajo la cabecera, donde además lo tapa el degradado
+       superior. -->
   <div
-    class="absolute top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] -translate-x-1/2 -translate-y-1/2 scale-125 pointer-events-none opacity-40 z-0"
+    class="hero-video absolute top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] -translate-x-1/2 -translate-y-1/2 scale-[1.4] pointer-events-none z-0"
   >
     <div id="youtube-hero-player" class="w-full h-full"></div>
   </div>
 
+  <div
+    class="absolute inset-x-0 top-0 h-32 md:h-40 bg-gradient-to-b from-black/90 to-transparent pointer-events-none z-[1]"
+    aria-hidden="true"
+  >
+  </div>
   <div
     class="absolute inset-x-0 bottom-0 h-40 md:h-56 bg-gradient-to-t from-black to-transparent pointer-events-none z-[1]"
     aria-hidden="true"
@@ -221,6 +254,44 @@
 </section>
 
 <style>
+  /* ===== Póster → vídeo =====
+     El póster arranca a la misma opacidad que tendrá el vídeo (40 %), así
+     el relevo es un fundido entre dos imágenes del mismo tono y no un
+     salto de brillo. Solo se animan opacity y transform. */
+  .hero-poster {
+    opacity: 0.4;
+    transform-origin: 50% 40%;
+    animation: hero-poster-camara 18s ease-out both;
+    transition: opacity 1.4s ease;
+  }
+  @keyframes hero-poster-camara {
+    from {
+      transform: scale(1.12);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+  .hero-video {
+    opacity: 0;
+    transition: opacity 1.4s ease;
+  }
+  #inicio.video-activo .hero-video {
+    opacity: 0.4;
+  }
+  #inicio.video-activo .hero-poster {
+    opacity: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-poster {
+      animation: none;
+    }
+    .hero-poster,
+    .hero-video {
+      transition-duration: 0.01ms;
+    }
+  }
+
   .hero-mote {
     position: absolute;
     bottom: -10%;

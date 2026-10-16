@@ -174,7 +174,7 @@ const navLinks = [
             <a
               href={link.href}
               data-mobile-link
-              class="mobile-nav-link group flex items-center gap-4 px-4 py-4 rounded-lg text-base font-cinzel tracking-widest uppercase transition-all duration-300 text-stone-500 dark:text-stone-400 hover:text-amber-700 dark:hover:text-amber-500 hover:bg-stone-200/60 dark:hover:bg-stone-800/40"
+              class="mobile-nav-link group flex items-center gap-4 px-4 py-4 rounded-lg text-base font-cinzel tracking-widest uppercase transition-all duration-300 text-stone-600 dark:text-stone-400 hover:text-amber-800 dark:hover:text-amber-500 hover:bg-stone-200/60 dark:hover:bg-stone-800/40"
               style={`transition-delay: ${index * 60}ms`}
             >
               <span class="w-4 h-px bg-amber-500/40 group-hover:bg-amber-500 group-hover:w-6 transition-all duration-300 shrink-0" />
@@ -283,20 +283,20 @@ const navLinks = [
       mobLinks.forEach((link) => {
         if (link.getAttribute('href') === currentHash) {
           link.classList.add(
-            'text-amber-700',
+            'text-amber-800',
             'dark:text-amber-500',
             'bg-stone-200/80',
             'dark:bg-stone-800/60',
           );
-          link.classList.remove('text-stone-500', 'dark:text-stone-400');
+          link.classList.remove('text-stone-600', 'dark:text-stone-400');
         } else {
           link.classList.remove(
-            'text-amber-700',
+            'text-amber-800',
             'dark:text-amber-500',
             'bg-stone-200/80',
             'dark:bg-stone-800/60',
           );
-          link.classList.add('text-stone-500', 'dark:text-stone-400');
+          link.classList.add('text-stone-600', 'dark:text-stone-400');
         }
       });
     }

@@ -46,13 +46,13 @@ const expedientes = [
   <div class="container mx-auto px-6">
     <div class="text-center mb-10 md:mb-14 space-y-3">
       <span
-        class="font-mono text-[11px] tracking-[0.3em] uppercase text-amber-600 dark:text-amber-500/80"
+        class="block font-mono text-[11px] tracking-[0.3em] uppercase text-amber-800 dark:text-amber-500"
         data-aos="fade-up"
       >
         Archivo de Sic Mundus
       </span>
       <h2
-        class="text-3xl md:text-5xl font-cinzel text-amber-700 dark:text-amber-500 font-bold tracking-[0.05em] transition-colors uppercase"
+        class="text-3xl md:text-5xl font-cinzel text-amber-700 dark:text-amber-500 font-bold tracking-[0.08em] leading-tight uppercase transition-colors"
         data-aos="zoom-in"
       >
         ¿Sabías que...?
@@ -74,10 +74,10 @@ const expedientes = [
             tabindex="0"
             data-aos="fade-up"
             data-aos-delay={item.delay}
-            class="group relative bg-stone-900/95 md:bg-stone-900/80 dark:md:bg-stone-900/70 md:backdrop-blur-md p-6 md:p-7 rounded-xl border border-stone-700/80 dark:border-stone-700/60 hover:border-amber-500/60 focus:border-amber-500/60 focus:outline-none shadow-xl hover:shadow-[0_0_25px_rgba(245,158,11,0.15)] focus:shadow-[0_0_25px_rgba(245,158,11,0.15)] transition-all duration-500"
+            class="group relative bg-stone-900/95 md:bg-stone-900 dark:md:bg-stone-900/70 md:backdrop-blur-md p-6 md:p-7 rounded-xl border border-stone-700/80 dark:border-stone-700/60 hover:border-amber-500/60 focus:border-amber-500/60 focus:outline-none shadow-xl hover:shadow-[0_0_25px_rgba(245,158,11,0.15)] focus:shadow-[0_0_25px_rgba(245,158,11,0.15)] transition-all duration-500"
           >
             <div class="h-px w-10 bg-amber-500/40 group-hover:w-16 group-hover:bg-amber-500 transition-all duration-300 mb-4" />
-            <span class="font-mono text-[10px] tracking-[0.25em] uppercase text-amber-500/80">
+            <span class="font-mono text-[10px] tracking-[0.25em] uppercase text-amber-500">
               Expediente Nº{String(index + 1).padStart(2, '0')}
             </span>
             <h3 class="mt-3 font-cinzel text-base md:text-lg font-bold text-stone-100 group-hover:text-amber-400 transition-colors duration-300">
@@ -91,7 +91,7 @@ const expedientes = [
       }
     </div>
     <p
-      class="md:hidden mt-1 flex items-center justify-center gap-2 font-mono text-[10px] tracking-[0.25em] uppercase text-stone-500"
+      class="md:hidden mt-1 flex items-center justify-center gap-2 font-mono text-[10px] tracking-[0.25em] uppercase text-stone-600 dark:text-stone-400"
       aria-hidden="true"
     >
       Desliza · {expedientes.length} expedientes

@@ -175,8 +175,12 @@ test.describe('rendimiento', () => {
 test.describe('asistente', () => {
   test('abre con cuatro temas, no con las doce preguntas', async ({ page }) => {
     await esperarAPagina(page);
-    // Los botones flotantes se esconden mientras el hero domina la pantalla.
+    // Los botones flotantes se esconden mientras el hero domina la pantalla,
+    // y en móvil también al bajar leyendo: un gesto hacia arriba los devuelve.
     await page.evaluate(() => window.scrollTo(0, window.innerHeight * 1.5));
+    await page.waitForTimeout(100);
+    await page.evaluate(() => window.scrollBy(0, -60));
+    await expect(page.locator('body')).not.toHaveClass(/fab-oculto/);
 
     await page.locator('#asistente-toggle').click();
     await expect(page.locator('#asistente-panel')).toBeVisible();

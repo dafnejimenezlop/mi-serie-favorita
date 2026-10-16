@@ -27,6 +27,10 @@ const ogImageURL = new URL('/og.jpg', siteOrigin);
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Color de la barra del navegador en móvil: el mismo negro de la
+         cabecera, que es oscura en los dos temas. Sin esto Chrome/Safari
+         pintaban su barra blanca o gris encima de una web negra. -->
+    <meta name="theme-color" content="#0c0a09" />
     <!-- El favicon era un .ico de 254 KB — mas pesado que todo el CSS del
          sitio junto, descargado en cada visita. Un PNG de 32 px cumple lo
          mismo en 1,2 KB. El `type` coincide con la extension real (regla 5). -->
@@ -293,11 +297,12 @@ const ogImageURL = new URL('/og.jpg', siteOrigin);
 
     <div class="fixed inset-0 bg-stone-400 dark:bg-[#141414] -z-30"></div>
 
-    <!-- `scale-125` recorta los bordes del iframe, donde YouTube pinta su
+    <!-- `scale-[1.4]` recorta los bordes del iframe, donde YouTube pinta su
          propia interfaz (título, aviso "16+", barra de controles): con el
-         tamaño exacto de la pantalla asomaban por detrás del contenido. -->
+         tamaño exacto de la pantalla asomaban por detrás del contenido, y con
+         un 25 % el aviso de edad aún se veía arriba en escritorio. -->
     <div
-      class="fixed top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] -translate-x-1/2 -translate-y-1/2 scale-125 pointer-events-none opacity-50 dark:opacity-30 mix-blend-screen filter grayscale -z-20"
+      class="fixed top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] -translate-x-1/2 -translate-y-1/2 scale-[1.4] pointer-events-none opacity-50 dark:opacity-30 mix-blend-screen filter grayscale -z-20"
     >
       <div id="youtube-ambient-player" class="w-full h-full"></div>
     </div>
@@ -379,6 +384,43 @@ const ogImageURL = new URL('/og.jpg', siteOrigin);
         window.addEventListener('scroll', onScroll, { passive: true });
         window.addEventListener('resize', onScroll, { passive: true });
         update();
+      })();
+    </script>
+
+    <script is:inline>
+      // Botones flotantes en móvil: se apartan al bajar leyendo y vuelven en
+      // cuanto el usuario sube un poco (o llega al final de la página). Se
+      // ignoran los temblores de menos de 8 px y se escribe como mucho una
+      // vez por frame.
+      (() => {
+        const movil = window.matchMedia('(max-width: 767px)');
+        let ultimaY = window.scrollY;
+        let frame = null;
+        const actualizar = () => {
+          frame = null;
+          const y = window.scrollY;
+          const delta = y - ultimaY;
+          if (Math.abs(delta) < 8) return;
+          ultimaY = y;
+          const alFinal =
+            window.innerHeight + y >=
+            document.documentElement.scrollHeight - 120;
+          document.body.classList.toggle(
+            'fab-oculto',
+            movil.matches && delta > 0 && y > 240 && !alFinal,
+          );
+        };
+        window.addEventListener(
+          'scroll',
+          () => {
+            if (!frame) frame = requestAnimationFrame(actualizar);
+          },
+          { passive: true },
+        );
+        window.addEventListener('hashchange', () => {
+          document.body.classList.remove('fab-oculto');
+          ultimaY = window.scrollY;
+        });
       })();
     </script>
 
@@ -534,7 +576,7 @@ const ogImageURL = new URL('/og.jpg', siteOrigin);
         heroPlayer = new YT.Player('youtube-hero-player', {
           videoId: VIDEO_ID,
           playerVars: VARS_FONDO,
-          events: { onReady: onHeroReady },
+          events: { onReady: onHeroReady, onStateChange: onHeroEstado },
         });
       }
 
@@ -597,17 +639,83 @@ const ogImageURL = new URL('/og.jpg', siteOrigin);
       )
         ? 0
         : 350;
+
+      // ===== Cuándo se retira el cargador =====
+      // El hero ya nunca está en negro: tiene un póster local que se pinta al
+      // instante y el vídeo entra después con un fundido (ver onHeroEstado).
+      // Así que el cargador solo espera a ese póster, que son unos KB, y no a
+      // YouTube, que en móvil tarda varios segundos (medido: ~4 s con buena
+      // red, más de 20 en 3G).
+      var heroVideoListo = false;
+      var temporizadorVideo = null;
+
+      function cuandoPosterListo(alTerminar) {
+        var poster = document.getElementById('hero-poster');
+        var entraPorInicio = VISTAS_SIN_HERO.indexOf(window.location.hash) === -1;
+        if (!poster || !entraPorInicio || poster.complete) {
+          alTerminar();
+          return;
+        }
+        var hecho = false;
+        var una = function () {
+          if (hecho) return;
+          hecho = true;
+          alTerminar();
+        };
+        poster.addEventListener('load', una, { once: true });
+        poster.addEventListener('error', una, { once: true });
+      }
+
+      function retirarCargadorCuandoToque() {
+        cuandoPosterListo(hideGlobalLoader);
+      }
+
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function () {
-          window.setTimeout(hideGlobalLoader, esperaCargador);
+          window.setTimeout(retirarCargadorCuandoToque, esperaCargador);
         });
       } else {
-        window.setTimeout(hideGlobalLoader, esperaCargador);
+        window.setTimeout(retirarCargadorCuandoToque, esperaCargador);
       }
-      setTimeout(hideGlobalLoader, 2500);
+      setTimeout(hideGlobalLoader, 3000);
 
       function onHeroReady(event) {
         event.target.playVideo();
+      }
+
+      // YouTube avisa de cada cambio de estado. Al arrancar (y al reiniciar el
+      // bucle) pinta durante ~3 s sus propios controles en el centro del
+      // vídeo —anterior, pausa, siguiente— y el aviso de edad, aunque se pida
+      // `controls: 0`. Por eso el vídeo no se muestra en cuanto llega
+      // PLAYING (1), sino 3,5 s después; si se reanuda a mitad (al volver al
+      // hero), basta con 1,2 s. En pausa (2) o al acabar el bucle (0) se
+      // vuelve al póster, que tiene el mismo tono y hace el relevo invisible.
+      function onHeroEstado(event) {
+        var hero = document.getElementById('inicio');
+        if (event.data === 1) {
+          isPlaying = true;
+          pintarEstadoReproduccion();
+          if (heroVideoListo || temporizadorVideo) return;
+          var segundo = 0;
+          try {
+            segundo = event.target.getCurrentTime();
+          } catch (e) {
+            segundo = 0;
+          }
+          temporizadorVideo = window.setTimeout(
+            function () {
+              temporizadorVideo = null;
+              heroVideoListo = true;
+              if (hero) hero.classList.add('video-activo');
+            },
+            segundo < 4 ? 3500 : 1200,
+          );
+        } else if (event.data === 0 || event.data === 2) {
+          window.clearTimeout(temporizadorVideo);
+          temporizadorVideo = null;
+          heroVideoListo = false;
+          if (hero) hero.classList.remove('video-activo');
+        }
       }
 
       // Los botones de sonido y pausa mentian: #btnMute nacia con
@@ -654,7 +762,13 @@ const ogImageURL = new URL('/og.jpg', siteOrigin);
         if (btnPlayPause) {
           btnPlayPause.addEventListener('click', () => {
             if (!heroPlayer) return;
-            isPlaying = !isPlaying;
+            // Se mira el estado REAL del reproductor, no solo la intención:
+            // si el navegador bloqueó el autoplay, `isPlaying` decía "sí" con
+            // el vídeo parado y el primer clic en vez de reproducir pausaba.
+            const sonando =
+              typeof heroPlayer.getPlayerState === 'function' &&
+              heroPlayer.getPlayerState() === 1;
+            isPlaying = !sonando;
             if (isPlaying) heroPlayer.playVideo();
             else heroPlayer.pauseVideo();
             pintarEstadoReproduccion();

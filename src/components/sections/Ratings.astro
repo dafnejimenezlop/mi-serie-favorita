@@ -49,11 +49,16 @@ const TONO_BARRA = [
       data-aos-duration="1000"
     >
       <div class="space-y-6 md:space-y-8">
-        <h2
-          class="text-4xl md:text-5xl font-cinzel text-amber-950 dark:text-amber-500 font-bold tracking-[0.1em] transition-colors uppercase"
-        >
-          Sinopsis
-        </h2>
+        {/* Todas las secciones de Inicio comparten ahora el mismo sistema de
+            título: rótulo mono pequeño + h2 en versalitas, mismo tamaño y el
+            mismo ámbar por tema (antes había tres tamaños, dos ámbares en
+            tema claro y la mitad iban sin mayúsculas). */}
+        <div class="space-y-3">
+          <span class="block font-mono text-[11px] tracking-[0.3em] uppercase text-amber-800 dark:text-amber-500">La serie</span>
+          <h2 class="text-3xl md:text-5xl font-cinzel text-amber-700 dark:text-amber-500 font-bold tracking-[0.08em] leading-tight uppercase transition-colors">
+            Sinopsis
+          </h2>
+        </div>
         <p
           class="text-base md:text-lg text-stone-800 dark:text-stone-300 font-light leading-relaxed transition-colors tracking-wide"
         >
@@ -116,7 +121,7 @@ const TONO_BARRA = [
       data-aos-delay="300"
     >
       <span
-        class="absolute top-4 right-4 md:top-6 md:right-6 font-mono text-[9px] tracking-[0.25em] uppercase text-stone-500 dark:text-stone-600"
+        class="absolute top-4 right-4 md:top-6 md:right-6 font-mono text-[9px] tracking-[0.25em] uppercase text-stone-600 dark:text-stone-400"
         aria-hidden="true"
       >
         Expediente #01
@@ -136,7 +141,7 @@ const TONO_BARRA = [
         />
 
         <p
-          class="font-mono text-[10px] tracking-[0.3em] uppercase text-stone-500 dark:text-stone-500"
+          class="font-mono text-[10px] tracking-[0.3em] uppercase text-stone-600 dark:text-stone-400"
         >
           Valoración de la Comunidad
         </p>

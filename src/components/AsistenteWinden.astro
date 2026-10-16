@@ -169,13 +169,24 @@ const quickReplies = [
 ---
 
 <div id="asistente-winden-root" class="fixed bottom-6 right-6 z-[105] flex flex-col items-end">
-  <!-- Panel del asistente -->
+  <!-- Velo de fondo, solo en móvil: allí el panel era una ventana flotante
+       sobre la página sin oscurecerla, y el contenido de detrás se mezclaba
+       con la conversación. Tocarlo cierra el asistente. -->
+  <div
+    id="asistente-scrim"
+    class="sm:hidden fixed inset-0 -z-10 bg-black/60 opacity-0 pointer-events-none transition-opacity duration-300"
+    aria-hidden="true"
+  >
+  </div>
+
+  <!-- Panel del asistente. En móvil es una hoja inferior a todo el ancho
+       (85 % de alto); desde sm, la ventana flotante de siempre. -->
   <div
     id="asistente-panel"
     role="dialog"
     aria-label="Asistente de Winden"
     aria-hidden="true"
-    class="hidden mb-4 w-[calc(100vw-3rem)] max-w-sm sm:w-96 h-[34rem] max-h-[80vh] flex-col rounded-2xl border border-stone-700/60 bg-stone-950/95 backdrop-blur-xl shadow-2xl shadow-black/50 overflow-hidden origin-bottom-right opacity-0 scale-95 translate-y-2 transition-all duration-300 ease-out"
+    class="hidden mb-4 w-[calc(100vw-3rem)] max-w-sm sm:w-96 h-[34rem] max-h-[80vh] max-sm:fixed max-sm:inset-x-0 max-sm:bottom-0 max-sm:mb-0 max-sm:w-auto max-sm:max-w-none max-sm:h-[85dvh] max-sm:max-h-[85dvh] max-sm:rounded-b-none max-sm:border-x-0 max-sm:border-b-0 flex-col rounded-2xl border border-stone-700/60 bg-stone-950/95 backdrop-blur-xl shadow-2xl shadow-black/50 overflow-hidden origin-bottom-right opacity-0 scale-95 translate-y-2 transition-all duration-300 ease-out"
   >
     <div
       class="shrink-0 flex items-center justify-between gap-3 px-4 md:px-5 py-4 border-b border-stone-800 bg-stone-900/80"
@@ -200,7 +211,7 @@ const quickReplies = [
           <p class="font-cinzel text-xs tracking-[0.2em] uppercase text-amber-500 font-bold truncate">
             Asistente de Winden
           </p>
-          <p class="flex items-center gap-1.5 text-[10px] text-stone-500 font-mono tracking-wide">
+          <p class="flex items-center gap-1.5 text-[10px] text-stone-400 font-mono tracking-wide">
             <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
             En línea
           </p>
@@ -243,7 +254,7 @@ const quickReplies = [
           <p class="text-sm leading-relaxed bg-stone-800 text-stone-200 rounded-2xl rounded-bl-sm px-4 py-2.5">
             Hola, soy el asistente de este archivo. ¿En qué te ayudo?
           </p>
-          <span class="asistente-timestamp pl-1 text-[10px] font-mono tracking-wide text-stone-600"></span>
+          <span class="asistente-timestamp pl-1 text-[10px] font-mono tracking-wide text-stone-400"></span>
         </span>
       </div>
     </div>
@@ -256,7 +267,7 @@ const quickReplies = [
       <div class="flex items-center justify-between gap-2 px-4 pt-2.5 pb-1.5">
         <p
           id="asistente-sugerencias-titulo"
-          class="font-mono text-[9px] tracking-[0.25em] uppercase text-stone-600"
+          class="font-mono text-[9px] tracking-[0.25em] uppercase text-stone-400"
         >
           ¿Por dónde empezamos?
         </p>
@@ -461,6 +472,15 @@ const quickReplies = [
     }
   }
 
+  /* En móvil la hoja ya trae su propia X: el botón flotante se retira
+     mientras está abierta, o quedaría encima de las sugerencias. */
+  @media (max-width: 639px) {
+    :global(body.asistente-open) #asistente-toggle {
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .asistente-bubble,
     .asistente-typing-dot,
@@ -506,7 +526,7 @@ const quickReplies = [
       wrap.className = 'asistente-bubble asistente-bubble--user flex flex-col items-end gap-1 max-w-[85%] w-fit ml-auto';
       wrap.innerHTML = `
         <p class="text-sm leading-relaxed bg-amber-500 text-black font-medium rounded-2xl rounded-br-sm px-4 py-2.5">${text}</p>
-        <span class="asistente-timestamp pr-1 text-[10px] font-mono tracking-wide text-stone-600">${timestampNow()}</span>
+        <span class="asistente-timestamp pr-1 text-[10px] font-mono tracking-wide text-stone-400">${timestampNow()}</span>
       `;
       transcript.appendChild(wrap);
       scrollTranscriptToBottom();
@@ -549,7 +569,7 @@ const quickReplies = [
         <span class="flex flex-col items-start gap-1 min-w-0">
           <p class="text-sm leading-relaxed bg-stone-800 text-stone-200 rounded-2xl rounded-bl-sm px-4 py-2.5">${option.reply}</p>
           ${ctaHtml}
-          <span class="asistente-timestamp pl-1 text-[10px] font-mono tracking-wide text-stone-600">${timestampNow()}</span>
+          <span class="asistente-timestamp pl-1 text-[10px] font-mono tracking-wide text-stone-400">${timestampNow()}</span>
         </span>
       `;
       transcript.appendChild(wrap);
@@ -745,6 +765,8 @@ const quickReplies = [
     // El FAB de WhatsApp queda justo encima del panel; se aparta mientras el
     // asistente está abierto en vez de asomar por detrás.
     const whatsappFab = document.getElementById('whatsapp-fab');
+    const scrim = document.getElementById('asistente-scrim');
+    const esHoja = () => window.matchMedia('(max-width: 639px)').matches;
 
     function openAsistente() {
       isOpen = true;
@@ -754,6 +776,10 @@ const quickReplies = [
       // no se lleve por delante un panel que el usuario tiene abierto.
       document.body.classList.add('asistente-open');
       whatsappFab?.classList.add('is-tucked');
+      if (esHoja()) {
+        document.body.classList.add('scroll-lock');
+        scrim?.classList.remove('opacity-0', 'pointer-events-none');
+      }
       panel.classList.remove('hidden');
       panel.classList.add('flex');
       panel.setAttribute('aria-hidden', 'false');
@@ -772,6 +798,8 @@ const quickReplies = [
       isOpen = false;
       document.body.classList.remove('asistente-open');
       whatsappFab?.classList.remove('is-tucked');
+      scrim?.classList.add('opacity-0', 'pointer-events-none');
+      document.body.classList.remove('scroll-lock');
       panel.classList.add('opacity-0', 'scale-95', 'translate-y-2');
       panel.setAttribute('aria-hidden', 'true');
       toggleBtn.setAttribute('aria-expanded', 'false');
@@ -813,5 +841,6 @@ const quickReplies = [
 
     toggleBtn.addEventListener('click', () => (isOpen ? closeAsistente() : openAsistente()));
     closeBtn?.addEventListener('click', closeAsistente);
+    scrim?.addEventListener('click', closeAsistente);
   });
 </script>
