@@ -88,6 +88,15 @@ const artistas = new Set(songs.map((s) => s.artist)).size;
             data-video-id={destacada.youtubeId}
             class="relative w-full aspect-video rounded-2xl overflow-hidden border border-stone-300/70 dark:border-stone-800 bg-black shadow-2xl shadow-black/40"
           >
+            {/* El hueco del reproductor va ANTES que el botón de play. Iba
+                después, a pantalla completa del escenario y vacío, así que se
+                quedaba por encima del botón y se tragaba los toques: el play
+                grande no hacía nada. Y `w-full h-full` es imprescindible:
+                YouTube sustituye este div por un iframe con width="640"
+                height="360", y `inset-0` no estira un elemento reemplazado;
+                en un móvil de 358 px el vídeo salía recortado, con los
+                controles y el botón de pantalla completa fuera de la vista. */}
+            <div id="sound-stage-slot" class="absolute inset-0 w-full h-full"></div>
             <button
               type="button"
               id="sound-stage-play"
@@ -127,7 +136,6 @@ const artistas = new Set(songs.map((s) => s.artist)).size;
                 >Reproducir {destacada.title}, de {destacada.artist}</span
               >
             </button>
-            <div id="sound-stage-slot" class="absolute inset-0"></div>
           </div>
 
           <!-- Ficha de la pista en el escenario -->
@@ -349,11 +357,12 @@ const artistas = new Set(songs.map((s) => s.artist)).size;
 
               <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-              {/* El pie solo aparecía en `hover`, así que en móvil —donde no
-                  existe— ninguna foto tenía descripción visible. Ahora se ve
-                  siempre por debajo de `md` y se reserva al hover en
-                  escritorio, que es donde el mosaico limpio sí compensa. */}
-              <span class="photo-tile-caption absolute inset-x-0 bottom-0 px-3 py-2.5 md:translate-y-2 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 transition-all duration-300">
+              {/* En móvil el pie solo se queda en las fotos destacadas (2x2).
+                  En las pequeñas, de 110 px de alto, cuatro líneas de texto
+                  tapaban la foto casi entera; su descripción completa ya se
+                  lee en el visor al abrirla. En escritorio aparece al pasar
+                  el ratón, como antes. */}
+              <span class={`photo-tile-caption ${image.featured ? 'block' : 'hidden md:block'} absolute inset-x-0 bottom-0 px-3 py-2.5 md:translate-y-2 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 transition-all duration-300`}>
                 <span class="block text-[11px] md:text-xs leading-snug text-stone-100 font-medium line-clamp-2">
                   {image.alt}
                 </span>
@@ -372,69 +381,96 @@ const artistas = new Set(songs.map((s) => s.artist)).size;
   </div>
 </div>
 
-<!-- Visor de fotografías -->
+<!-- Visor de fotografías.
+     Rehecho para móvil, que es donde más se usa: la foto ocupaba 358x204 px
+     en medio de una pantalla negra, con las flechas encima de la imagen, y la
+     tira de miniaturas medía 5x3 px por miniatura (sus estilos vivían en el
+     <style> acotado del componente y las miniaturas se crean por JS, sin el
+     atributo de Astro, así que nunca casaban). Ahora:
+       - escenario a pantalla completa en tres franjas (barra · foto · pie),
+         con la foto de borde a borde en móvil;
+       - las fotos van en un carril con scroll-snap: el deslizamiento es el
+         nativo del navegador (inercia incluida), sin gestos a mano;
+       - doble toque (o clic con ratón) amplía la foto y se recorre con el
+         scroll nativo del propio marco;
+       - flechas y tira de miniaturas solo en escritorio; en móvil el
+         contador y el gesto bastan, y la tira descargaba ocho fotos enteras
+         solo para pintar miniaturas. -->
 <div
   id="photo-lightbox"
   role="dialog"
   aria-modal="true"
   aria-label="Visor de fotografías"
   aria-hidden="true"
-  class="hidden fixed inset-0 z-[120] flex-col items-center justify-center bg-black/95 backdrop-blur-lg opacity-0 transition-opacity duration-500 p-4 pb-28"
+  class="hidden fixed inset-0 z-[120] flex-col bg-black opacity-0 transition-opacity duration-300"
 >
-  <button
-    id="photo-lightbox-close"
-    aria-label="Cerrar visor"
-    class="absolute top-4 right-4 md:top-8 md:right-8 z-10 p-2 bg-stone-900/80 hover:bg-black text-stone-400 hover:text-amber-500 rounded-full transition-all border border-stone-700 hover:border-amber-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
-  >
-    <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-    </svg>
-  </button>
-  <button
-    id="photo-lightbox-prev"
-    aria-label="Foto anterior"
-    class="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-stone-900/80 hover:bg-black text-stone-300 hover:text-amber-500 border border-stone-700 hover:border-amber-500 flex items-center justify-center transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
-  >
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-    </svg>
-  </button>
-  <button
-    id="photo-lightbox-next"
-    aria-label="Foto siguiente"
-    class="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-stone-900/80 hover:bg-black text-stone-300 hover:text-amber-500 border border-stone-700 hover:border-amber-500 flex items-center justify-center transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
-  >
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-    </svg>
-  </button>
-
-  <figure class="flex flex-col items-center gap-4 max-w-full">
-    <img
-      id="photo-lightbox-img"
-      src=""
-      alt=""
-      class="max-w-full max-h-[68vh] w-auto h-auto rounded-lg shadow-2xl border border-stone-800 object-contain transition-opacity duration-200"
-    />
-    <figcaption
-      id="photo-lightbox-caption"
-      class="max-w-xl text-center text-sm md:text-base text-stone-300 font-light leading-relaxed px-4"
-    />
-  </figure>
-
-  <!-- Tira de contactos: el visor no daba ninguna pista de dónde estabas
-       dentro de las 26 fotos ni permitía saltar a una concreta. -->
   <div
-    id="photo-lightbox-strip"
-    class="absolute inset-x-0 bottom-0 flex items-center gap-2 overflow-x-auto px-4 py-3 bg-gradient-to-t from-black via-black/80 to-transparent custom-scrollbar"
+    class="relative z-10 shrink-0 flex items-center justify-between gap-4 px-3 md:px-8 pt-[max(0.75rem,env(safe-area-inset-top))] md:pt-6 pb-2 visor-barra"
   >
+    <p
+      id="photo-lightbox-counter"
+      aria-live="polite"
+      class="pl-2 font-mono text-[11px] tracking-[0.3em] uppercase text-stone-400 tabular-nums"
+    >
+    </p>
+    <button
+      id="photo-lightbox-close"
+      aria-label="Cerrar visor"
+      class="w-11 h-11 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-stone-300 hover:text-amber-500 hover:border-amber-500/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
   </div>
 
-  <p
-    id="photo-lightbox-counter"
-    aria-live="polite"
-    class="absolute bottom-24 left-1/2 -translate-x-1/2 font-mono text-[11px] tracking-[0.3em] uppercase text-stone-400 bg-black/60 backdrop-blur-md border border-white/10 rounded-full px-3 py-1"
-  />
+  <div class="relative flex-1 min-h-0">
+    <div
+      id="photo-lightbox-track"
+      class="photo-track absolute inset-0 flex overflow-x-auto overflow-y-hidden snap-x snap-mandatory overscroll-contain"
+    >
+    </div>
+    <button
+      id="photo-lightbox-prev"
+      aria-label="Foto anterior"
+      class="hidden md:flex absolute left-4 lg:left-8 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-black/60 hover:bg-black text-stone-300 hover:text-amber-500 border border-white/10 hover:border-amber-500/60 items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+    <button
+      id="photo-lightbox-next"
+      aria-label="Foto siguiente"
+      class="hidden md:flex absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-black/60 hover:bg-black text-stone-300 hover:text-amber-500 border border-white/10 hover:border-amber-500/60 items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+  </div>
+
+  <div
+    class="relative z-10 shrink-0 px-5 md:px-8 pt-3 pb-[max(0.875rem,env(safe-area-inset-bottom))] md:pb-6 space-y-3 visor-pie"
+  >
+    <p
+      id="photo-lightbox-caption"
+      class="max-w-2xl mx-auto text-center text-sm md:text-base text-stone-200 font-light leading-relaxed min-h-[2.75rem] md:min-h-0 line-clamp-3"
+    >
+    </p>
+    <div
+      id="photo-lightbox-strip"
+      class="photo-strip hidden md:flex gap-2 overflow-x-auto py-1 justify-center-safe"
+    >
+    </div>
+    <p
+      id="photo-lightbox-hint"
+      class="md:hidden text-center font-mono text-[9px] tracking-[0.25em] uppercase text-stone-500"
+      aria-hidden="true"
+    >
+      Desliza para cambiar · Doble toque para ampliar
+    </p>
+  </div>
 </div>
 
 <style>
@@ -461,11 +497,80 @@ const artistas = new Set(songs.map((s) => s.artist)).size;
     background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
   }
 
-  .strip-thumb {
+  /* ===== Visor =====
+     Las diapositivas y las miniaturas se crean por JS y no llevan el
+     atributo `data-astro-cid-*`: sus reglas van con :global() colgando del
+     visor (que sí lo lleva), o no casarían nunca. */
+  #photo-lightbox :global(.photo-track),
+  #photo-lightbox :global(.photo-strip) {
+    scrollbar-width: none;
+  }
+  #photo-lightbox :global(.photo-track::-webkit-scrollbar),
+  #photo-lightbox :global(.photo-strip::-webkit-scrollbar) {
+    display: none;
+  }
+
+  #photo-lightbox :global(.photo-slide) {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+    display: grid;
+    overflow: hidden;
+  }
+  @media (min-width: 768px) {
+    #photo-lightbox :global(.photo-slide) {
+      padding: 0 6rem;
+    }
+  }
+  /* `margin: auto` dentro de un grid centra la foto cuando es más pequeña
+     que el marco y, a diferencia de `place-items: center`, no la recorta
+     por arriba/izquierda cuando al ampliarla pasa a ser más grande. */
+  #photo-lightbox :global(.photo-slide img) {
+    margin: auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    user-select: none;
+    -webkit-user-drag: none;
+    touch-action: manipulation;
+    cursor: zoom-in;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+  @media (min-width: 768px) {
+    #photo-lightbox :global(.photo-slide img) {
+      border-radius: 0.5rem;
+    }
+  }
+  #photo-lightbox :global(.photo-slide img.is-loaded) {
+    opacity: 1;
+  }
+  #photo-lightbox :global(.photo-slide.is-zoomed) {
+    overflow: auto;
+    overscroll-behavior: contain;
+    padding: 0;
+    scrollbar-width: none;
+  }
+  #photo-lightbox :global(.photo-slide.is-zoomed img) {
+    width: var(--zoom-w);
+    max-width: none;
+    max-height: none;
+    border-radius: 0;
+    cursor: zoom-out;
+  }
+  /* Con una foto ampliada el carril no debe deslizar: el gesto es para
+     recorrer la foto, no para cambiar de foto. */
+  #photo-lightbox.zoom-activo :global(.photo-track) {
+    overflow-x: hidden;
+  }
+
+  #photo-lightbox :global(.strip-thumb) {
     flex: 0 0 auto;
-    width: 4rem;
-    height: 2.5rem;
-    border-radius: 0.25rem;
+    width: 4.5rem;
+    height: 2.75rem;
+    border-radius: 0.375rem;
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.15);
     opacity: 0.45;
@@ -474,21 +579,44 @@ const artistas = new Set(songs.map((s) => s.artist)).size;
       border-color 0.2s ease,
       transform 0.2s ease;
   }
-  .strip-thumb img {
+  #photo-lightbox :global(.strip-thumb img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
-  .strip-thumb:hover,
-  .strip-thumb:focus-visible {
+  #photo-lightbox :global(.strip-thumb:hover),
+  #photo-lightbox :global(.strip-thumb:focus-visible) {
     opacity: 0.85;
     outline: none;
     border-color: rgb(var(--accent-rgb) / 0.6);
   }
-  .strip-thumb[aria-current='true'] {
+  #photo-lightbox :global(.strip-thumb[aria-current='true']) {
     opacity: 1;
     border-color: rgb(var(--accent-rgb));
     transform: translateY(-2px);
+  }
+
+  /* Móvil en horizontal: la altura es lo escaso. Fuera la pista de gestos
+     y la leyenda a una línea, para que la foto se lleve casi toda la
+     pantalla. */
+  @media (max-height: 500px) {
+    #photo-lightbox-hint,
+    #photo-lightbox-strip {
+      display: none;
+    }
+    .visor-barra {
+      padding-top: 0.5rem;
+      padding-bottom: 0;
+    }
+    .visor-pie {
+      padding-top: 0.5rem;
+      padding-bottom: 0.75rem;
+    }
+    #photo-lightbox-caption {
+      -webkit-line-clamp: 1;
+      line-clamp: 1;
+      min-height: 0;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -496,7 +624,8 @@ const artistas = new Set(songs.map((s) => s.artist)).size;
     .track-row-eq span,
     .photo-tile,
     .photo-tile-caption,
-    .strip-thumb,
+    #photo-lightbox :global(.strip-thumb),
+    #photo-lightbox :global(.photo-slide img),
     [data-photo-open] img,
     [data-photo-open] span {
       transition: none !important;
@@ -551,6 +680,8 @@ const artistas = new Set(songs.map((s) => s.artist)).size;
       esperarYT(() => {
         reproductor = new YT.Player('sound-stage-slot', {
           videoId: id,
+          width: '100%',
+          height: '100%',
           playerVars: { autoplay: 1, rel: 0, playsinline: 1 },
         });
       });
@@ -620,13 +751,16 @@ const artistas = new Set(songs.map((s) => s.artist)).size;
     if (!visor) return;
     document.body.appendChild(visor);
 
-    const imagenVisor = document.getElementById('photo-lightbox-img');
+    const carril = document.getElementById('photo-lightbox-track');
     const cerrarVisor = document.getElementById('photo-lightbox-close');
     const anteriorVisor = document.getElementById('photo-lightbox-prev');
     const siguienteVisor = document.getElementById('photo-lightbox-next');
     const contador = document.getElementById('photo-lightbox-counter');
     const pie = document.getElementById('photo-lightbox-caption');
     const tira = document.getElementById('photo-lightbox-strip');
+    const sinMovimiento = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
 
     let indiceActual = 0;
     let ultimoFoco = null;
@@ -640,100 +774,219 @@ const artistas = new Set(songs.map((s) => s.artist)).size;
       const img = boton.querySelector('img');
       return { src: img.getAttribute('src'), alt: img.getAttribute('alt') };
     });
+    const total = galleryImages.length;
 
-    // Tira de contactos: se construye la PRIMERA vez que se abre el visor.
-    // Antes se montaba al cargar la página y asignaba `src` antes que
-    // `loading = 'lazy'`; una <img> que aún no está en el documento empieza a
-    // descargar en cuanto recibe `src`, así que las 25 fotos a tamaño
-    // completo (~4,4 MB) bajaban en CUALQUIER vista, también en Inicio desde
-    // un móvil, aunque nadie abriese nunca la galería.
+    // Diapositivas y tira se construyen la PRIMERA vez que se abre el visor.
+    // Construirlas al cargar la página (y asignar `src` antes que
+    // `loading = 'lazy'`) hacía que las 25 fotos a tamaño completo (~4,4 MB)
+    // bajasen en CUALQUIER vista aunque nadie abriese la galería. Ahora cada
+    // diapositiva guarda su ruta en `data-src` y solo se descargan la foto
+    // visible y sus dos vecinas.
+    let diapositivas = [];
     let miniaturas = [];
-    function construirTira() {
-      if (miniaturas.length || !tira) return;
+    function construirVisor() {
+      if (diapositivas.length || !carril) return;
       galleryImages.forEach((foto, i) => {
+        const diapositiva = document.createElement('div');
+        diapositiva.className = 'photo-slide';
+        diapositiva.setAttribute('role', 'group');
+        diapositiva.setAttribute('aria-roledescription', 'diapositiva');
+        diapositiva.setAttribute('aria-label', `${i + 1} de ${total}`);
+        const img = document.createElement('img');
+        img.alt = foto.alt;
+        img.decoding = 'async';
+        img.draggable = false;
+        img.dataset.src = foto.src;
+        img.addEventListener('load', () => img.classList.add('is-loaded'));
+        diapositiva.appendChild(img);
+        carril.appendChild(diapositiva);
+
+        if (!tira) return;
         const miniatura = document.createElement('button');
         miniatura.type = 'button';
         miniatura.className = 'strip-thumb';
         miniatura.setAttribute('aria-label', `Ir a la foto ${i + 1}`);
-        miniatura.dataset.stripIndex = String(i);
-        const img = document.createElement('img');
-        img.loading = 'lazy';
-        img.decoding = 'async';
-        img.alt = '';
-        img.src = foto.src;
-        miniatura.appendChild(img);
-        miniatura.addEventListener('click', () => mostrarFoto(i));
+        const mini = document.createElement('img');
+        mini.loading = 'lazy';
+        mini.decoding = 'async';
+        mini.alt = '';
+        mini.src = foto.src;
+        miniatura.appendChild(mini);
+        miniatura.addEventListener('click', () => irA(i));
         tira.appendChild(miniatura);
       });
-      miniaturas = Array.from(tira.querySelectorAll('[data-strip-index]'));
+      diapositivas = Array.from(carril.children);
+      miniaturas = tira ? Array.from(tira.children) : [];
     }
 
-    // Precargar vecinas: sin esto, cada salto dejaba el visor en blanco
-    // mientras se descargaba la siguiente foto.
-    function precargarVecinas(indice) {
-      [-1, 1].forEach((salto) => {
-        const vecina =
-          galleryImages[
-            (indice + salto + galleryImages.length) % galleryImages.length
-          ];
-        if (vecina) new Image().src = vecina.src;
-      });
+    function cargar(indice) {
+      const img = diapositivas[(indice + total) % total]?.querySelector('img');
+      if (img && !img.getAttribute('src')) img.src = img.dataset.src;
     }
 
-    function mostrarFoto(indice) {
-      indiceActual =
-        (indice + galleryImages.length) % galleryImages.length;
-      const foto = galleryImages[indiceActual];
-
-      imagenVisor.style.opacity = '0';
-      const listo = () => {
-        imagenVisor.style.opacity = '1';
-        imagenVisor.removeEventListener('load', listo);
-      };
-      imagenVisor.addEventListener('load', listo);
-      imagenVisor.src = foto.src;
-      imagenVisor.alt = foto.alt;
-      if (imagenVisor.complete) listo();
-
-      if (pie) pie.textContent = foto.alt;
+    // Pinta todo lo que depende de la foto visible. Se llama tanto al pulsar
+    // (flechas, tira, teclado) como al deslizar con el dedo.
+    function actualizar(indice) {
+      indiceActual = indice;
+      [indice, indice + 1, indice - 1].forEach(cargar);
       if (contador) {
-        contador.textContent = `${indiceActual + 1} / ${galleryImages.length}`;
+        contador.textContent = `${String(indice + 1).padStart(2, '0')} / ${total}`;
       }
+      if (pie) pie.textContent = galleryImages[indice].alt;
+      diapositivas.forEach((d, i) =>
+        d.setAttribute('aria-hidden', i === indice ? 'false' : 'true'),
+      );
       miniaturas.forEach((m, i) => {
-        m.setAttribute('aria-current', i === indiceActual ? 'true' : 'false');
-        if (i === indiceActual) {
-          m.scrollIntoView({
-            behavior: 'smooth',
-            block: 'nearest',
-            inline: 'center',
+        const activa = i === indice;
+        m.setAttribute('aria-current', activa ? 'true' : 'false');
+        if (activa && tira && tira.offsetParent !== null) {
+          tira.scrollTo({
+            left: m.offsetLeft - tira.clientWidth / 2 + m.offsetWidth / 2,
+            behavior: sinMovimiento ? 'auto' : 'smooth',
           });
         }
       });
-      precargarVecinas(indiceActual);
+    }
+
+    function irA(indice, instantaneo = false) {
+      const destino = (indice + total) % total;
+      desampliar();
+      // Los saltos de más de una foto (la tira, o dar la vuelta de la última
+      // a la primera) van sin animación: un deslizamiento suave cruzaría
+      // diapositivas vacías que aún no se han descargado.
+      const lejos = Math.abs(destino - indiceActual) > 1;
+      carril.scrollTo({
+        left: destino * carril.clientWidth,
+        behavior: instantaneo || lejos || sinMovimiento ? 'auto' : 'smooth',
+      });
+      actualizar(destino);
+    }
+
+    // Deslizar con el dedo: el carril hace scroll nativo y aquí solo se
+    // traduce la posición a índice, como mucho una vez por frame.
+    let frameCarril = null;
+    carril?.addEventListener(
+      'scroll',
+      () => {
+        if (frameCarril) return;
+        frameCarril = requestAnimationFrame(() => {
+          frameCarril = null;
+          if (!carril.clientWidth) return;
+          const indice = Math.round(carril.scrollLeft / carril.clientWidth);
+          if (indice !== indiceActual && indice >= 0 && indice < total) {
+            actualizar(indice);
+          }
+        });
+      },
+      { passive: true },
+    );
+
+    // ===== Ampliar =====
+    // La foto ampliada se agranda DENTRO de su diapositiva, que pasa a hacer
+    // scroll en los dos ejes: recorrerla es el scroll nativo (con inercia),
+    // sin matemáticas de arrastre. Se amplía hacia el punto tocado.
+    function ampliar(diapositiva, x, y) {
+      const img = diapositiva.querySelector('img');
+      if (!img || !img.classList.contains('is-loaded')) return;
+      const caja = img.getBoundingClientRect();
+      const marco = diapositiva.getBoundingClientRect();
+      const rx = Math.min(Math.max((x - caja.left) / caja.width, 0), 1);
+      const ry = Math.min(Math.max((y - caja.top) / caja.height, 0), 1);
+      const ancho = Math.round(caja.width * (marco.width < 768 ? 2.5 : 2));
+      diapositiva.style.setProperty('--zoom-w', `${ancho}px`);
+      diapositiva.classList.add('is-zoomed');
+      visor.classList.add('zoom-activo');
+      const nueva = img.getBoundingClientRect();
+      diapositiva.scrollLeft = rx * nueva.width - (x - marco.left);
+      diapositiva.scrollTop = ry * nueva.height - (y - marco.top);
+    }
+
+    function desampliar() {
+      diapositivas.forEach((d) => {
+        if (!d.classList.contains('is-zoomed')) return;
+        d.classList.remove('is-zoomed');
+        d.scrollLeft = 0;
+        d.scrollTop = 0;
+      });
+      visor.classList.remove('zoom-activo');
+    }
+
+    function alternarZoom(diapositiva, x, y) {
+      if (diapositiva.classList.contains('is-zoomed')) desampliar();
+      else ampliar(diapositiva, x, y);
+    }
+
+    // Ratón: clic en la foto amplía, clic en el fondo negro cierra.
+    // Táctil: doble toque amplía (o vuelve), y un toque suelto no hace nada,
+    // para que un roce al deslizar no cierre el visor.
+    // El tipo de puntero se anota en `pointerdown`: no todos los navegadores
+    // exponen `pointerType` en el evento `click`.
+    let tipoPuntero = 'mouse';
+    carril?.addEventListener('pointerdown', (evento) => {
+      tipoPuntero = evento.pointerType;
+    });
+    let ultimoToque = { t: 0, x: 0, y: 0 };
+    carril?.addEventListener('pointerup', (evento) => {
+      if (evento.pointerType !== 'touch') return;
+      const diapositiva = evento.target.closest('.photo-slide');
+      if (!diapositiva) return;
+      const ahora = performance.now();
+      const cerca =
+        Math.abs(evento.clientX - ultimoToque.x) < 30 &&
+        Math.abs(evento.clientY - ultimoToque.y) < 30;
+      if (ahora - ultimoToque.t < 320 && cerca) {
+        alternarZoom(diapositiva, evento.clientX, evento.clientY);
+        ultimoToque = { t: 0, x: 0, y: 0 };
+      } else {
+        ultimoToque = { t: ahora, x: evento.clientX, y: evento.clientY };
+      }
+    });
+    carril?.addEventListener('click', (evento) => {
+      if (tipoPuntero !== 'mouse') return;
+      const diapositiva = evento.target.closest('.photo-slide');
+      if (!diapositiva) return;
+      if (evento.target.tagName === 'IMG') {
+        alternarZoom(diapositiva, evento.clientX, evento.clientY);
+      } else if (!diapositiva.classList.contains('is-zoomed')) {
+        cerrar();
+      }
+    });
+
+    // ===== Abrir y cerrar =====
+    function recolocar() {
+      if (visor.getAttribute('aria-hidden') !== 'false') return;
+      carril.scrollLeft = indiceActual * carril.clientWidth;
     }
 
     function abrirVisor(indice) {
       ultimoFoco = document.activeElement;
-      construirTira();
+      construirVisor();
       visor.classList.remove('hidden');
       visor.classList.add('flex');
       visor.setAttribute('aria-hidden', 'false');
       document.body.classList.add('scroll-lock');
-      mostrarFoto(indice);
-      setTimeout(() => visor.classList.remove('opacity-0'), 10);
+      // Ya visible (con medidas reales), se coloca el carril en la foto
+      // pedida sin animación: abrir no debe "viajar" desde la primera.
+      indiceActual = indice;
+      carril.scrollLeft = indice * carril.clientWidth;
+      actualizar(indice);
+      window.requestAnimationFrame(() => visor.classList.remove('opacity-0'));
       cerrarVisor?.focus();
       document.addEventListener('keydown', alPulsarTecla);
+      window.addEventListener('resize', recolocar);
     }
 
     function cerrar() {
+      desampliar();
       visor.classList.add('opacity-0');
       visor.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('scroll-lock');
       setTimeout(() => {
         visor.classList.add('hidden');
         visor.classList.remove('flex');
-      }, 500);
+      }, 300);
       document.removeEventListener('keydown', alPulsarTecla);
+      window.removeEventListener('resize', recolocar);
       if (ultimoFoco instanceof HTMLElement) ultimoFoco.focus();
     }
 
@@ -742,22 +995,24 @@ const artistas = new Set(songs.map((s) => s.artist)).size;
     function alPulsarTecla(evento) {
       if (visor.getAttribute('aria-hidden') !== 'false') return;
       if (evento.key === 'Escape') {
-        cerrar();
+        // Primero se deshace la ampliación; un segundo Escape cierra.
+        if (visor.classList.contains('zoom-activo')) desampliar();
+        else cerrar();
         return;
       }
       if (evento.key === 'ArrowRight') {
-        mostrarFoto(indiceActual + 1);
+        irA(indiceActual + 1);
         return;
       }
       if (evento.key === 'ArrowLeft') {
-        mostrarFoto(indiceActual - 1);
+        irA(indiceActual - 1);
         return;
       }
       if (evento.key !== 'Tab') return;
 
-      const enfocables = visor.querySelectorAll(
-        'button, [href], [tabindex]:not([tabindex="-1"])',
-      );
+      const enfocables = Array.from(
+        visor.querySelectorAll('button, [href], [tabindex]:not([tabindex="-1"])'),
+      ).filter((el) => el.offsetParent !== null);
       if (!enfocables.length) return;
       const primero = enfocables[0];
       const ultimo = enfocables[enfocables.length - 1];
@@ -770,34 +1025,13 @@ const artistas = new Set(songs.map((s) => s.artist)).size;
       }
     }
 
-    // Gesto de deslizar en móvil, que es donde más se usa un visor de fotos.
-    let inicioX = null;
-    visor.addEventListener(
-      'touchstart',
-      (e) => {
-        inicioX = e.changedTouches[0].clientX;
-      },
-      { passive: true },
-    );
-    visor.addEventListener(
-      'touchend',
-      (e) => {
-        if (inicioX === null) return;
-        const recorrido = e.changedTouches[0].clientX - inicioX;
-        inicioX = null;
-        if (Math.abs(recorrido) < 45) return;
-        mostrarFoto(indiceActual + (recorrido < 0 ? 1 : -1));
-      },
-      { passive: true },
-    );
-
     document.querySelectorAll('[data-photo-open]').forEach((boton) => {
       boton.addEventListener('click', () =>
         abrirVisor(Number(boton.dataset.photoIndex)),
       );
     });
     cerrarVisor?.addEventListener('click', cerrar);
-    siguienteVisor?.addEventListener('click', () => mostrarFoto(indiceActual + 1));
-    anteriorVisor?.addEventListener('click', () => mostrarFoto(indiceActual - 1));
+    siguienteVisor?.addEventListener('click', () => irA(indiceActual + 1));
+    anteriorVisor?.addEventListener('click', () => irA(indiceActual - 1));
   });
 </script>

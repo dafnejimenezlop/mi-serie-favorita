@@ -22,6 +22,12 @@ export type Recommendation = {
   affinity: number;
   /** Si no hay póster local, la tarjeta cae a un fondo generado (ver Recomendaciones.astro). */
   cover?: string;
+  /**
+   * La carátula es un logotipo oscuro sobre fondo transparente: sobre el
+   * fondo negro de las tarjetas no se leería, así que se presenta sobre
+   * claro.
+   */
+  coverOnLight?: boolean;
   platform: {
     name: StreamingPlatform;
     url: string;
@@ -195,6 +201,7 @@ export const recommendations: Recommendation[] = [
     ],
     affinity: 78,
     cover: '/recomendacion/russian-doll.png',
+    coverOnLight: true,
     platform: { name: 'Netflix', url: 'https://www.netflix.com/title/80211627' },
     tags: ['Bucle temporal', 'Tragicomedia'],
   },
@@ -265,6 +272,7 @@ export const recommendations: Recommendation[] = [
     ],
     affinity: 80,
     cover: '/recomendacion/high-castle.png',
+    coverOnLight: true,
     platform: { name: 'Amazon Prime Video', url: 'https://www.primevideo.com' },
     tags: ['Universos paralelos', 'Historia alternativa'],
   },
@@ -307,6 +315,7 @@ export const recommendations: Recommendation[] = [
     ],
     affinity: 73,
     cover: '/recomendacion/black-mirror.png',
+    coverOnLight: true,
     platform: { name: 'Netflix', url: 'https://www.netflix.com/title/70264888' },
     tags: ['Antología', 'Distopía'],
   },

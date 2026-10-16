@@ -1,8 +1,12 @@
 ---
 // src/components/Recomendaciones.astro
-// Layout "spotlight + carril" (maestro-detalle): un panel grande muestra el
-// título seleccionado, un carril horizontal a la derecha permite recorrer
-// el resto. Filtro por plataforma sobre el carril.
+// Destacada + catálogo + ficha. Antes era "spotlight + carril" con el
+// catálogo completo debajo: los mismos 24 títulos aparecían DOS veces (en
+// el carril y en la rejilla), y pulsar una carátula del catálogo subía la
+// página entera hasta el panel de arriba, así que en móvil perdías el sitio
+// en la lista cada vez. Ahora hay un solo listado, y cada título se abre en
+// una ficha (hoja inferior en móvil, modal en escritorio) con
+// anterior/siguiente para recorrer el catálogo sin salir de ella.
 import { recommendations, platformFilters } from '../data/recomendaciones';
 
 const initial = recommendations.reduce((best, item) =>
@@ -30,8 +34,8 @@ const byAffinityDesc = [...recommendations].sort((a, b) => b.affinity - a.affini
         class="text-base md:text-lg text-stone-700 dark:text-stone-300 font-light leading-relaxed max-w-2xl mx-auto tracking-wide"
       >
         Si DARK te ha atrapado, este es el resto del laberinto: misterio,
-        viajes en el tiempo y pueblos con demasiados secretos. Elige una
-        carátula del carril y el panel destacado cambia con ella.
+        viajes en el tiempo y pueblos con demasiados secretos. Toca cualquier
+        carátula para abrir su ficha.
       </p>
 
       <div
@@ -51,257 +55,149 @@ const byAffinityDesc = [...recommendations].sort((a, b) => b.affinity - a.affini
       </div>
     </div>
 
-    <!-- Filtro por plataforma. En móvil, una sola fila deslizable: con
-         `flex-wrap` los seis filtros ocupaban tres filas (≈170 px) y
-         empujaban el panel destacado fuera de la primera pantalla. El
-         degradado del borde derecho indica que la fila continúa. -->
-    <div
-      role="group"
-      aria-label="Filtrar recomendaciones por plataforma"
-      class="flex flex-nowrap md:flex-wrap items-center md:justify-center gap-2 md:gap-3 mb-8 md:mb-12 -mx-4 px-4 md:mx-0 md:px-0 py-1 overflow-x-auto md:overflow-visible [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [mask-image:linear-gradient(to_right,black_82%,transparent)] md:[mask-image:none]"
+    <!-- ===== Destacada =====
+         La recomendación con más afinidad, como portada cinematográfica a
+         todo el ancho. Es estática: la selección del catálogo se abre en la
+         ficha, no reescribe este panel. -->
+    <section
+      aria-labelledby="reco-destacada-titulo"
+      class="relative overflow-hidden rounded-3xl border border-stone-800 bg-stone-950 shadow-2xl shadow-black/40"
       data-aos="fade-up"
     >
-      <button
-        type="button"
-        data-reco-filter="todas"
-        aria-pressed="true"
-        class="reco-filter-btn shrink-0 whitespace-nowrap active inline-flex items-center justify-center min-h-11 md:min-h-9 px-4 py-2 rounded-full font-cinzel text-[10px] md:text-xs font-bold tracking-[0.15em] uppercase transition-all duration-300 border border-amber-500 bg-amber-500 text-black shadow-lg shadow-amber-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-      >
-        Todas
-      </button>
-      {
-        platformFilters.map((platform) => (
-          <button
-            type="button"
-            data-reco-filter={platform}
-            aria-pressed="false"
-            class="reco-filter-btn shrink-0 whitespace-nowrap inline-flex items-center justify-center min-h-11 md:min-h-9 px-4 py-2 rounded-full font-cinzel text-[10px] md:text-xs font-bold tracking-[0.15em] uppercase transition-all duration-300 border border-stone-400/50 dark:border-stone-700 text-stone-600 dark:text-stone-400 hover:border-amber-500/60 hover:text-amber-600 dark:hover:text-amber-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
-          >
-            {platform}
-          </button>
-        ))
-      }
-    </div>
+      {/* Esta vista arranca en `display:none`, pero sin `loading="lazy"`
+          la caratula destacada se descargaba entera en la carga inicial
+          aunque el usuario no entrase nunca aqui. */}
+      <img
+        src={initial.cover}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        class="absolute inset-0 w-full h-full object-cover opacity-90"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-black/10" />
+      <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-transparent" />
 
-    <!-- ===== Master-detail: spotlight + carril ===== -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
-      <!-- Spotlight (detail) -->
-      <div class="lg:col-span-7 relative">
-        <div
-          id="reco-spotlight"
-          class="relative w-full h-full min-h-[420px] rounded-3xl overflow-hidden border border-stone-800 bg-stone-950 shadow-2xl shadow-black/40"
-        >
-          {/* Esta vista arranca en `display:none`, pero sin `loading="lazy"`
-              la caratula destacada se descargaba entera en la carga inicial
-              aunque el usuario no entrase nunca aqui. */}
-          <img
-            id="reco-spotlight-img"
-            src={initial.cover}
-            alt=""
-            loading="lazy"
-            decoding="async"
-            class="absolute inset-0 w-full h-full object-cover opacity-90 transition-opacity duration-500 ease-out"
-          />
-          <div
-            id="reco-spotlight-fallback"
-            class:list={['absolute inset-0 flex items-center justify-center bg-stone-950 reco-cover-fallback transition-opacity duration-500 ease-out', { hidden: !!initial.cover }]}
-            aria-hidden="true"
-          >
-            <span class="font-cinzel text-8xl md:text-9xl font-bold text-amber-500/20 select-none">
-              {initial.title.charAt(0)}
+      <div class="relative z-10 flex flex-col justify-end min-h-[420px] md:min-h-[460px] p-6 md:p-10 lg:p-12 max-w-2xl">
+        <p class="font-mono text-[10px] md:text-[11px] tracking-[0.3em] uppercase text-amber-500/90 mb-3">
+          Si solo ves una
+        </p>
+        <div class="flex items-center gap-3 mb-3">
+          <div class="flex items-center gap-1.5 rounded-full bg-black/50 border border-amber-500/30 backdrop-blur-md px-3 py-1">
+            <svg class="w-3.5 h-3.5 text-amber-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z" />
+            </svg>
+            <span class="font-mono text-[11px] tracking-wider text-stone-100">
+              {initial.affinity}% afín
             </span>
           </div>
-          <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/10" />
-          <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/10 to-transparent" />
-
-          <div class="relative z-10 flex flex-col justify-end h-full p-6 md:p-10 min-h-[420px]">
-            <div class="flex items-center gap-3 mb-3">
-              <div class="flex items-center gap-1.5 rounded-full bg-black/50 border border-amber-500/30 backdrop-blur-md px-3 py-1">
-                <svg class="w-3.5 h-3.5 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z" />
-                </svg>
-                <span id="reco-spotlight-affinity" class="font-mono text-[11px] tracking-wider text-stone-100">
-                  {initial.affinity}% afín
-                </span>
-              </div>
-              <span id="reco-spotlight-years" class="font-mono text-[11px] tracking-widest text-stone-400 uppercase">
-                {initial.years}
-              </span>
-            </div>
-
-            <h3
-              id="reco-spotlight-title"
-              class="font-cinzel text-3xl md:text-5xl font-bold text-white uppercase tracking-wide drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] transition-opacity duration-300"
-            >
-              {initial.title}
-            </h3>
-
-            <p id="reco-spotlight-hook" class="mt-4 max-w-xl text-sm md:text-base text-stone-200 font-light leading-relaxed transition-opacity duration-300">
-              {initial.hook}
-            </p>
-
-            <div id="reco-spotlight-body" class="mt-3 max-w-xl space-y-2 hidden md:block">
-              {initial.body.map((p) => (
-                <p class="text-sm text-stone-400 font-light leading-relaxed">{p}</p>
-              ))}
-            </div>
-
-            {/* Llevaba `max-w-xl` y `max-w-[220px]` a la vez: dos valores para
-                la misma propiedad, y cual ganaba dependia del orden en que
-                Tailwind generase las clases, no del orden escrito aqui. */}
-            <div class="mt-4 h-1 w-full max-w-[220px] rounded-full bg-white/10 overflow-hidden">
-              <div
-                id="reco-spotlight-affinity-fill"
-                class="h-full rounded-full bg-gradient-to-r from-amber-600 to-amber-400 transition-[width] duration-700 ease-out"
-                style={`width: ${initial.affinity}%`}
-              />
-            </div>
-
-            <div class="mt-6 flex flex-wrap items-center gap-3">
-              <a
-                id="reco-spotlight-link"
-                href={initial.platform.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center justify-center gap-2 rounded-full bg-amber-500 text-black min-h-10 px-5 py-2.5 text-xs font-bold uppercase tracking-wide hover:bg-amber-400 hover:-translate-y-0.5 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
-              >
-                <span id="reco-spotlight-platform">Ver en {initial.platform.name}</span>
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </a>
-              <div id="reco-spotlight-tags" class="flex flex-wrap gap-2">
-                {initial.tags.map((tag) => (
-                  <span class="px-2.5 py-1 rounded-full bg-white/10 text-[10px] font-mono tracking-wide text-stone-300 uppercase">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Carril (master) -->
-      <div class="min-w-0 lg:col-span-5 flex flex-col">
-        <div class="flex items-center justify-between mb-3 px-1">
-          <p id="reco-rail-count" class="font-cinzel text-xs tracking-[0.25em] uppercase text-stone-500">
-            {recommendations.length} títulos
-          </p>
-          <div class="flex gap-2">
-            <button
-              type="button"
-              id="reco-rail-prev"
-              aria-label="Desplazar hacia atrás"
-              class="w-10 h-10 md:w-8 md:h-8 shrink-0 rounded-full border border-stone-700 text-stone-400 hover:text-amber-500 hover:border-amber-500 flex items-center justify-center transition-all duration-200 disabled:opacity-30 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
-            >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-            <button
-              type="button"
-              id="reco-rail-next"
-              aria-label="Desplazar hacia adelante"
-              class="w-10 h-10 md:w-8 md:h-8 shrink-0 rounded-full border border-stone-700 text-stone-400 hover:text-amber-500 hover:border-amber-500 flex items-center justify-center transition-all duration-200 disabled:opacity-30 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
-            >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
+          <span class="font-mono text-[11px] tracking-widest text-stone-400 uppercase">
+            {initial.years}
+          </span>
         </div>
 
-        <div class="relative flex-1 min-w-0">
-          {/* En escritorio el carril es una rejilla con scroll vertical y la
-              segunda fila quedaba cortada en seco, como si la maqueta
-              estuviera rota. El degradado inferior lo presenta como lo que
-              es —hay más debajo— y se apaga al llegar al final. */}
-          <div
-            id="reco-rail-fade-bottom"
-            class="reco-rail-fade-bottom pointer-events-none absolute inset-x-0 bottom-0 h-16 z-10 hidden lg:block transition-opacity duration-300"
-            aria-hidden="true"
-          />
-          <div
-            id="reco-rail"
-            class="reco-rail h-full flex lg:grid lg:grid-cols-3 lg:auto-rows-min gap-3 md:gap-4 overflow-x-auto lg:overflow-y-auto lg:max-h-[440px] snap-x lg:snap-none snap-mandatory pb-2 lg:pb-1 pr-1"
-          >
-            {
-              recommendations.map((item) => (
-                <button
-                  type="button"
-                  data-reco-item={item.id}
-                  data-platform={item.platform.name}
-                  aria-pressed={item.id === initial.id ? 'true' : 'false'}
-                  class="reco-rail-card snap-start shrink-0 w-32 sm:w-36 lg:w-full flex flex-col text-left rounded-xl overflow-hidden border border-stone-800 bg-stone-900/60 transition-all duration-300 ease-out hover:-translate-y-1 hover:border-amber-500/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
-                >
-                  <div class="relative w-full aspect-[3/4] overflow-hidden bg-stone-950">
-                    {item.cover ? (
-                      <img
-                        src={item.cover}
-                        alt=""
-                        loading="lazy"
-                        class="w-full h-full object-cover grayscale-[40%] transition-all duration-300"
-                      />
-                    ) : (
-                      <div class="reco-cover-fallback w-full h-full flex items-center justify-center bg-gradient-to-br from-stone-900 to-stone-950">
-                        <span class="font-cinzel text-3xl font-bold text-amber-500/25">{item.title.charAt(0)}</span>
-                      </div>
-                    )}
-                    <div class="reco-rail-card-glow absolute inset-0 border-2 border-amber-500 rounded-xl opacity-0 transition-opacity duration-300" />
-                    <div class="absolute top-1.5 right-1.5 flex items-center gap-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 px-1.5 py-0.5">
-                      <svg class="w-2.5 h-2.5 text-amber-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z" />
-                      </svg>
-                      <span class="font-mono text-[9px] tracking-wide text-stone-200">{item.affinity}%</span>
-                    </div>
-                  </div>
-                  <div class="px-2.5 py-2">
-                    <p class="font-cinzel text-[11px] font-bold text-stone-200 uppercase tracking-wide truncate">
-                      {item.title}
-                    </p>
-                    <p class="text-[10px] font-mono text-stone-500 truncate">{item.platform.name}</p>
-                  </div>
-                </button>
-              ))
-            }
-          </div>
-          <div class="reco-rail-fade-start pointer-events-none absolute inset-y-0 left-0 w-6 lg:hidden" aria-hidden="true" />
-          <div class="reco-rail-fade-end pointer-events-none absolute inset-y-0 right-0 w-6 lg:hidden" aria-hidden="true" />
-        </div>
-
-        <p
-          id="reco-empty-state"
-          class="hidden text-center text-stone-500 dark:text-stone-500 font-mono text-sm tracking-wide py-10"
+        <h3
+          id="reco-destacada-titulo"
+          class="font-cinzel text-3xl md:text-5xl font-bold text-white uppercase tracking-wide drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]"
         >
-          No hay recomendaciones para esta plataforma todavía.
-        </p>
-      </div>
-    </div>
+          {initial.title}
+        </h3>
 
-    <!-- ===== Catálogo completo ===== -->
-    <div class="mt-16 md:mt-24">
+        <p class="mt-4 text-sm md:text-base text-stone-200 font-light leading-relaxed">
+          {initial.hook}
+        </p>
+
+        <div class="mt-6 flex flex-wrap items-center gap-3">
+          <a
+            href={initial.platform.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center gap-2 rounded-full bg-amber-500 text-black min-h-11 px-5 py-2.5 text-xs font-bold uppercase tracking-wide hover:bg-amber-400 hover:-translate-y-0.5 transition-[background-color,transform] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+          >
+            Ver en {initial.platform.name}
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+          <button
+            type="button"
+            data-reco-open={initial.id}
+            aria-haspopup="dialog"
+            class="inline-flex items-center justify-center gap-2 rounded-full border border-white/25 bg-white/5 backdrop-blur-md text-stone-100 min-h-11 px-5 py-2.5 text-xs font-bold uppercase tracking-wide hover:border-amber-500/70 hover:text-amber-400 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Más información
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Catálogo ===== -->
+    <section aria-labelledby="reco-catalogo-titulo" class="mt-14 md:mt-20">
       {/* Tres piezas sin sitio a 390 px: el titulo (278 px, `whitespace-nowrap`),
           la linea que crece y el contador. Entre las dos separaciones de
           `gap-6` la fila pedia 407 px y sacaba 17 px de scroll horizontal a
           toda la vista. Con `flex-wrap` el contador baja a una segunda linea
           en movil y en escritorio todo sigue igual. */}
       <div
-        class="flex flex-wrap items-center gap-x-4 gap-y-1 md:gap-6 mb-8 md:mb-10"
+        class="flex flex-wrap items-center gap-x-4 gap-y-1 md:gap-6 mb-5 md:mb-6"
         data-aos="fade-up"
       >
-        <h3 class="text-xl md:text-3xl font-cinzel text-stone-800 dark:text-stone-100 font-bold uppercase tracking-wider md:tracking-widest whitespace-nowrap">
+        <h3
+          id="reco-catalogo-titulo"
+          class="text-xl md:text-3xl font-cinzel text-stone-800 dark:text-stone-100 font-bold uppercase tracking-wider md:tracking-widest whitespace-nowrap"
+        >
           Catálogo Completo
         </h3>
         <div class="h-[1px] flex-grow bg-gradient-to-r from-stone-400 dark:from-stone-700 to-transparent"></div>
-        <p id="reco-grid-count" class="font-mono text-[10px] md:text-xs tracking-widest uppercase text-stone-500 whitespace-nowrap">
+        <p id="reco-grid-count" aria-live="polite" class="font-mono text-[10px] md:text-xs tracking-widest uppercase text-stone-500 whitespace-nowrap">
           {recommendations.length} títulos
         </p>
       </div>
 
+      <!-- Filtro por plataforma, pegado al catálogo al que filtra (antes
+           estaba encima del panel destacado, a una pantalla de distancia de
+           la lista que cambiaba). En móvil, una sola fila deslizable: con
+           `flex-wrap` los seis filtros ocupaban tres filas. El degradado del
+           borde derecho indica que la fila continúa. -->
+      <div
+        role="group"
+        aria-label="Filtrar recomendaciones por plataforma"
+        class="flex flex-nowrap md:flex-wrap items-center gap-2 md:gap-3 mb-6 md:mb-8 -mx-4 px-4 md:mx-0 md:px-0 py-1 overflow-x-auto md:overflow-visible [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [mask-image:linear-gradient(to_right,black_82%,transparent)] md:[mask-image:none]"
+        data-aos="fade-up"
+      >
+        <button
+          type="button"
+          data-reco-filter="todas"
+          aria-pressed="true"
+          class="reco-filter-btn shrink-0 whitespace-nowrap active inline-flex items-center justify-center min-h-11 md:min-h-9 px-4 py-2 rounded-full font-cinzel text-[10px] md:text-xs font-bold tracking-[0.15em] uppercase transition-all duration-300 border border-amber-500 bg-amber-500 text-black shadow-lg shadow-amber-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+        >
+          Todas
+        </button>
+        {
+          platformFilters.map((platform) => (
+            <button
+              type="button"
+              data-reco-filter={platform}
+              aria-pressed="false"
+              class="reco-filter-btn shrink-0 whitespace-nowrap inline-flex items-center justify-center min-h-11 md:min-h-9 px-4 py-2 rounded-full font-cinzel text-[10px] md:text-xs font-bold tracking-[0.15em] uppercase transition-all duration-300 border border-stone-400/50 dark:border-stone-700 text-stone-600 dark:text-stone-400 hover:border-amber-500/60 hover:text-amber-600 dark:hover:text-amber-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+            >
+              {platform}
+            </button>
+          ))
+        }
+      </div>
+
+      {/* Tarjetas apaisadas (16:9). Las carátulas no son pósters: hay arte
+          horizontal, pósters verticales y logotipos alargados, y la rejilla
+          las recortaba todas a 2:3 — de ahí títulos ilegibles como "RFU",
+          "UNTERPA" o "IISSING". Cada imagen se ve ahora ENTERA (`contain`)
+          sobre una copia desenfocada de sí misma que rellena la tarjeta; el
+          navegador la descarga una sola vez para las dos capas. */}
       <div
         id="reco-grid"
-        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-5"
+        class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 gap-y-5 md:gap-x-5 md:gap-y-7"
       >
         {
           byAffinityDesc.map((item, index) => (
@@ -309,48 +205,57 @@ const byAffinityDesc = [...recommendations].sort((a, b) => b.affinity - a.affini
               type="button"
               data-reco-item={item.id}
               data-platform={item.platform.name}
-              aria-pressed={item.id === initial.id ? 'true' : 'false'}
-              class="reco-rail-card reco-grid-card group relative flex flex-col text-left rounded-xl overflow-hidden border border-stone-800 bg-stone-900/60 transition-all duration-300 ease-out hover:-translate-y-1 hover:border-amber-500/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+              aria-haspopup="dialog"
+              aria-label={`${item.title}, ${item.affinity}% afín, en ${item.platform.name}. Abrir ficha`}
+              class="reco-card group flex flex-col text-left rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-4 focus-visible:ring-offset-stone-950"
               data-aos="fade-up"
-              data-aos-delay={Math.min(index * 40, 400)}
+              data-aos-delay={Math.min((index % 4) * 60, 240)}
             >
-              <div class="relative w-full aspect-[2/3] overflow-hidden bg-stone-950">
+              <span class={`reco-card-media relative block w-full aspect-video overflow-hidden rounded-xl border border-stone-300/70 dark:border-stone-800 ${item.coverOnLight ? 'bg-stone-200' : 'bg-stone-950'} transition-[border-color,transform] duration-300 group-hover:border-amber-500/60 group-hover:-translate-y-1`}>
                 {item.cover ? (
-                  <img
-                    src={item.cover}
-                    alt=""
-                    loading="lazy"
-                    class="w-full h-full object-cover grayscale-[40%] transition-all duration-500 group-hover:scale-105"
-                  />
+                  <>
+                    {!item.coverOnLight && (
+                      <img
+                        src={item.cover}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        aria-hidden="true"
+                        class="absolute inset-0 w-full h-full object-cover scale-110 blur-md opacity-40"
+                      />
+                    )}
+                    <img
+                      src={item.cover}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                      class={`relative w-full h-full object-contain transition-transform duration-500 group-hover:scale-105 ${item.coverOnLight ? 'p-4' : ''}`}
+                    />
+                  </>
                 ) : (
-                  <div class="reco-cover-fallback w-full h-full flex items-center justify-center bg-gradient-to-br from-stone-900 to-stone-950">
+                  <span class="reco-cover-fallback absolute inset-0 flex items-center justify-center">
                     <span class="font-cinzel text-4xl font-bold text-amber-500/25">{item.title.charAt(0)}</span>
-                  </div>
+                  </span>
                 )}
-                <div class="reco-rail-card-glow absolute inset-0 border-2 border-amber-500 rounded-xl opacity-0 transition-opacity duration-300" />
-
-                <span class="absolute top-2 left-2 font-mono text-[9px] tracking-widest text-stone-300/80 group-hover:text-amber-400 transition-colors duration-300">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                <div class="absolute top-1.5 right-1.5 flex items-center gap-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 px-1.5 py-0.5">
-                  <svg class="w-2.5 h-2.5 text-amber-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <span class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
+                <span class="absolute top-1.5 right-1.5 flex items-center gap-1 rounded-full bg-black/70 border border-white/10 px-1.5 py-0.5">
+                  <svg class="w-2.5 h-2.5 text-amber-500 shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                     <path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z" />
                   </svg>
-                  <span class="font-mono text-[9px] tracking-wide text-stone-200">{item.affinity}%</span>
-                </div>
-
-                <div class="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black via-black/70 to-transparent opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300 pointer-events-none">
-                  <p class="text-[10px] text-stone-300 font-light leading-snug line-clamp-4">
-                    {item.hook}
-                  </p>
-                </div>
-              </div>
-              <div class="px-2.5 py-2">
-                <p class="font-cinzel text-[11px] font-bold text-stone-200 uppercase tracking-wide truncate">
+                  <span class="font-mono text-[9px] md:text-[10px] tracking-wide text-stone-100">{item.affinity}%</span>
+                </span>
+                <span class="hidden md:block absolute bottom-2 left-2.5 font-mono text-[10px] tracking-widest text-stone-300/80 group-hover:text-amber-400 transition-colors duration-300">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+              </span>
+              <span class="block px-0.5 pt-2.5">
+                <span class="block font-cinzel text-xs md:text-sm font-bold text-stone-800 dark:text-stone-100 uppercase tracking-wide truncate group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors duration-300">
                   {item.title}
-                </p>
-                <p class="text-[10px] font-mono text-stone-500 truncate">{item.platform.name}</p>
-              </div>
+                </span>
+                <span class="block mt-0.5 text-[10px] md:text-[11px] font-mono text-stone-500 truncate">
+                  {item.platform.name} · {item.years}
+                </span>
+              </span>
             </button>
           ))
         }
@@ -362,6 +267,146 @@ const byAffinityDesc = [...recommendations].sort((a, b) => b.affinity - a.affini
       >
         No hay títulos para esta plataforma todavía.
       </p>
+    </section>
+  </div>
+</div>
+
+<!-- ===== Ficha =====
+     Hoja inferior en móvil (se cierra arrastrando el asa hacia abajo, con la
+     X, tocando fuera o con Escape) y modal centrado desde md. Se rellena por
+     JS con los datos del título elegido. -->
+<div
+  id="reco-ficha"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="reco-ficha-titulo"
+  aria-hidden="true"
+  class="reco-ficha hidden fixed inset-0 z-[130]"
+>
+  <div data-reco-cerrar class="reco-ficha-fondo absolute inset-0 bg-black/75 backdrop-blur-sm"></div>
+
+  <div
+    id="reco-ficha-panel"
+    class="reco-ficha-panel absolute inset-x-0 bottom-0 md:inset-x-auto md:bottom-auto md:left-1/2 md:top-1/2 md:w-[min(52rem,calc(100vw-4rem))] max-h-[92dvh] md:max-h-[88vh] flex flex-col rounded-t-3xl md:rounded-3xl bg-stone-950 border border-stone-800 shadow-2xl shadow-black overflow-hidden"
+  >
+    <div
+      id="reco-ficha-asa"
+      class="md:hidden absolute top-0 inset-x-0 z-20 flex justify-center pt-2.5 pb-4 touch-none cursor-grab"
+      aria-hidden="true"
+    >
+      <span class="w-10 h-1.5 rounded-full bg-white/80 shadow-[0_0_0_4px_rgba(0,0,0,0.35)]"></span>
+    </div>
+    <button
+      type="button"
+      id="reco-ficha-cerrar"
+      data-reco-cerrar
+      aria-label="Cerrar ficha"
+      class="absolute top-3 right-3 z-20 w-10 h-10 rounded-full bg-black/60 border border-white/15 text-stone-200 hover:text-amber-500 hover:border-amber-500/60 flex items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+    >
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <div id="reco-ficha-scroll" class="flex-1 min-h-0 overflow-y-auto overscroll-contain">
+      <div id="reco-ficha-media" class="relative w-full aspect-video md:aspect-[21/9] overflow-hidden bg-black">
+        <img id="reco-ficha-fondo-img" alt="" aria-hidden="true" class="absolute inset-0 w-full h-full object-cover scale-110 blur-xl opacity-45" />
+        <img id="reco-ficha-img" alt="" class="relative w-full h-full object-contain" />
+        <div id="reco-ficha-fallback" class="reco-cover-fallback hidden absolute inset-0 items-center justify-center" aria-hidden="true">
+          <span class="font-cinzel text-8xl font-bold text-amber-500/20 select-none"></span>
+        </div>
+        <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-stone-950 to-transparent"></div>
+      </div>
+
+      <div class="relative -mt-10 md:-mt-14 px-5 md:px-10 pb-6 md:pb-8 md:grid md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] md:gap-10">
+        <div class="space-y-4">
+          <h3
+            id="reco-ficha-titulo"
+            class="font-cinzel text-2xl md:text-4xl font-bold text-white uppercase tracking-wide drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]"
+          >
+          </h3>
+          <div class="flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[11px] tracking-wider uppercase">
+            <span class="flex items-center gap-1.5 rounded-full bg-amber-500/10 border border-amber-500/40 px-2.5 py-1 text-amber-400">
+              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                <path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z" />
+              </svg>
+              <span id="reco-ficha-afinidad"></span>
+            </span>
+            <span id="reco-ficha-anios" class="text-stone-400"></span>
+            <span aria-hidden="true" class="text-stone-600">·</span>
+            <span id="reco-ficha-plataforma-texto" class="text-stone-400"></span>
+          </div>
+          <p id="reco-ficha-gancho" class="text-base md:text-lg text-stone-100 font-light leading-relaxed"></p>
+          <div id="reco-ficha-cuerpo" class="space-y-3"></div>
+        </div>
+
+        <div class="mt-6 md:mt-0 md:pt-16 space-y-5">
+          <div>
+            <p class="font-mono text-[10px] tracking-[0.25em] uppercase text-stone-500 mb-2">Afinidad con DARK</p>
+            <div class="h-1.5 w-full rounded-full bg-white/10 overflow-hidden">
+              <div id="reco-ficha-barra" class="h-full rounded-full bg-gradient-to-r from-amber-600 to-amber-400 transition-[width] duration-700 ease-out" style="width: 0%"></div>
+            </div>
+          </div>
+          <div>
+            <p class="font-mono text-[10px] tracking-[0.25em] uppercase text-stone-500 mb-2">Etiquetas</p>
+            <div id="reco-ficha-etiquetas" class="flex flex-wrap gap-2"></div>
+          </div>
+          {/* En móvil la acción principal vive en la barra inferior (siempre
+              a la vista); aquí, al final del texto, solo en escritorio. */}
+          <a
+            id="reco-ficha-enlace"
+            href="#recomendaciones"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hidden md:flex w-full items-center justify-center gap-2 rounded-full bg-amber-500 text-black min-h-12 px-5 py-3 text-xs font-bold uppercase tracking-wide hover:bg-amber-400 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+          >
+            <span id="reco-ficha-plataforma">Ver</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="shrink-0 flex items-center justify-between gap-2 md:gap-3 px-3 md:px-6 pt-2.5 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:pb-3 border-t border-stone-800 bg-stone-950"
+    >
+      <button
+        type="button"
+        id="reco-ficha-anterior"
+        aria-label="Título anterior"
+        class="shrink-0 inline-flex items-center justify-center gap-1.5 min-h-11 min-w-11 md:px-3 rounded-full border border-stone-800 md:border-transparent font-mono text-[10px] tracking-[0.2em] uppercase text-stone-300 md:text-stone-400 hover:text-amber-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        <span class="hidden md:inline">Anterior</span>
+      </button>
+      <a
+        id="reco-ficha-enlace-movil"
+        href="#recomendaciones"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="md:hidden flex-1 min-w-0 flex items-center justify-center gap-2 rounded-full bg-amber-500 text-black min-h-11 px-4 text-xs font-bold uppercase tracking-wide active:bg-amber-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+      >
+        <span id="reco-ficha-plataforma-movil" class="truncate">Ver</span>
+        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
+      <span id="reco-ficha-posicion" class="hidden md:inline font-mono text-[10px] tracking-[0.25em] uppercase text-stone-500 tabular-nums"></span>
+      <button
+        type="button"
+        id="reco-ficha-siguiente"
+        aria-label="Título siguiente"
+        class="shrink-0 inline-flex items-center justify-center gap-1.5 min-h-11 min-w-11 md:px-3 rounded-full border border-stone-800 md:border-transparent font-mono text-[10px] tracking-[0.2em] uppercase text-stone-300 md:text-stone-400 hover:text-amber-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+      >
+        <span class="hidden md:inline">Siguiente</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
     </div>
   </div>
 </div>
@@ -371,44 +416,50 @@ const byAffinityDesc = [...recommendations].sort((a, b) => b.affinity - a.affini
     background-image:
       radial-gradient(circle at 30% 20%, rgba(245, 158, 11, 0.16), transparent 55%),
       radial-gradient(circle at 80% 90%, rgba(245, 158, 11, 0.1), transparent 50%);
+    background-color: #0c0a09;
   }
 
-  .reco-rail::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
+  /* ===== Ficha: entrada y salida =====
+     Solo transform y opacity. En móvil sube desde abajo; desde md aparece
+     centrada con un leve escalado. El estado lo marca `.is-open`. */
+  .reco-ficha-fondo {
+    opacity: 0;
+    transition: opacity 0.3s ease;
   }
-  .reco-rail::-webkit-scrollbar-thumb {
-    background: rgba(245, 158, 11, 0.35);
-    border-radius: 10px;
-  }
-  .reco-rail-card[aria-pressed='true'] .reco-rail-card-glow {
+  .reco-ficha.is-open .reco-ficha-fondo {
     opacity: 1;
   }
-  .reco-rail-card[aria-pressed='true'] img {
-    filter: grayscale(0);
+  .reco-ficha-panel {
+    transform: translateY(100%);
+    transition: transform 0.38s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
-  .reco-rail-fade-start {
-    background: linear-gradient(to right, var(--reco-fade-color, #fafaf9), transparent);
+  .reco-ficha.is-open .reco-ficha-panel {
+    transform: translateY(0);
   }
-  .reco-rail-fade-end {
-    background: linear-gradient(to left, var(--reco-fade-color, #fafaf9), transparent);
+  /* Mientras se arrastra el asa, el panel sigue al dedo sin transición. */
+  .reco-ficha-panel.is-dragging {
+    transition: none;
   }
-  .reco-rail-fade-bottom {
-    background: linear-gradient(to top, var(--reco-fade-color, #fafaf9), transparent);
-  }
-  :global(.dark) .reco-rail-fade-start,
-  :global(.dark) .reco-rail-fade-end,
-  :global(.dark) .reco-rail-fade-bottom {
-    --reco-fade-color: #0a0a0a;
+  @media (min-width: 768px) {
+    .reco-ficha-panel {
+      transform: translate(-50%, -47%) scale(0.97);
+      opacity: 0;
+      transition:
+        transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+        opacity 0.25s ease;
+    }
+    .reco-ficha.is-open .reco-ficha-panel {
+      transform: translate(-50%, -50%);
+      opacity: 1;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    #reco-spotlight-img,
-    #reco-spotlight-title,
-    #reco-spotlight-hook,
-    #reco-spotlight-affinity-fill,
-    .reco-rail-card,
-    .reco-rail-card-glow,
+    .reco-ficha-fondo,
+    .reco-ficha-panel,
+    .reco-card-media,
+    .reco-card img,
+    #reco-ficha-barra,
     .reco-filter-btn {
       transition: none !important;
     }
@@ -417,151 +468,259 @@ const byAffinityDesc = [...recommendations].sort((a, b) => b.affinity - a.affini
 
 <script is:inline define:vars={{ recommendations }}>
   document.addEventListener('DOMContentLoaded', () => {
-    const spotlightImg = document.getElementById('reco-spotlight-img');
-    const spotlightFallback = document.getElementById('reco-spotlight-fallback');
-    const spotlightTitle = document.getElementById('reco-spotlight-title');
-    const spotlightHook = document.getElementById('reco-spotlight-hook');
-    const spotlightBody = document.getElementById('reco-spotlight-body');
-    const spotlightAffinity = document.getElementById('reco-spotlight-affinity');
-    const spotlightAffinityFill = document.getElementById('reco-spotlight-affinity-fill');
-    const spotlightYears = document.getElementById('reco-spotlight-years');
-    const spotlightLink = document.getElementById('reco-spotlight-link');
-    const spotlightPlatform = document.getElementById('reco-spotlight-platform');
-    const spotlightTags = document.getElementById('reco-spotlight-tags');
-    const spotlight = document.getElementById('reco-spotlight');
-    const allCards = document.querySelectorAll('[data-reco-item]');
-    const railCards = document.querySelectorAll('#reco-rail [data-reco-item]');
-    const gridCards = document.querySelectorAll('#reco-grid [data-reco-item]');
-    const rail = document.getElementById('reco-rail');
-    const railPrev = document.getElementById('reco-rail-prev');
-    const railNext = document.getElementById('reco-rail-next');
-    const railFadeBottom = document.getElementById('reco-rail-fade-bottom');
-    const railCount = document.getElementById('reco-rail-count');
-    const emptyState = document.getElementById('reco-empty-state');
+    const grid = document.getElementById('reco-grid');
     const gridCount = document.getElementById('reco-grid-count');
     const gridEmpty = document.getElementById('reco-grid-empty');
     const filterButtons = document.querySelectorAll('[data-reco-filter]');
+    const tarjetas = Array.from(document.querySelectorAll('#reco-grid [data-reco-item]'));
 
-    if (!spotlightImg || !rail) return;
+    const ficha = document.getElementById('reco-ficha');
+    const panel = document.getElementById('reco-ficha-panel');
+    const scrollFicha = document.getElementById('reco-ficha-scroll');
+    const asa = document.getElementById('reco-ficha-asa');
+    const botonCerrar = document.getElementById('reco-ficha-cerrar');
+    const botonAnterior = document.getElementById('reco-ficha-anterior');
+    const botonSiguiente = document.getElementById('reco-ficha-siguiente');
+    const el = {
+      media: document.getElementById('reco-ficha-media'),
+      img: document.getElementById('reco-ficha-img'),
+      fondo: document.getElementById('reco-ficha-fondo-img'),
+      fallback: document.getElementById('reco-ficha-fallback'),
+      titulo: document.getElementById('reco-ficha-titulo'),
+      afinidad: document.getElementById('reco-ficha-afinidad'),
+      anios: document.getElementById('reco-ficha-anios'),
+      plataformaTexto: document.getElementById('reco-ficha-plataforma-texto'),
+      gancho: document.getElementById('reco-ficha-gancho'),
+      cuerpo: document.getElementById('reco-ficha-cuerpo'),
+      barra: document.getElementById('reco-ficha-barra'),
+      etiquetas: document.getElementById('reco-ficha-etiquetas'),
+      enlace: document.getElementById('reco-ficha-enlace'),
+      plataforma: document.getElementById('reco-ficha-plataforma'),
+      enlaceMovil: document.getElementById('reco-ficha-enlace-movil'),
+      plataformaMovil: document.getElementById('reco-ficha-plataforma-movil'),
+      posicion: document.getElementById('reco-ficha-posicion'),
+    };
 
+    if (!grid || !ficha || !panel) return;
+
+    // La ficha vive en <body> para que ningún contenedor con transform o
+    // con `display:none` (la propia vista) la recorte o la esconda.
+    document.body.appendChild(ficha);
+
+    const sinMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let currentPlatform = 'todas';
+    let idActual = null;
+    let ultimoFoco = null;
 
-    function renderSpotlight(item) {
-      [spotlightTitle, spotlightHook].forEach((el) => el?.classList.add('opacity-0'));
-      window.setTimeout(() => {
-        if (item.cover) {
-          spotlightImg.src = item.cover;
-          spotlightImg.style.opacity = '0.9';
-          spotlightFallback?.classList.add('hidden');
-        } else {
-          spotlightImg.style.opacity = '0';
-          spotlightFallback?.classList.remove('hidden');
-          const fallbackLetter = spotlightFallback?.querySelector('span');
-          if (fallbackLetter) fallbackLetter.textContent = item.title.charAt(0);
-        }
-        spotlightTitle.textContent = item.title;
-        spotlightHook.textContent = item.hook;
-        spotlightAffinity.textContent = `${item.affinity}% afín`;
-        if (spotlightAffinityFill) spotlightAffinityFill.style.width = `${item.affinity}%`;
-        spotlightYears.textContent = item.years;
-        spotlightLink.href = item.platform.url;
-        spotlightPlatform.textContent = `Ver en ${item.platform.name}`;
-
-        spotlightBody.innerHTML = item.body
-          .map(
-            (p) =>
-              `<p class="text-sm text-stone-400 font-light leading-relaxed">${p}</p>`,
-          )
-          .join('');
-
-        spotlightTags.innerHTML = item.tags
-          .map(
-            (tag) =>
-              `<span class="px-2.5 py-1 rounded-full bg-white/10 text-[10px] font-mono tracking-wide text-stone-300 uppercase">${tag}</span>`,
-          )
-          .join('');
-
-        [spotlightTitle, spotlightHook].forEach((el) => el?.classList.remove('opacity-0'));
-      }, 150);
+    // Orden de navegación de la ficha = lo que se ve ahora mismo en el
+    // catálogo (respeta el filtro activo). Si el título abierto no está en
+    // la lista (la destacada con un filtro que la oculta), se recorre todo.
+    function visibles() {
+      const lista = tarjetas
+        .filter((t) => !t.classList.contains('hidden'))
+        .map((t) => t.dataset.recoItem);
+      return lista.includes(idActual) ? lista : tarjetas.map((t) => t.dataset.recoItem);
     }
 
-    function selectItem(id) {
+    function crear(etiqueta, clases, texto) {
+      const nodo = document.createElement(etiqueta);
+      nodo.className = clases;
+      nodo.textContent = texto;
+      return nodo;
+    }
+
+    function pintarFicha(item) {
+      if (item.cover) {
+        el.img.src = item.cover;
+        el.fondo.src = item.cover;
+        el.img.classList.remove('hidden');
+        el.fondo.classList.remove('hidden');
+        el.fallback.classList.add('hidden');
+        el.fallback.classList.remove('flex');
+      } else {
+        el.img.removeAttribute('src');
+        el.img.classList.add('hidden');
+        el.fondo.classList.add('hidden');
+        el.fallback.classList.remove('hidden');
+        el.fallback.classList.add('flex');
+        el.fallback.querySelector('span').textContent = item.title.charAt(0);
+      }
+      // Logotipos oscuros sobre transparente: fondo claro y sin la copia
+      // desenfocada (que sobre claro sería una mancha gris).
+      const claro = !!item.coverOnLight && !!item.cover;
+      el.media.classList.toggle('bg-stone-200', claro);
+      el.media.classList.toggle('bg-black', !claro);
+      el.img.classList.toggle('p-8', claro);
+      if (claro) el.fondo.classList.add('hidden');
+      el.img.alt = `Carátula de ${item.title}`;
+      el.titulo.textContent = item.title;
+      el.afinidad.textContent = `${item.affinity}% afín`;
+      el.anios.textContent = item.years;
+      el.plataformaTexto.textContent = item.platform.name;
+      el.gancho.textContent = item.hook;
+      el.cuerpo.replaceChildren(
+        ...item.body.map((p) =>
+          crear('p', 'text-sm md:text-[15px] text-stone-400 font-light leading-relaxed', p),
+        ),
+      );
+      el.etiquetas.replaceChildren(
+        ...item.tags.map((tag) =>
+          crear(
+            'span',
+            'px-2.5 py-1 rounded-full bg-white/10 text-[10px] font-mono tracking-wide text-stone-300 uppercase',
+            tag,
+          ),
+        ),
+      );
+      el.enlace.href = item.platform.url;
+      el.plataforma.textContent = `Ver en ${item.platform.name}`;
+      el.enlaceMovil.href = item.platform.url;
+      el.plataformaMovil.textContent = `Ver en ${item.platform.name}`;
+      // La barra arranca de 0 en cada ficha para que se lea como medida.
+      el.barra.style.width = '0%';
+      requestAnimationFrame(() => {
+        el.barra.style.width = `${item.affinity}%`;
+      });
+
+      const lista = visibles();
+      const pos = lista.indexOf(item.id);
+      el.posicion.textContent = `${String(pos + 1).padStart(2, '0')} / ${lista.length}`;
+      const unico = lista.length < 2;
+      botonAnterior.disabled = unico;
+      botonSiguiente.disabled = unico;
+      botonAnterior.classList.toggle('invisible', unico);
+      botonSiguiente.classList.toggle('invisible', unico);
+      if (scrollFicha) scrollFicha.scrollTop = 0;
+    }
+
+    function abrirFicha(id) {
       const item = recommendations.find((r) => r.id === id);
       if (!item) return;
-      allCards.forEach((card) => {
-        card.setAttribute('aria-pressed', card.dataset.recoItem === id ? 'true' : 'false');
+      const yaAbierta = ficha.getAttribute('aria-hidden') === 'false';
+      idActual = id;
+      pintarFicha(item);
+      if (yaAbierta) return;
+
+      ultimoFoco = document.activeElement;
+      ficha.classList.remove('hidden');
+      ficha.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('scroll-lock');
+      // Un frame con el panel en su posición de salida antes de animar.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => ficha.classList.add('is-open'));
       });
-      renderSpotlight(item);
+      botonCerrar?.focus({ preventScroll: true });
+      document.addEventListener('keydown', alPulsarTecla);
     }
 
-    allCards.forEach((card) => {
-      card.addEventListener('click', () => {
-        selectItem(card.dataset.recoItem);
-        if (card.closest('#reco-grid')) {
-          spotlight?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      });
-    });
+    function cerrarFicha() {
+      if (ficha.getAttribute('aria-hidden') !== 'false') return;
+      ficha.classList.remove('is-open');
+      ficha.setAttribute('aria-hidden', 'true');
+      panel.style.transform = '';
+      document.body.classList.remove('scroll-lock');
+      document.removeEventListener('keydown', alPulsarTecla);
+      window.setTimeout(
+        () => {
+          if (ficha.getAttribute('aria-hidden') === 'true') ficha.classList.add('hidden');
+        },
+        sinMovimiento ? 0 : 380,
+      );
+      if (ultimoFoco instanceof HTMLElement) ultimoFoco.focus({ preventScroll: true });
+    }
 
-    function updateRailNav() {
-      if (!railPrev || !railNext) return;
-      const isVertical = window.innerWidth >= 1024;
-      if (isVertical) {
-        railPrev.disabled = rail.scrollTop <= 4;
-        railNext.disabled = rail.scrollTop >= rail.scrollHeight - rail.clientHeight - 4;
-        railFadeBottom?.classList.toggle('opacity-0', railNext.disabled);
-      } else {
-        railPrev.disabled = rail.scrollLeft <= 4;
-        railNext.disabled = rail.scrollLeft >= rail.scrollWidth - rail.clientWidth - 4;
+    function mover(salto) {
+      const lista = visibles();
+      const pos = lista.indexOf(idActual);
+      const siguiente = lista[(pos + salto + lista.length) % lista.length];
+      if (siguiente) abrirFicha(siguiente);
+    }
+
+    function alPulsarTecla(evento) {
+      if (evento.key === 'Escape') {
+        cerrarFicha();
+        return;
+      }
+      if (evento.key === 'ArrowRight') {
+        mover(1);
+        return;
+      }
+      if (evento.key === 'ArrowLeft') {
+        mover(-1);
+        return;
+      }
+      if (evento.key !== 'Tab') return;
+      const enfocables = Array.from(
+        panel.querySelectorAll('button, a[href], [tabindex]:not([tabindex="-1"])'),
+      ).filter((nodo) => nodo.offsetParent !== null && !nodo.disabled);
+      if (!enfocables.length) return;
+      const primero = enfocables[0];
+      const ultimo = enfocables[enfocables.length - 1];
+      if (evento.shiftKey && document.activeElement === primero) {
+        evento.preventDefault();
+        ultimo.focus();
+      } else if (!evento.shiftKey && document.activeElement === ultimo) {
+        evento.preventDefault();
+        primero.focus();
       }
     }
 
-    railPrev?.addEventListener('click', () => rail.scrollBy({ left: -240, top: -240, behavior: 'smooth' }));
-    railNext?.addEventListener('click', () => rail.scrollBy({ left: 240, top: 240, behavior: 'smooth' }));
-    rail.addEventListener('scroll', updateRailNav, { passive: true });
-    window.addEventListener('resize', updateRailNav);
-    // La vista puede seguir "hidden" (display:none, 0x0) cuando corre este
-    // script — el ResizeObserver recalcula en cuanto el hash-router revela
-    // la sección, sin depender del orden de los listeners DOMContentLoaded.
-    new ResizeObserver(updateRailNav).observe(rail);
-    updateRailNav();
+    tarjetas.forEach((tarjeta) => {
+      tarjeta.addEventListener('click', () => abrirFicha(tarjeta.dataset.recoItem));
+    });
+    document.querySelectorAll('[data-reco-open]').forEach((boton) => {
+      boton.addEventListener('click', () => abrirFicha(boton.dataset.recoOpen));
+    });
+    ficha.querySelectorAll('[data-reco-cerrar]').forEach((nodo) => {
+      nodo.addEventListener('click', cerrarFicha);
+    });
+    botonAnterior?.addEventListener('click', () => mover(-1));
+    botonSiguiente?.addEventListener('click', () => mover(1));
 
+    // ===== Arrastrar el asa para cerrar (móvil) =====
+    // Solo el asa captura el gesto: el contenido de la ficha sigue haciendo
+    // su scroll normal. Si se suelta pasados ~110 px (o con un tirón rápido),
+    // se cierra; si no, vuelve a su sitio.
+    let inicioY = null;
+    let inicioT = 0;
+    let desplazamiento = 0;
+    asa?.addEventListener('pointerdown', (evento) => {
+      inicioY = evento.clientY;
+      inicioT = performance.now();
+      desplazamiento = 0;
+      panel.classList.add('is-dragging');
+      asa.setPointerCapture(evento.pointerId);
+    });
+    asa?.addEventListener('pointermove', (evento) => {
+      if (inicioY === null) return;
+      desplazamiento = Math.max(0, evento.clientY - inicioY);
+      panel.style.transform = `translateY(${desplazamiento}px)`;
+    });
+    const soltar = () => {
+      if (inicioY === null) return;
+      const velocidad = desplazamiento / Math.max(performance.now() - inicioT, 1);
+      inicioY = null;
+      panel.classList.remove('is-dragging');
+      if (desplazamiento > 110 || (desplazamiento > 30 && velocidad > 0.6)) cerrarFicha();
+      else panel.style.transform = '';
+    };
+    asa?.addEventListener('pointerup', soltar);
+    asa?.addEventListener('pointercancel', soltar);
+
+    // ===== Filtro por plataforma =====
     const ACTIVE = ['active', 'bg-amber-500', 'border-amber-500', 'text-black', 'shadow-lg', 'shadow-amber-500/20'];
     const INACTIVE = ['border-stone-400/50', 'dark:border-stone-700', 'text-stone-600', 'dark:text-stone-400'];
 
     function applyFilter(platform) {
       currentPlatform = platform;
-      let firstVisible = null;
-
-      let railVisible = 0;
-      railCards.forEach((card) => {
-        const matches = platform === 'todas' || card.dataset.platform === platform;
-        card.classList.toggle('hidden', !matches);
-        if (matches) {
-          railVisible += 1;
-          if (!firstVisible) firstVisible = card;
-        }
+      let visiblesAhora = 0;
+      tarjetas.forEach((tarjeta) => {
+        const coincide = platform === 'todas' || tarjeta.dataset.platform === platform;
+        tarjeta.classList.toggle('hidden', !coincide);
+        if (coincide) visiblesAhora += 1;
       });
-      if (railCount) railCount.textContent = `${railVisible} título${railVisible === 1 ? '' : 's'}`;
-      if (emptyState) emptyState.classList.toggle('hidden', railVisible > 0);
-
-      let gridVisible = 0;
-      gridCards.forEach((card) => {
-        const matches = platform === 'todas' || card.dataset.platform === platform;
-        card.classList.toggle('hidden', !matches);
-        if (matches) {
-          gridVisible += 1;
-          if (!firstVisible) firstVisible = card;
-        }
-      });
-      if (gridCount) gridCount.textContent = `${gridVisible} título${gridVisible === 1 ? '' : 's'}`;
-      if (gridEmpty) gridEmpty.classList.toggle('hidden', gridVisible > 0);
-
-      const activeCard = document.querySelector('[data-reco-item][aria-pressed="true"]');
-      if (activeCard && activeCard.classList.contains('hidden') && firstVisible) {
-        selectItem(firstVisible.dataset.recoItem);
-      }
-      window.setTimeout(updateRailNav, 50);
+      if (gridCount) gridCount.textContent = `${visiblesAhora} título${visiblesAhora === 1 ? '' : 's'}`;
+      if (gridEmpty) gridEmpty.classList.toggle('hidden', visiblesAhora > 0);
       if (typeof AOS !== 'undefined') window.setTimeout(() => AOS.refresh(), 50);
     }
 
@@ -580,15 +739,17 @@ const byAffinityDesc = [...recommendations].sort((a, b) => b.affinity - a.affini
     });
 
     window.resetRecomendacionesTabs = () => {
+      cerrarFicha();
       const defaultBtn = document.querySelector('[data-reco-filter="todas"]');
       if (defaultBtn && currentPlatform !== 'todas') {
         defaultBtn.click();
       }
-      // El carril arranca dentro de una vista en `display:none`: el
-      // ResizeObserver no siempre dispara al pasar a `block` en todos los
-      // navegadores, así que recalculamos explícitamente aquí, que es
-      // justo cuando el router de index.astro revela esta vista.
-      window.setTimeout(updateRailNav, 60);
     };
+
+    // Salir de la vista con la ficha abierta (botón atrás, menú) la cierra:
+    // si no, quedaría flotando sobre otra sección con el scroll bloqueado.
+    window.addEventListener('hashchange', () => {
+      if (window.location.hash !== '#recomendaciones') cerrarFicha();
+    });
   });
 </script>
