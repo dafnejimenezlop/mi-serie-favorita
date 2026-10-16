@@ -40,10 +40,10 @@ const destinos = [
 
 <section
   id="explora"
-  class="py-24 bg-transparent transition-colors duration-300"
+  class="py-16 md:py-24 bg-transparent transition-colors duration-300"
 >
   <div class="container mx-auto px-6">
-    <div class="text-center mb-14 space-y-3">
+    <div class="text-center mb-10 md:mb-14 space-y-3">
       <h2
         class="text-3xl md:text-5xl font-cinzel text-amber-950 dark:text-amber-500 font-bold tracking-[0.1em] transition-colors uppercase"
         data-aos="zoom-in"
@@ -59,23 +59,27 @@ const destinos = [
     </div>
 
     <div class="relative max-w-6xl mx-auto">
-      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
+      {/* Por debajo de lg es una lista de filas (icono · nombre y frase ·
+          flecha). En la parrilla de 2 columnas "RECOMENDACIONES" no cabía en
+          su tarjeta a 390 px, la quinta quedaba huérfana y la frase que
+          explica cada destino estaba oculta justo donde más falta hace. */}
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 md:gap-4 lg:gap-6">
         {
           destinos.map((destino, index) => (
             <a
               href={destino.href}
               data-aos="fade-up"
               data-aos-delay={index * 100}
-              class="explore-card group relative flex flex-col items-center text-center gap-3 p-5 md:p-6 rounded-xl border border-stone-300/70 dark:border-stone-800 bg-white/70 dark:bg-stone-900/50 backdrop-blur-md hover:border-amber-500/60 hover:-translate-y-1 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+              class={`explore-card group relative flex flex-row lg:flex-col items-center text-left lg:text-center gap-4 lg:gap-3 p-4 md:p-5 lg:p-6 rounded-xl border border-stone-300/70 dark:border-stone-800 bg-white/70 dark:bg-stone-900/50 lg:backdrop-blur-md hover:border-amber-500/60 hover:-translate-y-1 transition-[transform,border-color] duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 ${index === destinos.length - 1 ? 'sm:col-span-2 lg:col-span-1' : ''}`}
             >
               <span
-                class="absolute top-3 right-3 font-mono text-[10px] tracking-widest text-stone-400/70 dark:text-stone-600 group-hover:text-amber-500/70 transition-colors duration-300"
+                class="hidden lg:block absolute top-3 right-3 font-mono text-[10px] tracking-widest text-stone-400/70 dark:text-stone-600 group-hover:text-amber-500/70 transition-colors duration-300"
                 aria-hidden="true"
               >
                 {String(index + 1).padStart(2, '0')}
               </span>
-              <span class="explore-icon w-12 h-12 rounded-full border border-stone-300 dark:border-stone-700 group-hover:border-amber-500/60 flex items-center justify-center text-stone-500 dark:text-stone-400 group-hover:text-amber-500 group-hover:rotate-6 group-active:scale-90 transition-all duration-300">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <span class="explore-icon shrink-0 w-12 h-12 rounded-full border border-stone-300 dark:border-stone-700 group-hover:border-amber-500/60 flex items-center justify-center text-amber-600/80 dark:text-amber-500/80 lg:text-stone-500 lg:dark:text-stone-400 group-hover:text-amber-500 group-hover:rotate-6 group-active:scale-90 transition-[color,border-color,transform] duration-300">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path
                     class="explore-icon-path"
                     stroke-linecap="round"
@@ -86,12 +90,23 @@ const destinos = [
                   />
                 </svg>
               </span>
-              <span class="font-cinzel text-sm md:text-base font-bold uppercase tracking-wide text-stone-800 dark:text-stone-100">
-                {destino.label}
+              <span class="min-w-0 flex-1 flex flex-col gap-1 lg:gap-3">
+                <span class="font-cinzel text-sm md:text-base font-bold uppercase tracking-wide text-stone-800 dark:text-stone-100">
+                  {destino.label}
+                </span>
+                <span class="text-xs text-stone-600 dark:text-stone-400 font-light leading-relaxed">
+                  {destino.text}
+                </span>
               </span>
-              <span class="hidden md:block text-xs text-stone-500 dark:text-stone-500 font-light leading-relaxed">
-                {destino.text}
-              </span>
+              <svg
+                class="lg:hidden shrink-0 w-4 h-4 text-stone-400 dark:text-stone-600 group-hover:text-amber-500 group-hover:translate-x-0.5 transition-[color,transform] duration-300"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
             </a>
           ))
         }

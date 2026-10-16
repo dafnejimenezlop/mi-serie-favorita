@@ -41,10 +41,10 @@ const expedientes = [
 
 <section
   id="curiosidades"
-  class="py-24 bg-transparent transition-colors duration-300 overflow-hidden relative"
+  class="py-16 md:py-24 bg-transparent transition-colors duration-300 overflow-hidden relative"
 >
   <div class="container mx-auto px-6">
-    <div class="text-center mb-14 space-y-3">
+    <div class="text-center mb-10 md:mb-14 space-y-3">
       <span
         class="font-mono text-[11px] tracking-[0.3em] uppercase text-amber-600 dark:text-amber-500/80"
         data-aos="fade-up"
@@ -52,7 +52,7 @@ const expedientes = [
         Archivo de Sic Mundus
       </span>
       <h2
-        class="text-3xl md:text-5xl font-cinzel text-amber-500 font-bold tracking-[0.05em] transition-colors uppercase"
+        class="text-3xl md:text-5xl font-cinzel text-amber-700 dark:text-amber-500 font-bold tracking-[0.05em] transition-colors uppercase"
         data-aos="zoom-in"
       >
         ¿Sabías que...?
@@ -65,14 +65,16 @@ const expedientes = [
       </p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
+    {/* `carrusel-movil` (global.css) lo convierte en una fila deslizable
+        por debajo de md; desde ahí vuelve a ser el grid de siempre. */}
+    <div class="carrusel-movil grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
       {
         expedientes.map((item, index) => (
           <div
             tabindex="0"
             data-aos="fade-up"
             data-aos-delay={item.delay}
-            class="group relative bg-stone-900/80 dark:bg-stone-900/70 backdrop-blur-md p-6 md:p-7 rounded-xl border border-stone-700/80 dark:border-stone-700/60 hover:border-amber-500/60 focus:border-amber-500/60 focus:outline-none shadow-xl hover:shadow-[0_0_25px_rgba(245,158,11,0.15)] focus:shadow-[0_0_25px_rgba(245,158,11,0.15)] transition-all duration-500"
+            class="group relative bg-stone-900/95 md:bg-stone-900/80 dark:md:bg-stone-900/70 md:backdrop-blur-md p-6 md:p-7 rounded-xl border border-stone-700/80 dark:border-stone-700/60 hover:border-amber-500/60 focus:border-amber-500/60 focus:outline-none shadow-xl hover:shadow-[0_0_25px_rgba(245,158,11,0.15)] focus:shadow-[0_0_25px_rgba(245,158,11,0.15)] transition-all duration-500"
           >
             <div class="h-px w-10 bg-amber-500/40 group-hover:w-16 group-hover:bg-amber-500 transition-all duration-300 mb-4" />
             <span class="font-mono text-[10px] tracking-[0.25em] uppercase text-amber-500/80">
@@ -88,5 +90,14 @@ const expedientes = [
         ))
       }
     </div>
+    <p
+      class="md:hidden mt-1 flex items-center justify-center gap-2 font-mono text-[10px] tracking-[0.25em] uppercase text-stone-500"
+      aria-hidden="true"
+    >
+      Desliza · {expedientes.length} expedientes
+      <svg class="w-3.5 h-3.5 text-amber-500/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+      </svg>
+    </p>
   </div>
 </section>

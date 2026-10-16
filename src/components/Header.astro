@@ -18,20 +18,60 @@ const navLinks = [
     id="header-top-bar"
     class="w-full bg-gradient-to-b from-black/70 to-transparent transition-all duration-500"
   >
+    <!-- Una sola fila en escritorio (logo · navegación · tema). Antes la
+         píldora iba en una segunda fila FUERA de esta barra: el header medía
+         ~105 px en pantallas donde cabía todo en una, y al hacer scroll el
+         fondo opaco solo cubría la fila del logo mientras la navegación
+         flotaba sobre el contenido. En tablet (md) la píldora baja a su
+         propia línea, pero ya dentro de la barra y con su mismo fondo. -->
     <div
-      class="container mx-auto px-4 md:px-12 flex items-center justify-between py-2 md:py-3"
+      class="container mx-auto px-4 md:px-8 lg:px-12 flex flex-wrap lg:flex-nowrap items-center justify-between gap-x-4 py-2 md:py-3"
     >
-      <a href="#inicio" class="flex-shrink-0">
+      <a href="#inicio" class="order-1 flex-shrink-0" aria-label="DARK — volver a Inicio">
         <img
           src="/prueba.png"
-          alt="Dark Logo"
-          width="181"
+          alt=""
+          width="51"
           height="48"
-          class="h-8 md:h-12 w-auto object-contain transition-transform hover:scale-105"
+          class="h-8 md:h-11 w-auto object-contain transition-transform hover:scale-105"
         />
       </a>
 
-      <div class="flex items-center gap-2">
+      <nav
+        aria-label="Secciones"
+        class="hidden md:flex order-3 basis-full justify-center pt-2 lg:order-2 lg:basis-auto lg:pt-0"
+      >
+        <ul
+          class="relative inline-flex items-center gap-1 bg-stone-900/70 backdrop-blur-md rounded-full p-1 border border-stone-600/40 shadow-lg"
+        >
+          <!-- La píldora anima `transform` y `width` a la vez: la clase era
+               `transition-transform`, así que al saltar entre dos enlaces de
+               distinto largo ("Inicio" → "Recomendaciones") la posición se
+               deslizaba pero el ancho pegaba un salto seco. -->
+          <div
+            id="nav-slider"
+            class="absolute top-1 bottom-1 rounded-full bg-amber-500 shadow-[0_2px_12px_-2px_rgba(245,158,11,0.6)] transition-[transform,width,opacity] duration-300 ease-out z-0 opacity-0"
+            style="left: 0;"
+          >
+          </div>
+
+          {
+            navLinks.map((link) => (
+              <li class="shrink-0 relative z-10">
+                <a
+                  href={link.href}
+                  data-nav-link
+                  class="nav-item px-4 py-2 xl:px-6 rounded-full text-sm font-semibold transition-colors duration-300 inline-block text-stone-300 hover:text-white"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <div class="order-2 lg:order-3 flex items-center gap-2">
         <button
           id="themeToggle"
           aria-label="Cambiar tema"
@@ -81,39 +121,6 @@ const navLinks = [
         </button>
       </div>
     </div>
-  </div>
-
-  <div class="hidden md:flex w-full justify-center px-4 mt-1 pb-3 relative">
-    <nav class="relative">
-      <ul
-        class="relative inline-flex items-center space-x-1 bg-stone-900/70 backdrop-blur-md rounded-full p-1 border border-stone-600/40 shadow-lg"
-      >
-        <!-- La píldora anima `transform` y `width` a la vez: la clase era
-             `transition-transform`, así que al saltar entre dos enlaces de
-             distinto largo ("Inicio" → "Recomendaciones") la posición se
-             deslizaba pero el ancho pegaba un salto seco. -->
-        <div
-          id="nav-slider"
-          class="absolute top-1 bottom-1 rounded-full bg-amber-500 shadow-[0_2px_12px_-2px_rgba(245,158,11,0.6)] transition-[transform,width,opacity] duration-300 ease-out z-0 opacity-0"
-          style="left: 0;"
-        >
-        </div>
-
-        {
-          navLinks.map((link) => (
-            <li class="shrink-0 relative z-10">
-              <a
-                href={link.href}
-                data-nav-link
-                class="nav-item px-5 py-2 md:px-6 md:py-2 rounded-full text-sm font-semibold transition-colors duration-300 inline-block text-stone-300 hover:text-white"
-              >
-                {link.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
   </div>
 
   <!-- `inert` es lo que faltaba: con el panel cerrado seguia estando en

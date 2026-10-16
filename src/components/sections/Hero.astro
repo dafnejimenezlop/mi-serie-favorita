@@ -11,8 +11,12 @@
   id="inicio"
   class="relative min-h-[100svh] flex items-center justify-center overflow-hidden bg-black"
 >
+  <!-- `scale-125`: el iframe medía exactamente lo mismo que la pantalla en
+       vertical, así que la interfaz que YouTube pinta en sus bordes (título y
+       aviso de edad arriba, barra de controles abajo) quedaba DENTRO del
+       hero. Ampliándolo un 25 % esos bordes caen fuera del recorte. -->
   <div
-    class="absolute top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-40 z-0"
+    class="absolute top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] -translate-x-1/2 -translate-y-1/2 scale-125 pointer-events-none opacity-40 z-0"
   >
     <div id="youtube-hero-player" class="w-full h-full"></div>
   </div>

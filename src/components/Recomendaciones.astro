@@ -16,11 +16,13 @@ const avgAffinity = Math.round(
 const byAffinityDesc = [...recommendations].sort((a, b) => b.affinity - a.affinity);
 ---
 
-<div class="pt-40 md:pt-48 pb-24 relative z-10 w-full min-h-screen">
+<div class="pt-28 md:pt-40 lg:pt-36 pb-20 md:pb-24 relative z-10 w-full min-h-screen">
   <div class="container mx-auto px-4 md:px-6 max-w-7xl">
     <div class="text-center space-y-6 mb-10" data-aos="fade-down">
+      {/* Quince letras en Cinzel no caben a `text-3xl` en 390 px: con
+          `break-words` el título se partía en "RECOMENDACIONE / S". */}
       <h2
-        class="text-3xl md:text-5xl lg:text-6xl font-cinzel text-amber-600 dark:text-amber-500 font-bold tracking-[0.1em] md:tracking-[0.15em] drop-shadow-lg dark:drop-shadow-2xl uppercase break-words"
+        class="text-[1.65rem] leading-tight sm:text-4xl md:text-5xl lg:text-6xl font-cinzel text-amber-600 dark:text-amber-500 font-bold tracking-[0.06em] sm:tracking-[0.1em] md:tracking-[0.15em] drop-shadow-lg dark:drop-shadow-2xl uppercase"
       >
         Recomendaciones
       </h2>
@@ -29,7 +31,7 @@ const byAffinityDesc = [...recommendations].sort((a, b) => b.affinity - a.affini
       >
         Si DARK te ha atrapado, este es el resto del laberinto: misterio,
         viajes en el tiempo y pueblos con demasiados secretos. Elige una
-        carátula del carril — el panel de la izquierda cambia con ella.
+        carátula del carril y el panel destacado cambia con ella.
       </p>
 
       <div
@@ -49,18 +51,21 @@ const byAffinityDesc = [...recommendations].sort((a, b) => b.affinity - a.affini
       </div>
     </div>
 
-    <!-- Filtro por plataforma -->
+    <!-- Filtro por plataforma. En móvil, una sola fila deslizable: con
+         `flex-wrap` los seis filtros ocupaban tres filas (≈170 px) y
+         empujaban el panel destacado fuera de la primera pantalla. El
+         degradado del borde derecho indica que la fila continúa. -->
     <div
       role="group"
       aria-label="Filtrar recomendaciones por plataforma"
-      class="flex flex-wrap items-center justify-center gap-2 md:gap-3 mb-10 md:mb-12"
+      class="flex flex-nowrap md:flex-wrap items-center md:justify-center gap-2 md:gap-3 mb-8 md:mb-12 -mx-4 px-4 md:mx-0 md:px-0 py-1 overflow-x-auto md:overflow-visible [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [mask-image:linear-gradient(to_right,black_82%,transparent)] md:[mask-image:none]"
       data-aos="fade-up"
     >
       <button
         type="button"
         data-reco-filter="todas"
         aria-pressed="true"
-        class="reco-filter-btn active inline-flex items-center justify-center min-h-11 md:min-h-9 px-4 py-2 rounded-full font-cinzel text-[10px] md:text-xs font-bold tracking-[0.15em] uppercase transition-all duration-300 border border-amber-500 bg-amber-500 text-black shadow-lg shadow-amber-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+        class="reco-filter-btn shrink-0 whitespace-nowrap active inline-flex items-center justify-center min-h-11 md:min-h-9 px-4 py-2 rounded-full font-cinzel text-[10px] md:text-xs font-bold tracking-[0.15em] uppercase transition-all duration-300 border border-amber-500 bg-amber-500 text-black shadow-lg shadow-amber-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
       >
         Todas
       </button>
@@ -70,7 +75,7 @@ const byAffinityDesc = [...recommendations].sort((a, b) => b.affinity - a.affini
             type="button"
             data-reco-filter={platform}
             aria-pressed="false"
-            class="reco-filter-btn inline-flex items-center justify-center min-h-11 md:min-h-9 px-4 py-2 rounded-full font-cinzel text-[10px] md:text-xs font-bold tracking-[0.15em] uppercase transition-all duration-300 border border-stone-400/50 dark:border-stone-700 text-stone-600 dark:text-stone-400 hover:border-amber-500/60 hover:text-amber-600 dark:hover:text-amber-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+            class="reco-filter-btn shrink-0 whitespace-nowrap inline-flex items-center justify-center min-h-11 md:min-h-9 px-4 py-2 rounded-full font-cinzel text-[10px] md:text-xs font-bold tracking-[0.15em] uppercase transition-all duration-300 border border-stone-400/50 dark:border-stone-700 text-stone-600 dark:text-stone-400 hover:border-amber-500/60 hover:text-amber-600 dark:hover:text-amber-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
           >
             {platform}
           </button>
@@ -208,6 +213,15 @@ const byAffinityDesc = [...recommendations].sort((a, b) => b.affinity - a.affini
         </div>
 
         <div class="relative flex-1 min-w-0">
+          {/* En escritorio el carril es una rejilla con scroll vertical y la
+              segunda fila quedaba cortada en seco, como si la maqueta
+              estuviera rota. El degradado inferior lo presenta como lo que
+              es —hay más debajo— y se apaga al llegar al final. */}
+          <div
+            id="reco-rail-fade-bottom"
+            class="reco-rail-fade-bottom pointer-events-none absolute inset-x-0 bottom-0 h-16 z-10 hidden lg:block transition-opacity duration-300"
+            aria-hidden="true"
+          />
           <div
             id="reco-rail"
             class="reco-rail h-full flex lg:grid lg:grid-cols-3 lg:auto-rows-min gap-3 md:gap-4 overflow-x-auto lg:overflow-y-auto lg:max-h-[440px] snap-x lg:snap-none snap-mandatory pb-2 lg:pb-1 pr-1"
@@ -379,8 +393,12 @@ const byAffinityDesc = [...recommendations].sort((a, b) => b.affinity - a.affini
   .reco-rail-fade-end {
     background: linear-gradient(to left, var(--reco-fade-color, #fafaf9), transparent);
   }
+  .reco-rail-fade-bottom {
+    background: linear-gradient(to top, var(--reco-fade-color, #fafaf9), transparent);
+  }
   :global(.dark) .reco-rail-fade-start,
-  :global(.dark) .reco-rail-fade-end {
+  :global(.dark) .reco-rail-fade-end,
+  :global(.dark) .reco-rail-fade-bottom {
     --reco-fade-color: #0a0a0a;
   }
 
@@ -417,6 +435,7 @@ const byAffinityDesc = [...recommendations].sort((a, b) => b.affinity - a.affini
     const rail = document.getElementById('reco-rail');
     const railPrev = document.getElementById('reco-rail-prev');
     const railNext = document.getElementById('reco-rail-next');
+    const railFadeBottom = document.getElementById('reco-rail-fade-bottom');
     const railCount = document.getElementById('reco-rail-count');
     const emptyState = document.getElementById('reco-empty-state');
     const gridCount = document.getElementById('reco-grid-count');
@@ -490,6 +509,7 @@ const byAffinityDesc = [...recommendations].sort((a, b) => b.affinity - a.affini
       if (isVertical) {
         railPrev.disabled = rail.scrollTop <= 4;
         railNext.disabled = rail.scrollTop >= rail.scrollHeight - rail.clientHeight - 4;
+        railFadeBottom?.classList.toggle('opacity-0', railNext.disabled);
       } else {
         railPrev.disabled = rail.scrollLeft <= 4;
         railNext.disabled = rail.scrollLeft >= rail.scrollWidth - rail.clientWidth - 4;

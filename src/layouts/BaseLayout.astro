@@ -60,11 +60,36 @@ const ogImageURL = new URL('/og.jpg', siteOrigin);
          así que el navegador lo estaba engordando sintéticamente. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- La hoja de Google Fonts era la única petición externa que bloqueaba
+         el primer pintado: el navegador no dibujaba NADA hasta resolver DNS,
+         TLS y descarga de un tercer dominio. Con `media="print"` se descarga
+         en paralelo sin bloquear, y al llegar pasa a `all`. `display=swap`
+         ya garantizaba que el texto se ve con la fuente de reserva mientras
+         tanto, y en la primera visita el cargador cubre ese instante. -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap"
+    />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap"
+      media="print"
+      onload="this.media='all'"
     />
 
+    <script is:inline>
+      // El cargador es una bienvenida, no un peaje: se muestra una vez por
+      // sesión. En las navegaciones siguientes (recargar, volver desde un
+      // enlace externo) la página aparece directamente.
+      try {
+        if (sessionStorage.getItem('dark-cargador-visto') === '1') {
+          document.documentElement.classList.add('sin-cargador');
+        }
+      } catch (e) {
+        /* sin sessionStorage: se muestra el cargador como siempre */
+      }
+    </script>
 
     <script is:inline>
       const theme = (() => {
@@ -93,6 +118,10 @@ const ogImageURL = new URL('/og.jpg', siteOrigin);
          congelada para siempre. Este <noscript> devuelve el scroll y esconde
          el cargador en ese escenario. -->
     <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap"
+      />
       <style>
         body.scroll-lock {
           overflow: visible !important;
@@ -161,6 +190,11 @@ const ogImageURL = new URL('/og.jpg', siteOrigin);
             transform: scaleX(1);
           }
         }
+      }
+
+      /* Visita repetida en la misma sesión: el cargador no llega a pintarse. */
+      .sin-cargador #global-loader {
+        display: none;
       }
 
       /* En los visores inmersivos del árbol la página no hace scroll, así que
@@ -259,8 +293,11 @@ const ogImageURL = new URL('/og.jpg', siteOrigin);
 
     <div class="fixed inset-0 bg-stone-400 dark:bg-[#141414] -z-30"></div>
 
+    <!-- `scale-125` recorta los bordes del iframe, donde YouTube pinta su
+         propia interfaz (título, aviso "16+", barra de controles): con el
+         tamaño exacto de la pantalla asomaban por detrás del contenido. -->
     <div
-      class="fixed top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-50 dark:opacity-30 mix-blend-screen filter grayscale -z-20"
+      class="fixed top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] -translate-x-1/2 -translate-y-1/2 scale-125 pointer-events-none opacity-50 dark:opacity-30 mix-blend-screen filter grayscale -z-20"
     >
       <div id="youtube-ambient-player" class="w-full h-full"></div>
     </div>
@@ -413,6 +450,19 @@ const ogImageURL = new URL('/og.jpg', siteOrigin);
       var isPlaying = true;
       var isMuted = true;
 
+      // El vídeo ambiental es pura atmósfera: vive al 30 % de opacidad detrás
+      // de un degradado del 85 %. En móvil costaba ~1 MB de JS de YouTube más
+      // varios MB de vídeo por minuto (medido: 3,2 MB en los primeros 8 s)
+      // y batería, a cambio de un fondo que en una pantalla pequeña apenas se
+      // distingue del gris liso. Tampoco se monta si el usuario pide ahorrar
+      // datos o reducir el movimiento.
+      var AMBIENTAL_PERMITIDO = (function () {
+        var estrecha = window.matchMedia('(max-width: 767px)').matches;
+        var ahorro = !!(navigator.connection && navigator.connection.saveData);
+        var quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        return !(estrecha || ahorro || quieto);
+      })();
+
       var ytApiPedida = false;
       var ytLista = false;
       var ytCola = [];
@@ -507,15 +557,11 @@ const ogImageURL = new URL('/og.jpg', siteOrigin);
         });
       }
 
-      function programarAmbiental() {
-        var lanzar = function () {
-          conYouTube(montarAmbiental);
-        };
-        if ('requestIdleCallback' in window) {
-          requestIdleCallback(lanzar, { timeout: 4000 });
-        } else {
-          window.setTimeout(lanzar, 2500);
-        }
+      // Única puerta de entrada al ambiental: así ni siquiera se descarga la
+      // API de YouTube cuando el fondo no se va a montar.
+      function pedirAmbiental() {
+        if (!AMBIENTAL_PERMITIDO) return;
+        conYouTube(montarAmbiental);
       }
 
       // Retirar el cargador y devolver el scroll. Se centraliza aqui porque
@@ -531,6 +577,11 @@ const ogImageURL = new URL('/og.jpg', siteOrigin);
           setTimeout(() => loader.remove(), 1000);
         }
         document.body.classList.remove('scroll-lock');
+        try {
+          sessionStorage.setItem('dark-cargador-visto', '1');
+        } catch (e) {
+          /* sin sessionStorage: se volverá a mostrar, sin más */
+        }
       }
 
       // El cargador ya NO espera a que el video del hero empiece a sonar:
@@ -538,14 +589,22 @@ const ogImageURL = new URL('/og.jpg', siteOrigin);
       // y era lo primero que veia el usuario. Ahora se retira en cuanto el
       // documento esta listo, y el video entra despues con su propia
       // transicion de opacidad. La salvaguarda por tiempo se queda como red.
+      // La espera mínima baja de 900 a 350 ms: lo justo para que el símbolo
+      // se lea como intención y no como parpadeo, sin cobrar casi un segundo
+      // extra a cada visita. En visitas repetidas de la sesión, ni eso.
+      var esperaCargador = document.documentElement.classList.contains(
+        'sin-cargador',
+      )
+        ? 0
+        : 350;
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function () {
-          window.setTimeout(hideGlobalLoader, 900);
+          window.setTimeout(hideGlobalLoader, esperaCargador);
         });
       } else {
-        window.setTimeout(hideGlobalLoader, 900);
+        window.setTimeout(hideGlobalLoader, esperaCargador);
       }
-      setTimeout(hideGlobalLoader, 3000);
+      setTimeout(hideGlobalLoader, 2500);
 
       function onHeroReady(event) {
         event.target.playVideo();
@@ -628,11 +687,15 @@ const ogImageURL = new URL('/og.jpg', siteOrigin);
 
         atarControlesHero();
 
+        // En Inicio el ambiental ya no se programa al primer hueco libre:
+        // mientras el hero (opaco, a pantalla completa) está delante, el fondo
+        // es invisible y solo duplicaba la descarga y la decodificación del
+        // MISMO vídeo. Se monta cuando el hero sale de la pantalla (ver el
+        // observador de más abajo) o al cambiar de vista.
         if (entraPorInicio) {
           conYouTube(montarHero);
-          programarAmbiental();
         } else {
-          conYouTube(montarAmbiental);
+          pedirAmbiental();
         }
 
         // Al salir de Inicio el video del hero deja de verse: pausarlo libera
@@ -641,7 +704,7 @@ const ogImageURL = new URL('/og.jpg', siteOrigin);
         window.addEventListener('hashchange', () => {
           const enInicio = VISTAS_SIN_HERO.indexOf(window.location.hash) === -1;
           if (!enInicio) {
-            conYouTube(montarAmbiental);
+            pedirAmbiental();
             if (heroPlayer && typeof heroPlayer.pauseVideo === 'function') {
               heroPlayer.pauseVideo();
             }
@@ -745,6 +808,27 @@ const ogImageURL = new URL('/og.jpg', siteOrigin);
             { threshold: 0.45 },
           );
           heroObserver.observe(heroEl);
+
+          // Segundo observador, con umbral 0: cuando el hero sale ENTERO de
+          // la pantalla su vídeo seguía reproduciéndose para nadie. Ahora se
+          // pausa (sin tocar `isPlaying`, que es la preferencia del usuario)
+          // y se reanuda al volver; y es el momento de montar el fondo.
+          const heroVisibleObserver = new IntersectionObserver(([entry]) => {
+            if (!heroIsRendered()) return;
+            if (!entry.isIntersecting) {
+              pedirAmbiental();
+              if (heroPlayer && typeof heroPlayer.pauseVideo === 'function') {
+                heroPlayer.pauseVideo();
+              }
+            } else if (
+              isPlaying &&
+              heroPlayer &&
+              typeof heroPlayer.playVideo === 'function'
+            ) {
+              heroPlayer.playVideo();
+            }
+          });
+          heroVisibleObserver.observe(heroEl);
 
           // Al cambiar de vista el observador puede tardar un frame en
           // reevaluar; reevaluamos nosotros en el acto para que los botones no

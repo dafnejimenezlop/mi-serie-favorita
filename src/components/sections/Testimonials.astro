@@ -96,6 +96,14 @@ const reviews = [
       transform 0.3s ease-out,
       box-shadow 0.4s ease-out,
       border-color 0.3s ease-out;
+  }
+  /* La chincheta sobresale 10 px por encima de la tarjeta. En un layout de
+     columnas, lo que asoma por arriba del primer elemento de una columna se
+     pinta al FONDO de la columna anterior: se veían medias chinchetas
+     sueltas bajo la última tarjeta de cada columna. Con el aire dentro de un
+     envoltorio (padding, que sí viaja con el fragmento) la chincheta queda
+     siempre dentro de su caja. */
+  .testimonial-item {
     break-inside: avoid;
   }
   .testimonial-card:hover,
@@ -118,10 +126,10 @@ const reviews = [
 
 <section
   id="testimonios"
-  class="py-24 bg-transparent transition-colors duration-300 overflow-hidden relative"
+  class="py-16 md:py-24 bg-transparent transition-colors duration-300 overflow-hidden relative"
 >
   <div class="container mx-auto px-6">
-    <div class="text-center mb-16 space-y-3">
+    <div class="text-center mb-10 md:mb-16 space-y-3">
       <span
         class="font-mono text-[11px] tracking-[0.3em] uppercase text-amber-600 dark:text-amber-500/80"
         data-aos="fade-up"
@@ -129,7 +137,7 @@ const reviews = [
         Testimonios interceptados
       </span>
       <h2
-        class="text-3xl md:text-5xl font-cinzel text-amber-500 font-bold transition-colors"
+        class="text-3xl md:text-5xl font-cinzel text-amber-700 dark:text-amber-500 font-bold transition-colors"
         data-aos="zoom-in"
       >
         Ecos del Futuro
@@ -147,14 +155,17 @@ const reviews = [
         del conjunto, no al primero de cada columna: en 2 y 3 columnas, la
         segunda y la tercera arrancaban 24 px mas abajo que la primera. Con
         `mb-6` en cada tarjeta las tres columnas empiezan a la misma altura. */}
-    <div class="max-w-6xl mx-auto columns-1 sm:columns-2 lg:columns-3 gap-6">
+    {/* Debajo de md es un carrusel horizontal (`carrusel-movil`, en
+        global.css); desde md, el tablón en columnas de siempre. */}
+    <div class="carrusel-movil max-w-6xl mx-auto md:columns-2 lg:columns-3 gap-6">
       {
         reviews.map((review, index) => (
+          <div class="testimonial-item md:pt-3 md:mb-4">
           <div
             tabindex="0"
             data-aos="fade-up"
             data-aos-delay={(index % 3) * 120}
-            class={`testimonial-card ${review.rotate} group bg-stone-50/90 dark:bg-stone-900/80 p-6 mb-6 rounded-lg border ${TONOS[review.tono].borde} hover:border-amber-500/60 shadow-lg space-y-5 backdrop-blur-md relative focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400`}
+            class={`testimonial-card ${review.rotate} group h-full md:h-auto bg-stone-50 dark:bg-stone-900 md:bg-stone-50/90 md:dark:bg-stone-900/80 md:backdrop-blur-md p-6 rounded-lg border ${TONOS[review.tono].borde} hover:border-amber-500/60 shadow-lg flex flex-col space-y-5 relative focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400`}
           >
             <span
               class={`testimonial-pin absolute -top-2.5 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full border-2 border-black/40 dark:border-white/20 ${TONOS[review.tono].fondo}`}
@@ -186,7 +197,7 @@ const reviews = [
               "{review.comment}"
             </p>
 
-            <div class="flex items-center justify-between pt-3 border-t border-stone-200/70 dark:border-white/10">
+            <div class="mt-auto flex items-center justify-between pt-3 border-t border-stone-200/70 dark:border-white/10">
               <div
                 class="flex gap-1"
                 role="img"
@@ -198,13 +209,23 @@ const reviews = [
                   />
                 ))}
               </div>
-              <p class="text-[10px] text-stone-400/80 dark:text-stone-500/80 italic">
+              <p class="text-[10px] text-stone-500 dark:text-stone-400/80 italic">
                 {review.date}
               </p>
             </div>
           </div>
+          </div>
         ))
       }
     </div>
+    <p
+      class="md:hidden mt-1 flex items-center justify-center gap-2 font-mono text-[10px] tracking-[0.25em] uppercase text-stone-500"
+      aria-hidden="true"
+    >
+      Desliza · {reviews.length} testimonios
+      <svg class="w-3.5 h-3.5 text-amber-500/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+      </svg>
+    </p>
   </div>
 </section>

@@ -325,6 +325,39 @@ img {
   }
 }
 
+/* --- Carrusel horizontal solo en móvil (Curiosidades y Testimonios) ---
+   Por debajo de md, seis tarjetas apiladas eran ~1.500 px de scroll cada
+   bloque: el lector atravesaba dos secciones enteras de tarjetas casi
+   idénticas antes de llegar a lo siguiente. En fila con scroll-snap ocupan
+   una sola altura, y que asome la siguiente tarjeta (82 %) es la pista de
+   que hay más. Desde md vuelve el grid/columnas de cada componente: esta
+   regla no tiene capa, así que gana a las utilidades de Tailwind (que viven
+   en `@layer utilities`) sin necesidad de !important. */
+@media (max-width: 767px) {
+  .carrusel-movil {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 1.5rem;
+    /* Sangra hasta los bordes de la pantalla para que el carril no se
+       corte en el padding del contenedor, y deja aire arriba y abajo para
+       las chinchetas, las rotaciones y las sombras (overflow-x:auto recorta
+       también en vertical). */
+    margin-inline: -1.5rem;
+    padding: 0.875rem 1.5rem 1.25rem;
+    scrollbar-width: none;
+  }
+  .carrusel-movil::-webkit-scrollbar {
+    display: none;
+  }
+  .carrusel-movil > * {
+    flex: 0 0 min(82%, 22rem);
+    scroll-snap-align: center;
+  }
+}
+
 /* --- Ecualizador de tres barras (Familias y Galería) --- */
 @keyframes audio-bar {
   0% {

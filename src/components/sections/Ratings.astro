@@ -37,11 +37,14 @@ const TONO_BARRA = [
 
 <section
   id="sinopsis"
-  class="py-24 bg-stone-100 dark:bg-stone-950/20 transition-colors duration-300 overflow-hidden relative border-t border-stone-200 dark:border-stone-900"
+  class="py-16 md:py-24 bg-stone-100 dark:bg-stone-950/20 transition-colors duration-300 overflow-hidden relative border-t border-stone-200 dark:border-stone-900"
 >
-  <div class="container mx-auto px-6 grid lg:grid-cols-2 gap-16 items-start">
+  <div class="container mx-auto px-6 grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+    {/* En móvil la sinopsis va PRIMERO: antes abría la sección un cartel de
+        480 px más el bloque de valoraciones, casi una pantalla y media de
+        imagen y cifras antes de la primera frase que explica qué es DARK. */}
     <div
-      class="space-y-12 order-2 lg:order-1"
+      class="space-y-10 md:space-y-12"
       data-aos="fade-right"
       data-aos-duration="1000"
     >
@@ -76,11 +79,13 @@ const TONO_BARRA = [
           reflexionar y a buscar una explicación.
         </p>
         <p
-          class="text-md text-stone-600 dark:text-stone-400 font-light italic transition-colors tracking-wide"
+          class="text-base text-stone-600 dark:text-stone-400 font-light italic transition-colors tracking-wide"
         >
           ¿Qué relación existe entre el pasado, el presente y el futuro?
         </p>
-        <div class="pt-2 h-px w-24 bg-amber-500 transition-colors"></div>
+        {/* Era `pt-2 h-px`: el padding también se pinta con el fondo, así que
+            el "filete" de 1 px salía como una barra ámbar de 9 px. */}
+        <div class="h-px w-24 bg-amber-500" aria-hidden="true"></div>
       </div>
 
       <div class="relative group">
@@ -105,7 +110,7 @@ const TONO_BARRA = [
     </div>
 
     <div
-      class="relative space-y-12 bg-stone-50 dark:bg-stone-900/40 p-6 md:p-12 rounded-lg border border-stone-200 dark:border-stone-800 hover:border-amber-500/30 shadow-xl hover:shadow-[0_0_40px_rgba(245,158,11,0.08)] w-full order-1 lg:order-2 transition-all duration-500"
+      class="relative space-y-8 md:space-y-12 bg-stone-50 dark:bg-stone-900/40 p-6 md:p-12 rounded-lg border border-stone-200 dark:border-stone-800 hover:border-amber-500/30 shadow-xl hover:shadow-[0_0_40px_rgba(245,158,11,0.08)] w-full transition-[border-color,box-shadow] duration-500"
       data-aos="fade-left"
       data-aos-duration="1000"
       data-aos-delay="300"
@@ -126,7 +131,7 @@ const TONO_BARRA = [
           height="978"
           loading="lazy"
           decoding="async"
-          class="h-120 w-auto object-contain mx-auto rounded drop-shadow-[0_0_25px_rgba(245,158,11,0.15)]"
+          class="h-80 sm:h-96 md:h-120 w-auto object-contain mx-auto rounded drop-shadow-[0_0_25px_rgba(245,158,11,0.15)]"
           alt="Cartel de DARK"
         />
 
