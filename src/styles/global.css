@@ -230,17 +230,6 @@ body.hero-in-view #whatsapp-fab {
   }
 }
 
-/* ===== CABECERA EN TEMA CLARO =====
-   Sin hacer scroll, la barra es un degradado negro pensado para fundirse con
-   el hero y los fondos oscuros. Sobre la página clara se leía como una mancha
-   gris, así que en tema claro es la barra sólida desde el principio. Va aquí
-   (sin capa) para ganar a las utilidades de degradado de Tailwind. */
-html:not(.dark) #header-top-bar {
-  background-image: none;
-  background-color: rgb(12 10 9 / 0.95);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-}
 
 /* Evita que una imagen rota deje el típico icono + alt descolocado dentro de
    las tarjetas de personaje/galería (regla 7 de .clauderules: nunca un <img>

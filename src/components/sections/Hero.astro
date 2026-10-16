@@ -33,10 +33,10 @@
     </picture>
   </div>
 
-  <!-- El vídeo entra con un fundido SOLO cuando YouTube confirma que está
-       reproduciendo (BaseLayout añade `video-activo` a #inicio). Hasta
-       entonces el iframe es invisible: ni pantalla negra, ni el spinner ni
-       el botón gris de YouTube.
+  <!-- El vídeo se muestra cuando lleva 2 s reproduciéndose, que es también
+       cuando se levanta el cargador (BaseLayout añade `video-activo` a
+       #inicio). Hasta entonces el iframe es invisible: ni pantalla negra, ni
+       el spinner ni el botón gris de YouTube.
        `scale-[1.4]`: el iframe medía exactamente lo mismo que la pantalla,
        así que la interfaz que YouTube pinta en sus bordes (título, el aviso
        de edad "16+" que sale al arrancar y la barra de controles) quedaba
@@ -274,7 +274,7 @@
   }
   .hero-video {
     opacity: 0;
-    transition: opacity 1.4s ease;
+    transition: opacity 0.8s ease;
   }
   #inicio.video-activo .hero-video {
     opacity: 0.4;

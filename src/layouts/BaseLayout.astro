@@ -27,10 +27,6 @@ const ogImageURL = new URL('/og.jpg', siteOrigin);
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Color de la barra del navegador en móvil: el mismo negro de la
-         cabecera, que es oscura en los dos temas. Sin esto Chrome/Safari
-         pintaban su barra blanca o gris encima de una web negra. -->
-    <meta name="theme-color" content="#0c0a09" />
     <!-- El favicon era un .ico de 254 KB — mas pesado que todo el CSS del
          sitio junto, descargado en cada visita. Un PNG de 32 px cumple lo
          mismo en 1,2 KB. El `type` coincide con la extension real (regla 5). -->
@@ -81,19 +77,6 @@ const ogImageURL = new URL('/og.jpg', siteOrigin);
       media="print"
       onload="this.media='all'"
     />
-
-    <script is:inline>
-      // El cargador es una bienvenida, no un peaje: se muestra una vez por
-      // sesión. En las navegaciones siguientes (recargar, volver desde un
-      // enlace externo) la página aparece directamente.
-      try {
-        if (sessionStorage.getItem('dark-cargador-visto') === '1') {
-          document.documentElement.classList.add('sin-cargador');
-        }
-      } catch (e) {
-        /* sin sessionStorage: se muestra el cargador como siempre */
-      }
-    </script>
 
     <script is:inline>
       const theme = (() => {
@@ -194,11 +177,6 @@ const ogImageURL = new URL('/og.jpg', siteOrigin);
             transform: scaleX(1);
           }
         }
-      }
-
-      /* Visita repetida en la misma sesión: el cargador no llega a pintarse. */
-      .sin-cargador #global-loader {
-        display: none;
       }
 
       /* En los visores inmersivos del árbol la página no hace scroll, así que
@@ -475,8 +453,8 @@ const ogImageURL = new URL('/og.jpg', siteOrigin);
       // arrastra del orden de 1 MB de JS, asi que era, con diferencia, el
       // gasto mas grande de la pagina. Ahora:
       //   - el del hero se monta enseguida, porque es lo que se ve;
-      //   - el ambiental espera a que el navegador este ocioso (vive detras de
-      //     un degradado al 85 %, nadie nota que llegue un segundo despues);
+      //   - el ambiental (el fondo de toda la web) espera a que el del hero
+      //     lleve 2 s reproduciéndose, para no quitarle ancho de banda;
       //   - el del modal no existe hasta que alguien lo abre.
       // La propia API de YouTube tampoco se descarga hasta que hace falta.
       var VIDEO_ID = '14FGjkrrXFk';
@@ -492,19 +470,6 @@ const ogImageURL = new URL('/og.jpg', siteOrigin);
       var isPlaying = true;
       var isMuted = true;
 
-      // El vídeo ambiental es pura atmósfera: vive al 30 % de opacidad detrás
-      // de un degradado del 85 %. En móvil costaba ~1 MB de JS de YouTube más
-      // varios MB de vídeo por minuto (medido: 3,2 MB en los primeros 8 s)
-      // y batería, a cambio de un fondo que en una pantalla pequeña apenas se
-      // distingue del gris liso. Tampoco se monta si el usuario pide ahorrar
-      // datos o reducir el movimiento.
-      var AMBIENTAL_PERMITIDO = (function () {
-        var estrecha = window.matchMedia('(max-width: 767px)').matches;
-        var ahorro = !!(navigator.connection && navigator.connection.saveData);
-        var quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        return !(estrecha || ahorro || quieto);
-      })();
-
       var ytApiPedida = false;
       var ytLista = false;
       var ytCola = [];
@@ -514,6 +479,11 @@ const ogImageURL = new URL('/og.jpg', siteOrigin);
         ytApiPedida = true;
         var tag = document.createElement('script');
         tag.src = 'https://www.youtube.com/iframe_api';
+        // YouTube bloqueado (bloqueador de anuncios, red corporativa): no tiene
+        // sentido que el cargador espere a un vídeo que nunca va a llegar.
+        tag.onerror = function () {
+          hideGlobalLoader();
+        };
         document.head.appendChild(tag);
       }
 
@@ -576,7 +546,13 @@ const ogImageURL = new URL('/og.jpg', siteOrigin);
         heroPlayer = new YT.Player('youtube-hero-player', {
           videoId: VIDEO_ID,
           playerVars: VARS_FONDO,
-          events: { onReady: onHeroReady, onStateChange: onHeroEstado },
+          events: {
+            onReady: onHeroReady,
+            onStateChange: onHeroEstado,
+            onError: function () {
+              hideGlobalLoader();
+            },
+          },
         });
       }
 
@@ -599,10 +575,12 @@ const ogImageURL = new URL('/og.jpg', siteOrigin);
         });
       }
 
-      // Única puerta de entrada al ambiental: así ni siquiera se descarga la
-      // API de YouTube cuando el fondo no se va a montar.
+      // El vídeo de fondo de toda la web (detrás de las vistas y de las
+      // tarjetas translúcidas), en móvil y en escritorio. En Inicio se pide
+      // cuando el hero ya lleva sus 2 s reproduciéndose: así no le roba
+      // ancho de banda al vídeo que el usuario está esperando, y aun así está
+      // listo mucho antes de que nadie baje más allá del hero.
       function pedirAmbiental() {
-        if (!AMBIENTAL_PERMITIDO) return;
         conYouTube(montarAmbiental);
       }
 
@@ -619,101 +597,96 @@ const ogImageURL = new URL('/og.jpg', siteOrigin);
           setTimeout(() => loader.remove(), 1000);
         }
         document.body.classList.remove('scroll-lock');
-        try {
-          sessionStorage.setItem('dark-cargador-visto', '1');
-        } catch (e) {
-          /* sin sessionStorage: se volverá a mostrar, sin más */
-        }
       }
-
-      // El cargador ya NO espera a que el video del hero empiece a sonar:
-      // bloqueaba el scroll hasta 6 s si YouTube iba lento o estaba bloqueado,
-      // y era lo primero que veia el usuario. Ahora se retira en cuanto el
-      // documento esta listo, y el video entra despues con su propia
-      // transicion de opacidad. La salvaguarda por tiempo se queda como red.
-      // La espera mínima baja de 900 a 350 ms: lo justo para que el símbolo
-      // se lea como intención y no como parpadeo, sin cobrar casi un segundo
-      // extra a cada visita. En visitas repetidas de la sesión, ni eso.
-      var esperaCargador = document.documentElement.classList.contains(
-        'sin-cargador',
-      )
-        ? 0
-        : 350;
 
       // ===== Cuándo se retira el cargador =====
-      // El hero ya nunca está en negro: tiene un póster local que se pinta al
-      // instante y el vídeo entra después con un fundido (ver onHeroEstado).
-      // Así que el cargador solo espera a ese póster, que son unos KB, y no a
-      // YouTube, que en móvil tarda varios segundos (medido: ~4 s con buena
-      // red, más de 20 en 3G).
+      // Si se entra por Inicio, el cargador espera a que el vídeo del hero
+      // lleve 2 segundos REPRODUCIÉNDOSE (tiempo del propio vídeo, no del
+      // reloj): cuando se levanta, debajo ya hay imagen en movimiento, nunca
+      // una pantalla negra ni el vídeo arrancando a trompicones.
+      // Redes de seguridad, para que nadie se quede atrapado tras el
+      // cargador: se retira igualmente si YouTube no carga o da error, si el
+      // navegador no permite la reproducción automática (modo ahorro de iOS)
+      // y, en el peor caso, a los 9 s. En esos casos debajo está el póster
+      // del hero, y el vídeo entra después con un fundido.
+      // Si se entra directamente a otra vista, no hay hero que esperar.
+      var SEGUNDOS_ANTES_DE_MOSTRAR = 2;
+      var ESPERA_MAXIMA_MS = 9000;
+      var entraPorInicio = VISTAS_SIN_HERO.indexOf(window.location.hash) === -1;
       var heroVideoListo = false;
-      var temporizadorVideo = null;
+      var vigiaTiempo = null;
 
-      function cuandoPosterListo(alTerminar) {
-        var poster = document.getElementById('hero-poster');
-        var entraPorInicio = VISTAS_SIN_HERO.indexOf(window.location.hash) === -1;
-        if (!poster || !entraPorInicio || poster.complete) {
-          alTerminar();
-          return;
-        }
-        var hecho = false;
-        var una = function () {
-          if (hecho) return;
-          hecho = true;
-          alTerminar();
-        };
-        poster.addEventListener('load', una, { once: true });
-        poster.addEventListener('error', una, { once: true });
-      }
-
-      function retirarCargadorCuandoToque() {
-        cuandoPosterListo(hideGlobalLoader);
-      }
-
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function () {
-          window.setTimeout(retirarCargadorCuandoToque, esperaCargador);
-        });
+      if (entraPorInicio) {
+        window.setTimeout(hideGlobalLoader, ESPERA_MAXIMA_MS);
       } else {
-        window.setTimeout(retirarCargadorCuandoToque, esperaCargador);
+        var retirarYa = function () {
+          window.setTimeout(hideGlobalLoader, 350);
+        };
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', retirarYa);
+        } else {
+          retirarYa();
+        }
+        window.setTimeout(hideGlobalLoader, 3000);
       }
-      setTimeout(hideGlobalLoader, 3000);
+
+      function mostrarVideoHero() {
+        if (heroVideoListo) return;
+        heroVideoListo = true;
+        var hero = document.getElementById('inicio');
+        if (hero) hero.classList.add('video-activo');
+        hideGlobalLoader();
+        pedirAmbiental();
+      }
+
+      function vigilarTiempoHero(player) {
+        if (vigiaTiempo || heroVideoListo) return;
+        vigiaTiempo = window.setInterval(function () {
+          var t = 0;
+          try {
+            t = player.getCurrentTime();
+          } catch (e) {
+            t = 0;
+          }
+          if (t >= SEGUNDOS_ANTES_DE_MOSTRAR) {
+            window.clearInterval(vigiaTiempo);
+            vigiaTiempo = null;
+            mostrarVideoHero();
+          }
+        }, 100);
+      }
 
       function onHeroReady(event) {
         event.target.playVideo();
+        // Si a los 3 s de estar listo el vídeo ni siquiera ha empezado (ni
+        // reproduciendo ni cargando), el navegador ha bloqueado el autoplay:
+        // esperar más no sirve de nada.
+        window.setTimeout(function () {
+          var estado = -1;
+          try {
+            estado = event.target.getPlayerState();
+          } catch (e) {
+            estado = -1;
+          }
+          if (estado !== 1 && estado !== 3) hideGlobalLoader();
+        }, 3000);
       }
 
-      // YouTube avisa de cada cambio de estado. Al arrancar (y al reiniciar el
-      // bucle) pinta durante ~3 s sus propios controles en el centro del
-      // vídeo —anterior, pausa, siguiente— y el aviso de edad, aunque se pida
-      // `controls: 0`. Por eso el vídeo no se muestra en cuanto llega
-      // PLAYING (1), sino 3,5 s después; si se reanuda a mitad (al volver al
-      // hero), basta con 1,2 s. En pausa (2) o al acabar el bucle (0) se
-      // vuelve al póster, que tiene el mismo tono y hace el relevo invisible.
+      // PLAYING (1): se vigila el tiempo del vídeo hasta los 2 s y entonces
+      // se muestra (y se levanta el cargador). Al acabar el bucle (0) se
+      // vuelve un instante al póster —mismo tono— mientras YouTube reinicia,
+      // y el vídeo reaparece con la misma regla. La pausa (2) deja el
+      // fotograma tal cual, como siempre.
       function onHeroEstado(event) {
-        var hero = document.getElementById('inicio');
         if (event.data === 1) {
           isPlaying = true;
           pintarEstadoReproduccion();
-          if (heroVideoListo || temporizadorVideo) return;
-          var segundo = 0;
-          try {
-            segundo = event.target.getCurrentTime();
-          } catch (e) {
-            segundo = 0;
-          }
-          temporizadorVideo = window.setTimeout(
-            function () {
-              temporizadorVideo = null;
-              heroVideoListo = true;
-              if (hero) hero.classList.add('video-activo');
-            },
-            segundo < 4 ? 3500 : 1200,
-          );
-        } else if (event.data === 0 || event.data === 2) {
-          window.clearTimeout(temporizadorVideo);
-          temporizadorVideo = null;
+          vigilarTiempoHero(event.target);
+        } else if (event.data === 0) {
+          window.clearInterval(vigiaTiempo);
+          vigiaTiempo = null;
           heroVideoListo = false;
+          var hero = document.getElementById('inicio');
           if (hero) hero.classList.remove('video-activo');
         }
       }
@@ -792,20 +765,13 @@ const ogImageURL = new URL('/og.jpg', siteOrigin);
       document.addEventListener('DOMContentLoaded', () => {
         // ===== QUE REPRODUCTOR HACE FALTA AQUI Y AHORA =====
         // Si se entra por Inicio, el hero es lo unico que se ve: se monta ya y
-        // el ambiental espera al primer hueco de inactividad. Si se entra
-        // directamente a otra vista (#resumen, #galeria...) el hero esta en
-        // display:none y el fondo ambiental es lo unico que hay que montar,
-        // asi que no tiene sentido esperar.
-        const entraPorInicio =
-          VISTAS_SIN_HERO.indexOf(window.location.hash) === -1;
-
+        // el ambiental llega en cuanto el hero lleva sus 2 s reproduciéndose
+        // (mostrarVideoHero), o antes si el usuario baja o cambia de vista.
+        // Si se entra directamente a otra vista (#resumen, #galeria...) el
+        // hero esta en display:none y el fondo ambiental es lo unico que hay
+        // que montar, asi que no tiene sentido esperar.
         atarControlesHero();
 
-        // En Inicio el ambiental ya no se programa al primer hueco libre:
-        // mientras el hero (opaco, a pantalla completa) está delante, el fondo
-        // es invisible y solo duplicaba la descarga y la decodificación del
-        // MISMO vídeo. Se monta cuando el hero sale de la pantalla (ver el
-        // observador de más abajo) o al cambiar de vista.
         if (entraPorInicio) {
           conYouTube(montarHero);
         } else {
